@@ -4,7 +4,7 @@ import {
   StyleSheet, View, Text, TouchableOpacity, TextInput
 } from 'react-native';
 import { SvgXml } from 'react-native-svg';
-import { h, w, brown } from '../../constants'
+import { h, w, ColorApp } from '../../constants'
 import { SearchBar, Icon } from 'react-native-elements'
 
 
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     height: 60,
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: brown
+    borderColor: ColorApp
     // ...ifIphoneX(
     //   {height: 122},
     //   {height: 90}
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     width: w * 0.80,
     backgroundColor: '#fff',
     borderRadius: 20,
-    borderColor: brown,
+    borderColor: ColorApp,
   }
 })
 

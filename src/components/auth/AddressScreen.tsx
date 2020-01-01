@@ -6,7 +6,7 @@ import {
 import { SvgXml } from 'react-native-svg';
 import { user, home, homeLoc, write, notFound } from '../../allSvg'
 import { Header, globalStyles, HomeCard } from '..';
-import { h, w, brown, serverUrl, BackgroundImage } from '../../constants'
+import { h, w, ColorApp, serverUrl, BackgroundImage } from '../../constants'
 import { backArrow } from '../../allSvg'
 import { User, adrText, adrBool } from '../../interfaces'
 import { actions, store } from '../../store'
@@ -18,7 +18,7 @@ import { Home } from '../../interfaces'
 
 var arrTxt: adrText = { city: '', street: '', homeN: '', appartment: '', home: '' };
 var arr: adrBool = { city: false, street: false, homeN: false, appartment: false, home: false };
-var arrColor: adrText = { city: brown, street: brown, homeN: brown, appartment: brown, home: brown };
+var arrColor: adrText = { city: ColorApp, street: ColorApp, homeN: ColorApp, appartment: ColorApp, home: ColorApp };
 
 interface Props { }
 interface State {
@@ -74,7 +74,7 @@ class AddressScreen extends PureComponent<any, State, Props> {
         </View>
         <ScrollView >
           <Card containerStyle={cardStyle} >
-            {submit && <ActivityIndicator style={indicator} size={70} color={brown} />}
+            {submit && <ActivityIndicator style={indicator} size={70} color={ColorApp} />}
             <View>
               <View style={fixToText}>
                 <SvgXml xml={homeLoc} style={icon} fill={colorIcon.city} />
@@ -180,7 +180,7 @@ class AddressScreen extends PureComponent<any, State, Props> {
                   <Text style={notFoundStyle}> По заданным параметрам ничего не найдено! </Text>
                   <SvgXml xml={notFound} style={{ marginVertical: 10 }} />
                 </View> :
-              <ActivityIndicator style={indicator} size={50} color={brown} />
+              <ActivityIndicator style={indicator} size={50} color={ColorApp} />
           )
           }
 
@@ -438,10 +438,10 @@ class AddressScreen extends PureComponent<any, State, Props> {
   }
   private setClearState() {
     var arrColor: adrText = {
-      city: brown,
-      street: brown,
-      homeN: brown,
-      appartment: brown,
+      city: ColorApp,
+      street: ColorApp,
+      homeN: ColorApp,
+      appartment: ColorApp,
       home: ''
     };
     var arr: adrBool = {

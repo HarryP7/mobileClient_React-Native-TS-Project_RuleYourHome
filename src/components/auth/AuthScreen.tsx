@@ -6,7 +6,7 @@ import {
 import { SvgXml } from 'react-native-svg';
 import { user, homeLoc, lock, lockRep, shield } from '../../allSvg'
 import { Header, globalStyles } from '..';
-import { h, w, brown, serverUrl, BackgroundImage } from '../../constants'
+import { h, w, ColorApp, serverUrl, BackgroundImage } from '../../constants'
 import { backArrow } from '../../allSvg'
 import { User, arrText, arrBool } from '../../interfaces'
 import { actions, store } from '../../store'
@@ -38,12 +38,12 @@ var arr: arrBool = {
   repeatPassword: false
 };
 var arrColor: arrText = {
-  login: brown,
-  email: brown,
-  name: brown,
-  surname: brown,
-  password: brown,
-  repeatPassword: brown
+  login: ColorApp,
+  email: ColorApp,
+  name: ColorApp,
+  surname: ColorApp,
+  password: ColorApp,
+  repeatPassword: ColorApp
 };
 
 class AuthScreen extends PureComponent<any, State, Props> {
@@ -157,7 +157,7 @@ class AuthScreen extends PureComponent<any, State, Props> {
     }
     else {
       badEnter.login = false;
-      colorIcon.login = brown
+      colorIcon.login = ColorApp
       this.setState({ login });
       this.checkFields();
     }
@@ -316,15 +316,15 @@ class AuthScreen extends PureComponent<any, State, Props> {
       repeatPassword: false
     };
     var arrCol: arrText = {
-      login: brown,
-      email: brown,
-      name: brown,
-      surname: brown,
-      password: brown,
-      repeatPassword: brown
+      login: ColorApp,
+      email: ColorApp,
+      name: ColorApp,
+      surname: ColorApp,
+      password: ColorApp,
+      repeatPassword: ColorApp
     };
     this.setState({
-      login: '', password: '', color: brown,
+      login: '', password: '', color: ColorApp,
       good: true, passGood: false, submit: false,
       badEnter: arr, errorText: arrTxt, colorIcon: arrCol,
     })

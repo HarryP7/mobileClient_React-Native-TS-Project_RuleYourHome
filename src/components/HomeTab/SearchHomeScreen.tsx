@@ -4,7 +4,7 @@ import {
 import { Header, SearchHeader, HomeCard,  globalStyles } from '..';
 import {  menu, search,backArrow, rightBack } from '../../allSvg'
 import {  HOMEProfile } from '../../routes';
-import { brown, serverUrl, BackgroundImage } from '../../constants';
+import { ColorApp, serverUrl, BackgroundImage } from '../../constants';
 import {  ListItem, Button, Icon } from 'react-native-elements'
 import { Home } from '../../interfaces'
 import { SvgXml } from 'react-native-svg';
@@ -106,7 +106,7 @@ class SearchHomeScreen extends React.PureComponent<any, State> {
             })}
           </View> :
           !loadError &&
-          <ActivityIndicator style={indicator} size={50} color={brown} />
+          <ActivityIndicator style={indicator} size={50} color={ColorApp} />
         }
         <View style={{margin: 30}}><Text></Text></View>
       </ScrollView>

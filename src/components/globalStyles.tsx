@@ -3,7 +3,7 @@ import {
   StyleSheet
 } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { h, w, brown } from '../constants'
+import { h, w, ColorApp } from '../constants'
 
 const globalStyles = StyleSheet.create({
   headDrawer: { 
@@ -235,7 +235,7 @@ const globalStyles = StyleSheet.create({
   },
   link: {
     paddingVertical: 15,
-    color: brown,
+    color: ColorApp,
     textAlign: 'center',
     fontSize: 18,
   },

@@ -6,7 +6,7 @@ import {
 import { Header, globalStyles } from '..';
 import { menu } from '../../allSvg'
 import { HomeStatus, Role } from '../../enum/Enums';
-import { h, w, brown, NoFoto, serverUrl, BackgroundImage } from '../../constants'
+import { h, w, ColorApp, NoFoto, serverUrl, BackgroundImage } from '../../constants'
 import { AddGROUP, AUTH, REGISTRATION, GroupLIST, ADDRESSScreen } from '../../routes';
 import { Home, User } from '../../interfaces'
 import { useGlobal, store } from '../../store'
@@ -91,7 +91,7 @@ class HomeScreen extends PureComponent<any, State, Props> {
             load ? this.HomeData()
               : <View>
                 <Image source={BackgroundImage} style={im}></Image>
-                <ActivityIndicator style={indicator} size={50} color={brown} />
+                <ActivityIndicator style={indicator} size={50} color={ColorApp} />
               </View>
           )
             : this.notHome('Вас еще не утвердили в доме')

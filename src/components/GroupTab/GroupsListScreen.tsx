@@ -4,7 +4,7 @@ import {
 import { Header, SearchHeader, GroupCard,  globalStyles } from '..';
 import {  backArrow, search, rightBack } from '../../allSvg'
 import { GroupPRO } from '../../routes';
-import { brown, serverUrl, BackgroundImage } from '../../constants';
+import { ColorApp, serverUrl, BackgroundImage } from '../../constants';
 import { useGlobal, store } from '../../store'
 import { Group } from '../../interfaces'
 
@@ -73,7 +73,7 @@ class GroupScreen extends React.PureComponent<any, State> {
                 onPress={() => navigation.navigate(GroupPRO, (item))} />//
             })}
           </View> :
-          <ActivityIndicator style={indicator} size={50} color={brown} />
+          <ActivityIndicator style={indicator} size={50} color={ColorApp} />
         }
         <View style={{margin: 30}}><Text></Text></View>
       </ScrollView>

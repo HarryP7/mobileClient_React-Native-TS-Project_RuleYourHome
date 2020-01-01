@@ -5,7 +5,7 @@ import {
 import { Header, globalStyles } from '..';
 import { backArrow } from '../../allSvg'
 import { HomeStatus } from '../../enum/Enums';
-import { h, w, brown, NoFoto } from '../../constants'
+import { h, w, ColorApp, NoFoto } from '../../constants'
 
 
 interface Props { }

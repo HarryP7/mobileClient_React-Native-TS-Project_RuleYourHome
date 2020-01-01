@@ -7,7 +7,7 @@ import { Header, globalStyles } from '..';
 import { backArrow } from '../../allSvg'
 import { useGlobal, store } from '../../store'
 import { User, initialUser } from '../../interfaces'
-import { h, w, brown, serverUrl, BackgroundImage } from '../../constants'
+import { h, w, ColorApp, serverUrl, BackgroundImage } from '../../constants'
 import { Gender } from '../../enum/Enums';
 import { AddGROUP, AUTH, REGISTRATION, GroupLIST } from '../../routes';
 import { Card } from 'react-native-elements'
@@ -56,7 +56,7 @@ class ProfileScreen extends React.Component<any, State> {
     var { userLogin, token } = store.state;
     return (
       <View >
-        <StatusBar backgroundColor={brown} barStyle="light-content" />
+        <StatusBar backgroundColor={ColorApp} barStyle="light-content" />
         <Header title='Профиль'
           leftIcon={backArrow}
           onPressLeft={() => navigation.goBack()} />
@@ -65,7 +65,7 @@ class ProfileScreen extends React.Component<any, State> {
             this.ProfileData()
             : <View>
               <Image source={BackgroundImage} style={im}></Image>
-              <ActivityIndicator style={indicator} size={50} color={brown} />
+              <ActivityIndicator style={indicator} size={50} color={ColorApp} />
             </View>
           : this.Login()
         }

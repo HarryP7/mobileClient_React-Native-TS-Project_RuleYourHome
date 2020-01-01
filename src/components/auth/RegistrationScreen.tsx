@@ -6,7 +6,7 @@ import {
 import { SvgXml } from 'react-native-svg';
 import { user, homeLoc, lock, lockRep, shield } from '../../allSvg'
 import { Header, globalStyles } from '..';
-import { h, w, brown, serverUrl, BackgroundImage } from '../../constants'
+import { h, w, ColorApp, serverUrl, BackgroundImage } from '../../constants'
 import { backArrow } from '../../allSvg'
 import { User, arrText, arrBool } from '../../interfaces'
 import { actions } from '../../store'
@@ -36,18 +36,18 @@ var arr: arrBool = {
   repeatPassword: false
 };
 var arrColor: arrText = {
-  login: brown,
-  email: brown,
-  name: brown,
-  surname: brown,
-  password: brown,
-  repeatPassword: brown
+  login: ColorApp,
+  email: ColorApp,
+  name: ColorApp,
+  surname: ColorApp,
+  password: ColorApp,
+  repeatPassword: ColorApp
 };
 
 class RegistrationScreen extends Component<any, State, Props> {
   state = {
     login: '', email: '', name: '', surname: '',
-    password: '', repeatPassword: '', color: brown,
+    password: '', repeatPassword: '', color: ColorApp,
     good: true, passGood: false, submit: false, disBtn: true,
     badEnter: arr, errorText: arrTxt, colorIcon: arrColor,
   }
@@ -98,7 +98,7 @@ class RegistrationScreen extends Component<any, State, Props> {
               <View style={fixToText}>
                 <Icon name="email" size={40} style={icon}
                   containerStyle={{ marginLeft: -2, marginRight: 8 }}
-                  color={brown}></Icon>
+                  color={ColorApp}></Icon>
                 <View style={textInput}>
                   <TextInput
                     style={input}
@@ -553,16 +553,16 @@ class RegistrationScreen extends Component<any, State, Props> {
       repeatPassword: false
     };
     var arrCol: arrText = {
-      login: brown,
-      email: brown,
-      name: brown,
-      surname: brown,
-      password: brown,
-      repeatPassword: brown
+      login: ColorApp,
+      email: ColorApp,
+      name: ColorApp,
+      surname: ColorApp,
+      password: ColorApp,
+      repeatPassword: ColorApp
     };
     this.setState({
       login: '', name: '', surname: '',
-      password: '', repeatPassword: '', color: brown,
+      password: '', repeatPassword: '', color: ColorApp,
       good: true, passGood: false, submit: false,
       badEnter: arr, colorIcon: arrColor,
     })

@@ -8,7 +8,7 @@ import { SvgXml } from 'react-native-svg';
 import { save, add } from '../../allSvg'
 import { Header } from '..';//, styles 
 import { Dropdown } from 'react-native-material-dropdown';
-import { h, w, brown, serverUrl } from '../../constants'
+import { h, w, ColorApp, serverUrl } from '../../constants'
 import { Category } from '../../enum/Enums'
 import { backArrow } from '../../allSvg'
 import SafeAreaView from 'react-native-safe-area-view';
@@ -75,7 +75,7 @@ class AddAdvertScreen extends Component<any, State, Props> {
       value: Category.CommunityInfrastructure }, {
       value: Category.Attention },];
     return (<View>
-      <StatusBar backgroundColor={brown} barStyle="light-content" />
+      <StatusBar backgroundColor={ColorApp} barStyle="light-content" />
       <Header title='Добавление объявления'
         leftIcon={backArrow}
         onPressLeft={() => {
