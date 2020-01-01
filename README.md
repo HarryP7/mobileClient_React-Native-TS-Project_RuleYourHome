@@ -55,13 +55,14 @@
 
 ------------------
 ### Для создания нового проекта, необходимо: 
-1.  Выполним команды в командной строке: 
+1.  Выполнить в командной строке: 
 ```bash
-    $ npx react-native init AwesomeTSProject --template react-native-template-typescript 
+    $ npm i -g react-native-cli
+    $ react-native init AwesomeTSProject --template typescript 
     $ cd AwesomeTSProject 
     $ code . 
 ```
-2. Добавим возможность навигации в приложении, следующими командами:
+2. Добавить возможность навигации в приложении, следующими командами:
 ```bash
     $ npm i --save react-navigation 
     $ npm i --save react-native-gesture-handler //обработчик жестов;
@@ -71,7 +72,17 @@
     $ npm i --save react-navigation-tabs  //нижняя навигация табами; 
     $ npm i --save react-navigation-drawer  //боковая оконная навигация
 ```
-3. Добавим библиотеку для иконок для навигации:
+3. Добавить библиотеку для иконок для навигации:
 `$ npm i --save react-native-svg`
-4. Добавим поле выпадающего списка
-`$ npm install --save react-native-material-dropdown`
+`$ npm i --save react-native-vector-icons`
+
+
+4. Добавить поле выпадающего списка:
+`$ npm i --save react-native-material-dropdown`
+`$ npm i --save @types/react-native-material-dropdown`
+
+5. Добавить библиотеку расширенных компонентов:
+`$ npm i --save react-native-elements`
+
+6. Добавить библиотеку lля сохранения глобального состояния:
+`$ npm i --save use-global-hook-ts`
