@@ -74,15 +74,15 @@
 ```
 3. Добавить библиотеку для иконок:
 ```bash
-`$ npm i --save react-native-svg`
-`$ npm i --save react-native-vector-icons`
-`$ react-native link react-native-vector-icons`
+$ npm i --save react-native-svg
+$ npm i --save react-native-vector-icons
+$ react-native link react-native-vector-icons
 ```
 
 4. Добавить библиотеку для выпадающего списка:
 ```bash
-`$ npm i --save react-native-material-dropdown`
-`$ npm i --save @types/react-native-material-dropdown`
+$ npm i --save react-native-material-dropdown
+$ npm i --save @types/react-native-material-dropdown
 ```
 
 5. Добавить библиотеку расширенных компонентов:
