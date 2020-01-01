@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import {
-    View, Text, ScrollView, Image, ActivityIndicator, Button
+    View, Text, ScrollView, Image, ActivityIndicator, Button, Alert
 } from 'react-native';
 import { backArrow } from '../../allSvg'
 import { Header, AdvertCard, globalStyles } from '..';
 import { AddADVERT } from '../../routes';
 import { useGlobal, store } from '../../store'
+import { Role } from '../../enum/Enums';
 
 interface Props { }
 interface Advert {
@@ -31,7 +32,8 @@ class GroupProfile extends Component<any, Props, State> {
     componentDidMount = async () => {
         try {
             const { userLogin, token } = store.state;
-            const response = await fetch('http://192.168.43.80:5000/api/adverts',
+            const { uid } = this.props.navigation.state.params
+            const response = await fetch('http://192.168.43.80:5000/api/adverts?Fk_Group='+ uid,
             { headers: {  'Authorization': `Bearer ${token}` }
             })
             const adverts = await response.json()
@@ -47,6 +49,7 @@ class GroupProfile extends Component<any, Props, State> {
         console.log(this.props.navigation)
         const { navigation } = this.props
         const { adverts, load } = this.state
+        const { userLogin, token } = store.state;
         return (
             <View >
                 <Header title='Группа' 
@@ -60,10 +63,16 @@ class GroupProfile extends Component<any, Props, State> {
                     </View>
                     <View style={button2}>
                         <View style={{ width: 150 }}>
+                            {userLogin.fk_Role == Role.admin ?
                             <Button
                                 title='Добавить'
                                 onPress={() => navigation.navigate(AddADVERT, (adverts))}//navigation.navigate(GroupPRO, (adverts))
                                 color='#92582D' />
+                            : <Button
+                            title='Приосединиться'
+                            onPress={() => this.onJoin(userLogin.uid)}
+                            color='#92582D' />
+                            }
                         </View>
                         {/* <Button
                         title='Присоединиться'
@@ -90,7 +99,8 @@ class GroupProfile extends Component<any, Props, State> {
             </View>
         );
     }
-    private onJoin() {
+    private onJoin(uid: string) {
+
         console.log('onPress Присоединиться')
     }
     private onDiscussions() {

@@ -1,12 +1,13 @@
 import React, { PureComponent } from 'react';
 import {
-  StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator, Button
+  StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Image, ScrollView,
+  ActivityIndicator, RefreshControl,
 } from 'react-native';
 import { Header, globalStyles } from '..';
 import { menu } from '../../allSvg'
-import { HomeStatus } from '../../enum/Enums';
-import { h, w, brown } from '../../constants'
-import { AddGROUP, AUTH, REGISTRATION, GroupLIST } from '../../routes';
+import { HomeStatus, Role } from '../../enum/Enums';
+import { h, w, brown, NoFoto } from '../../constants'
+import { AddGROUP, AUTH, REGISTRATION, GroupLIST, ADDRESSScreen } from '../../routes';
 import { Home, User } from '../../interfaces'
 import { useGlobal, store } from '../../store'
 import { Card } from 'react-native-elements'
@@ -14,12 +15,10 @@ import { Card } from 'react-native-elements'
 interface State {
   data: Home,
   load: boolean,
-  userLogin: User,
-  token: string
+  refreshing: boolean,
 }
 interface Props { }
 
-const dataR = { uid: '94fa3436-0f41-4ae8-89ae-571682b1b304', "location": 'г.Готем-сити ул. Тейтен-Уест, д. 73', "appartaments": 208, "fk_Admin": "0000e0000-t0t-00t0-t000-00000000000", "floors": 14, "porches": 4, "fk_Status": 1, "yearCommissioning": '2015', "imageUrl": { createdAt: "2019-11-15T00:00:00", removed: false, uid: "5ddc6bd0-627b-42da-a603-d62adab55efe", url: "https://i.ibb.co/c1Tc0Pp/house-1876063-960-720.jpg" }, tenants: [{}, {}, {}, {}], localGroups: [{}, {}] }
 class HomeScreen extends PureComponent<any, State, Props> {
   state = {
     data: {
@@ -35,8 +34,7 @@ class HomeScreen extends PureComponent<any, State, Props> {
       }
     },
     load: false,
-    token: '',
-    userLogin: {}
+    refreshing: false
   } as State
 
 
@@ -64,7 +62,7 @@ class HomeScreen extends PureComponent<any, State, Props> {
         }
         else {
           console.log('Ошибка: ', response)
-          this.setState({ load: true })
+          this.setState({ load: true, refreshing: true })
         }
       }
     } catch (e) {
@@ -87,69 +85,126 @@ class HomeScreen extends PureComponent<any, State, Props> {
         onPressLeft={() => {
           navigation.openDrawer()
         }} />
-      {token ?
-        <View>
-          {userLogin.appartament ?
-            <View>
-              {load ? this.HomeData()
-                :
-                <View>
-                  <Image source={require('../../../image/brick_texture1.jpg')} style={im}></Image>
-                  <ActivityIndicator style={indicator} size={50} color={brown} />
-                </View>
-              }
-            </View>
-            : this.Login('Вас еще не утвердили в доме')}
-        </View>
-        : this.Login('Чтобы видеть на этом экране информацию по вашему дому войдите или зарегистрируйтесь!')}
-
+      {token ? (
+        userLogin.fk_Home ? (
+          userLogin.appartament ? (
+            load ? this.HomeData()
+              : <View>
+                <Image source={require('../../../image/brick_texture1.jpg')} style={im}></Image>
+                <ActivityIndicator style={indicator} size={50} color={brown} />
+              </View>
+          )
+            : this.notHome('Вас еще не утвердили в доме')
+        )
+          : this.AddHome('Вы еще не добавилсь к дому')
+      )
+        : this.Login('Чтобы видеть на этом экране информацию по вашему дому войдите в систему!')
+      }
     </View>
     );
   }
   private Login(text: string) {
-    const { indicator, button2, buttonContainer, buttonTitle, im } = globalStyles
+    const { indicator, link, buttonContainer, buttonTitle, im } = globalStyles
+    const { refreshing } = this.state
     const { navigation } = this.props
-    const { h2 } = locStyles
+    const { h2, scrollView } = locStyles
+    return (<View>
+      <Image source={require('../../../image/brick_texture1.jpg')} style={im}></Image>
+      <ScrollView
+        contentContainerStyle={scrollView}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={this.onRefresh.bind(this)} />
+        }
+      >
+        <View style={indicator}>
+          <Card containerStyle={{ paddingBottom: 20, borderRadius: 10 }} >
+            <Image source={require('../../../icon/warning-shield.png')}
+              style={{ alignSelf: 'center' }} />
+            <Text style={h2}>{text}</Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate(AUTH)}>
+                <View style={buttonContainer}>
+                  <Text style={buttonTitle}>Войти</Text>
+                </View>
+              </TouchableOpacity>                              
+              <TouchableOpacity
+                onPress={() => navigation.navigate(REGISTRATION)}>                
+                  <Text style={link}>Зарегистрироваться</Text>
+              </TouchableOpacity>
+          </Card>
+        </View>
+      </ScrollView>
+    </View>
+    );
+  }
+  private notHome(text: string) {
+    const { indicator, link, buttonContainer, buttonTitle, im } = globalStyles
+    const { refreshing } = this.state
+    const { navigation } = this.props
+    const { h2, scrollView } = locStyles
+    return (<View>
+      <Image source={require('../../../image/brick_texture1.jpg')} style={im}></Image>
+      <ScrollView
+        contentContainerStyle={scrollView}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={this.onRefresh.bind(this)} />
+        }
+      >
+        <View style={indicator}>
+          <Card containerStyle={{ paddingBottom: 20, borderRadius: 10 }} >
+            <Image source={require('../../../icon/warning-shield.png')}
+              style={{ alignSelf: 'center' }} />
+            <Text style={h2}>{text}</Text>              
+          </Card>
+        </View>
+      </ScrollView>
+    </View>
+    );
+  }
+  private AddHome(text: string) {
+    const { indicator, buttonContainer, buttonTitle, im } = globalStyles
+    const { refreshing } = this.state
+    const { navigation } = this.props
+    const { h2} = locStyles
+    const back = true;
     return <View>
       <Image source={require('../../../image/brick_texture1.jpg')} style={im}></Image>
-      <View style={indicator}>
-        {/* <Button title='Обновить' onPress={() => {
-        this.componentDidMount(); this.render();
-      }}></Button> */}
-        <Card containerStyle={{ paddingBottom: 20, borderRadius: 10 }} >
-          <Image source={require('../../../icon/warning-shield.png')}
-            style={{ alignSelf: 'center' }} />
-          <Text style={h2}>{text}</Text>
-          <View style={button2}>
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={this.onRefresh.bind(this)} />
+        }
+      >
+        <View style={indicator}>
+          <Card containerStyle={{ paddingBottom: 20, borderRadius: 10 }} >
+            <Image source={require('../../../icon/warning-shield.png')}
+              style={{ alignSelf: 'center' }} />
+            <Text style={h2}>{text}</Text>
             <TouchableOpacity
-              onPress={() => navigation.navigate(AUTH)}>
+              onPress={() => navigation.navigate(ADDRESSScreen, back)}>
               <View style={buttonContainer}>
-                <Text style={buttonTitle}>Войти</Text>
+                <Text style={buttonTitle}>Добавить дом</Text>
               </View>
             </TouchableOpacity>
-            <View style={{ width: 20 }}></View>
-            <TouchableOpacity
-              onPress={() => navigation.navigate(REGISTRATION)}>
-              <View style={buttonContainer}>
-                <Text style={buttonTitle}>Зарегистрироваться</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        </Card>
-      </View>
+          </Card>
+        </View>
+      </ScrollView>
     </View>
   }
   private HomeData() {
     const { userLogin } = store.state;
     const { navigation } = this.props
-    const { images, h1 } = globalStyles
+    const { images, h1, im } = globalStyles
     const { status, h3, sectionContainer, sectionTitle, container,
       sectionContainer1, sectionTitle1, } = locStyles
-    const { data } = this.state
+    const { data, refreshing } = this.state
     const { imageUrl, city, street, homeNumber, appartaments, floors, porches, fk_Status,
       yearCommissioning, tenants, localGroups } = data
-    return <ScrollView>
-      <Image source={{ uri: imageUrl.url }} style={images} />
+    return <ScrollView
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={this.onRefresh.bind(this)} />
+      }
+    >
+      <Image source={{ uri: imageUrl ? imageUrl.url : NoFoto }} style={images} />
       <Text style={h1}>г. {city}, ул. {street}, д. {homeNumber}</Text>
       <Text style={status}>{fk_Status == 1 ? HomeStatus.Exploited : HomeStatus.Emergency}</Text>
 
@@ -166,6 +221,7 @@ class HomeScreen extends PureComponent<any, State, Props> {
         </TouchableOpacity>
       </View>
 
+{userLogin.fk_Role == Role.admin &&
       <View style={container}>
         <TouchableOpacity onPress={this.onAddTenant} >
           <View style={sectionContainer}>
@@ -178,6 +234,7 @@ class HomeScreen extends PureComponent<any, State, Props> {
           </View>
         </TouchableOpacity>
       </View>
+  }
 
       <Text style={h3}>Кол-во квартир: {appartaments} </Text>
       <Text style={h3}>Кол-во этажей: {floors} </Text>
@@ -190,7 +247,25 @@ class HomeScreen extends PureComponent<any, State, Props> {
 
   }
 
+  private async onRefresh() {
+    this.setClearState();   
+    this.componentDidMount();     
+  }
+  private setClearState() {
+    const InitialImage = { uid: '', url: '', removed: false, createdAt: '' }
+    var InitialHome: Home = {
+      uid: '', city: '', street: '', homeNumber: '',
+      fk_Admin: '', fk_Image: '',
+      fk_Status: 0, appartaments: 0,
+      floors: 0, porches: 0, yearCommissioning: '',
+      imageUrl: InitialImage, createdAt: new Date,
+      editedAt: new Date, removed: false, tenants: [],
+      localGroups: []
+    }
+   this.setState({ data: InitialHome, load: false, refreshing: false})  
+  }
 }
+
 
 const locStyles = StyleSheet.create({
   status: {
@@ -240,6 +315,15 @@ const locStyles = StyleSheet.create({
     paddingLeft: 15,
     marginVertical: 5,
     fontSize: 18,
+  },
+  containerUp: {
+    flex: 0,
+    marginTop: 40,
+  },
+  scrollView: {
+    flex: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 })
 

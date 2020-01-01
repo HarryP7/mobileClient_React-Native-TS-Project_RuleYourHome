@@ -5,7 +5,7 @@ import {
 import { Header, globalStyles } from '..';
 import { backArrow } from '../../allSvg'
 import { HomeStatus } from '../../enum/Enums';
-import { h, w, brown } from '../../constants'
+import { h, w, brown, NoFoto } from '../../constants'
 
 
 interface Props { }
@@ -14,7 +14,7 @@ class HomeProfile extends Component<any,  Props> {
 
   render() {
     const { navigation } = this.props
-    const { imageUrl, city, street, homeN, appartaments, floors, porches, fk_Status,
+    const { imageUrl, city, street, homeNumber, appartaments, floors, porches, fk_Status,
       yearCommissioning, } = this.props.navigation.state.params
     const { images, h1 } = globalStyles
     const { status, h3, } = locStyles
@@ -27,8 +27,8 @@ class HomeProfile extends Component<any,  Props> {
 
       <View>
         <ScrollView>
-          <Image source={{ uri: imageUrl.url }} style={images} />
-          <Text style={h1}>г. {city}, ул. {street}, д. {homeN}</Text>
+          <Image source={{ uri: imageUrl ? imageUrl.url : NoFoto }} style={images} />
+          <Text style={h1}>г. {city}, ул. {street}, д. {homeNumber}</Text>
           <Text style={status}>{fk_Status == 1 ? HomeStatus.Exploited : HomeStatus.Emergency}</Text>
           <Text style={h3}>Кол-во квартир: {appartaments} </Text>
           <Text style={h3}>Кол-во этажей: {floors} </Text>

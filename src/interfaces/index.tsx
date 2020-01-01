@@ -35,8 +35,8 @@ export interface Home {
   yearCommissioning: string,
   createdAt: Date,
   editedAt: Date,
-  removed: boolean
-  imageUrl: ImageUrl
+  removed: boolean,
+  imageUrl: ImageUrl,
   tenants: User[],
   localGroups: Group[]
 }
@@ -58,6 +58,7 @@ export interface AuthData {
 }
 export interface arrText {
   login: string,
+  email: string,
   name: string,
   surname: string,
   password: string,
@@ -65,6 +66,7 @@ export interface arrText {
 };
 export interface arrBool {
   login: boolean,
+  email: boolean,
   name: boolean,
   surname: boolean,
   password: boolean,
@@ -75,12 +77,14 @@ export interface adrText {
   street: string,
   homeN: string,
   appartment: string,
+  home: string
 };
 export interface adrBool {
   city: boolean,
   street: boolean,
   homeN: boolean,
   appartment: boolean,
+  home: boolean
 };
 export interface adrHomeText {
   city: string,
@@ -104,32 +108,23 @@ export interface adrHomeBool {
 };
 
 export const initialUser: User = {
-  uid: '',
-  fullName: '',
+  uid: '',  fullName: '',
   avatar: {
     uid: '',
     url: 'https://docplus.kg/img/noavatar.png',
     createdAt: '',
     removed: false
   },
-  fk_Role: 0,
-  fk_Home: '',
-  fk_Avatar: '',
-  fk_Gender: 0,
-  login: '',
-  appartament: '',
-  myGroups: [],
-  address: '',
-  phone: ''
+  fk_Role: 0, fk_Home: '', fk_Avatar: '', fk_Gender: 0, login: '', appartament: '', myGroups: [], address: '', phone: ''
 }
 /**{
-    uid: '',
-    title: '',
-    fk_Admin: '',
-    fk_Image: '',
-    fk_Status: 0,
-    fk_Home: '',
-    createdAt: new Date,
-    editedAt: new Date,
-    removed: false
+    uid: '', title: '', fk_Admin: '', fk_Image: '', fk_Status: 0, fk_Home: '', createdAt: new Date, editedAt: new Date, removed: false
   } */
+
+export const InitialImage = { uid: '', url: '', removed: false, createdAt: '' }
+export const InitialHome: Home = {
+      uid: '', city: '', street: '', homeNumber: '', fk_Admin: '', fk_Image: '',
+      fk_Status: 0, appartaments: 0, floors: 0, porches: 0, yearCommissioning: '',
+      imageUrl: InitialImage, createdAt: new Date, editedAt: new Date, removed: false, tenants: [],
+      localGroups: []
+    }

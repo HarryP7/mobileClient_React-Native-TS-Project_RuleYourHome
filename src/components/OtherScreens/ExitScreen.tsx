@@ -6,8 +6,9 @@ import { Header, globalStyles } from '..';
 import { Card } from 'react-native-elements'
 import { actions } from '../../store'
 import { initialUser } from '../../interfaces'
-import SplashScreen from './SplashScreen';
 import { menu } from '../../allSvg';
+import { NotAuthNAVIGATION } from '../../routes'
+import { backArrow } from '../../allSvg'
 
 class ExitScreen extends PureComponent<any> {
 
@@ -15,23 +16,25 @@ class ExitScreen extends PureComponent<any> {
     const { indicator, button2, buttonContainer, buttonTitle, im, h2 } = globalStyles
     const { navigation } = this.props
     return ( <View>
-      <Header title='Дом'
-        leftIcon={menu}
+      <Header title={'Выход'}
+        leftIcon={backArrow}
         onPressLeft={() => {
-          navigation.openDrawer()
-        }} />
+          //this.setClearState()
+          navigation.goBack();
+        }}
+      />
         <View>
       <Image source={require('../../../image/brick_texture1.jpg')} style={im}></Image>
       </View>
       <View style={indicator}>
         <Card containerStyle={{ paddingBottom: 20, borderRadius: 10 }} >
-          <Image source={require('../../../icon/warning-shield.png')}
+          <Image source={require('../../../icon/doorOut.png')}
             style={{ alignSelf: 'center' }} />
           <Text style={h2}>Вы хотите выйти из дома?</Text>
             <TouchableOpacity
               onPress={() => {
                 actions.Login('',initialUser)
-                navigation.navigate(SplashScreen)}}>
+                navigation.navigate(NotAuthNAVIGATION)}}>
               <View style={buttonContainer}>
                 <Text style={buttonTitle}>Выйти</Text>
               </View>

@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Image, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import { h, w } from '../../constants'
+import { h, w, NoFoto } from '../../constants'
 import { HomeStatus } from '../../enum/Enums'
 
 const HomeCard = ({ data, onPress }: any) => {
@@ -9,10 +9,10 @@ const HomeCard = ({ data, onPress }: any) => {
     return (
         <TouchableOpacity onPress={onPress}>
             <View style={container}>
-                <Image source={{ uri: imageUrl.url }}
+                <Image source={{ uri: imageUrl ? imageUrl.url : NoFoto }}
                     style={images} />
                 <View style={containerText}>
-                    <Text style={h1}>г. {city}, ул. {street}, д. {homeNumber}</Text>
+                    <Text style={h1}>г. {city}, {street}, д. {homeNumber}</Text>
                     <Text style={access}>{fk_Status == 1 ? HomeStatus.Exploited : HomeStatus.Emergency} </Text>
                 </View>
             </View>
@@ -21,7 +21,7 @@ const HomeCard = ({ data, onPress }: any) => {
 }
 const styles = StyleSheet.create({
     container: {
-        marginTop: 5,
+        marginTop: 0,
         padding: 5,
         flexDirection: 'row',
         justifyContent: 'space-between',

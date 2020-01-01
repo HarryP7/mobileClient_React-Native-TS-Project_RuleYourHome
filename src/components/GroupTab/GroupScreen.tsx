@@ -31,9 +31,10 @@ class GroupScreen extends React.PureComponent<any, State> {
     }
   }
 
-  _onChangeText = (text: string) => {
+  onSearchGroup = (text: string) => {
+    var txt: Group[] = this.state.dataOld;
     if(text){
-      var filtered = this.state.data.filter((el) =>
+      var filtered = txt.filter((el) =>
         el.title.toLowerCase().indexOf(text.toLowerCase()) > -1);     
       this.setState({ data: filtered, text });
       }
@@ -50,7 +51,7 @@ class GroupScreen extends React.PureComponent<any, State> {
       {visibleSearch ?
         <SearchHeader           
           rightIcon={backArrow}
-          onChangeText={this._onChangeText}
+          onChangeText={this.onSearchGroup}
           value={this.state.text}
           onPressRight={() => this.setState({visibleSearch: false, data: this.state.dataOld})}
           onBlur={() => this.setState({visibleSearch: false})}

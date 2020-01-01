@@ -8,7 +8,7 @@ import { save } from '../../allSvg'
 import { Header, globalStyles } from '..';//, styles 
 import { Dropdown } from 'react-native-material-dropdown';
 import { h, w, brown } from '../../constants'
-import { HomeStatus } from '../../enum/Enums'
+import { HomeStatus, Role } from '../../enum/Enums'
 import { backArrow } from '../../allSvg'
 import { TextInput } from 'react-native-gesture-handler';
 import { Card } from 'react-native-elements'
@@ -58,10 +58,9 @@ class AddHomeScreen extends Component<any, State, Props> {
           this.setClearState();
           navigation.goBack();
         }} />
-      <ScrollView>
-          {submit && <ActivityIndicator style={indicator} size={70} color={brown} />}
-          
+      <ScrollView>          
           <Image source={require('../../../image/brick_texture1.jpg')} style={imScroll}></Image>
+          {submit && <ActivityIndicator style={indicator} size={70} color={brown} />}
 
           <Card containerStyle={cardStyle} >
             <View>
@@ -77,6 +76,7 @@ class AddHomeScreen extends Component<any, State, Props> {
                     containerStyle={contStyle}
                     pickerStyle={[dropdownStyle, inputMultiline]}
                     dropdownPosition={0}
+                    disabled={submit}
                   />
                   {badEnter.city && <Text style={error}>{errorText.city}</Text>}
                 </View>
@@ -91,6 +91,7 @@ class AddHomeScreen extends Component<any, State, Props> {
                     containerStyle={contStyle}
                     pickerStyle={[dropdownStyle, inputMultiline]}
                     dropdownPosition={0}
+                    disabled={submit}
                   />
                   {badEnter.street && <Text style={error}>{errorText.street}</Text>}
                 </View>
@@ -104,6 +105,7 @@ class AddHomeScreen extends Component<any, State, Props> {
                     placeholder='Номер дома'
                     value={homeN}
                     keyboardType='visible-password'
+                    editable={!submit}
                   />
                   {badEnter.homeN && <Text style={error}>{errorText.homeN}</Text>}
                 </View>
@@ -120,6 +122,7 @@ class AddHomeScreen extends Component<any, State, Props> {
                     placeholder='Введите..'
                     value={appartments}
                     keyboardType='number-pad'
+                    editable={!submit}
                   />
                   {badEnter.appartments && <Text style={error}>{errorText.appartments}</Text>}
                 </View>
@@ -135,6 +138,7 @@ class AddHomeScreen extends Component<any, State, Props> {
                     placeholder='Введите..'
                     value={floors}
                     keyboardType='number-pad'
+                    editable={!submit}
                   />
                   {badEnter.floors && <Text style={error}>{errorText.floors}</Text>}
                 </View>
@@ -150,6 +154,7 @@ class AddHomeScreen extends Component<any, State, Props> {
                     placeholder='Введите..'
                     value={porches}
                     keyboardType='number-pad'
+                    editable={!submit}
                   />
                   {badEnter.porches && <Text style={error}>{errorText.porches}</Text>}
                 </View>
@@ -167,6 +172,7 @@ class AddHomeScreen extends Component<any, State, Props> {
                     keyboardType='number-pad'
                     autoCompleteType='cc-exp-year'
                     onEndEditing={() => this.onCheckYear(year)}
+                    editable={!submit}
                   />
                   {badEnter.year && <Text style={error}>{errorText.year}</Text>}
                 </View>
@@ -180,6 +186,7 @@ class AddHomeScreen extends Component<any, State, Props> {
                     data={dataStatus}
                     onChangeText={this.onChangeStatus.bind(this)}
                     value={status}
+                    disabled={submit}
                   />
                   {badEnter.status && <Text style={error}>{errorText.status}</Text>}
                 </View>
@@ -189,7 +196,8 @@ class AddHomeScreen extends Component<any, State, Props> {
 
           <View style={{ alignItems: 'flex-end' }}>
             <View style={button}>
-              <TouchableOpacity onPress={this.onSubmit.bind(this)} >
+              <TouchableOpacity onPress={this.onSubmit.bind(this)} 
+              disabled={submit} >
                 <View style={buttonContainer}>
                   <SvgXml
                     xml={save}
@@ -430,9 +438,11 @@ class AddHomeScreen extends Component<any, State, Props> {
         [{ text: 'OK' }]);
       return;
     }
+
+    this.setState({ submit: true })
     const { userLogin, token } = store.state;
     
-    if (userLogin.fk_Role==1) {
+    if (userLogin.fk_Role== Role.admin) {
       obj = {
         Admin: userLogin.uid,
         City: city,
@@ -442,7 +452,8 @@ class AddHomeScreen extends Component<any, State, Props> {
         Floors: floors,
         Porches: porches,
         Year: year,
-        Status: status == HomeStatus.Exploited ? 1 : 2
+        Status: status == HomeStatus.Exploited ? 1 : 2,
+        Fk_Role: userLogin.fk_Role,
       }
       url = 'http://192.168.43.80:5000/api/home/create/';
       log = 'Добавить дом'
@@ -461,20 +472,32 @@ class AddHomeScreen extends Component<any, State, Props> {
           if (response.status == 200 || response.status == 201) {
             console.log('Успех ' + log + ' Post статус: ' + response.status + ' ok: ' + response.ok);
             console.log(response);
-            // if (signup)
-            //   $this.setClearState();
-            // else
+            $this.setClearState();
             navigation.goBack();
           }
-          if (response.status == 500)
+          else if (response.status == 500){
             console.log('Server Error', "Status: " + response.status + ' ' + response.json())
-        })
-        .then(function () {
-
+          }
+          else {
+            console.log(response.statusText, "Status: " + response.status + ' ' + response)
+            Alert.alert('Внимание', response.statusText + " Status: " + response.status + ' ' + response,
+              [{ text: 'OK' }]);
+          }
+        $this.setState({ submit: false });
+        return
         })
         .catch(error => {
-          Alert.alert('Внимание', 'Ошибка ' + log + ' Post fetch: ' + error,
-            [{ text: 'OK' }]);
+          console.log('Внимание', 'Ошибка ' + log + ' Post fetch: ' + error);
+          if (error == 'TypeError: Network request failed') {
+            console.log('Внимание', 'Сервер не доступен: ' + log + ' Post fetch: ' + error);
+            Alert.alert('Внимание', 'Сервер не доступен: ' + error, [{ text: 'OK' }]);
+            $this.setState({ submit: false })
+          }
+          else {
+            Alert.alert('Внимание', 'Ошибка входа: ' + error, [{ text: 'OK' }]);
+            $this.setState({ submit: false })
+          }
+          return
         });
     }
     else{

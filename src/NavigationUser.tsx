@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {
-  View, Text, TouchableHighlight, Image, ScrollView, Button, ActivityIndicator, Alert, ColorPropType
+  View, Text, TouchableHighlight, Image, ScrollView, Button, ActivityIndicator, Alert, ColorPropType, SafeAreaView, TouchableOpacity
 } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
@@ -9,12 +9,15 @@ import { createDrawerNavigator, DrawerItems } from 'react-navigation-drawer';
 import {
   SearchHomeScreen, NotificationScreen, ProfileScreen, globalStyles, ExitScreen
 } from './components';
-import HomeScreen from './components/HomeTab/HomeScreen' 
+import HomeScreen from './components/HomeTab/HomeScreen'
 import { SvgXml } from 'react-native-svg';
-import { backArrow, login,  home, searchHome, notif, } from './allSvg'
+import { backArrow, login, home, searchHome, notif, } from './allSvg'
 import { brown } from './constants';
+import { useGlobal, store } from './store'
+import { PROFILE } from './routes';
 
-const {icon, back, imageIcon} = globalStyles
+const { headDrawer, icon, back, imageCont, imageIcon, button4, link, buttonTitle } = globalStyles
+const { userLogin, token } = store.state;
 
 const BottomTab = createBottomTabNavigator({
   Home: {
@@ -36,7 +39,7 @@ const BottomTab = createBottomTabNavigator({
         var { routeName } = navigation.state;
         return <SvgXml xml={
           routeName === 'Home' ? home : routeName === 'SearchHome' ?
-          searchHome : routeName === 'Notification' ? notif : ''}
+            searchHome : routeName === 'Notification' ? notif : ''}
           style={icon} fill={tintColor} />
       },
     }),
@@ -53,23 +56,45 @@ const BottomTabStack = createStackNavigator({
   { headerMode: 'none', }
 );
 
+const CustomDrowerComponent = (props: any) => (
+  <SafeAreaView >
+    <ScrollView>
+      <View style={headDrawer}>
+        <TouchableOpacity
+          onPress={() => props.navigation.closeDrawer()}
+          style={back}>
+          <SvgXml xml={backArrow} width="20" height="20" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => props.navigation.navigate(PROFILE)}
+          style={imageCont}>
+          <Image
+            source={userLogin.avatar ? { uri: userLogin.avatar.url } : require('../icon/user1.png')}
+            style={imageIcon} />
+            <View style={link}>
+              <Text style={buttonTitle}>{userLogin.fullName}</Text>
+            </View>
+        </TouchableOpacity>
+
+        {/* <View style={button4}>
+          <TouchableOpacity
+            onPress={() => props.navigation.navigate(PROFILE)}>
+            <View style={link}>
+              <Text style={buttonTitle}>{userLogin.fullName}</Text>
+            </View>
+          </TouchableOpacity>
+        </View> */}
+      </View>
+      <DrawerItems {...props} />
+    </ScrollView>
+  </SafeAreaView>
+)
 
 const MainDrawer = createDrawerNavigator({
   Tab: {
     screen: BottomTabStack,
     navigationOptions: {
       drawerLabel: ' ',
-      drawerIcon: () =>
-        <SvgXml xml={backArrow} width="20" height="20" style={back} />
-    }
-  },
-  Profile: {
-    screen: ProfileScreen,
-    navigationOptions: {
-      drawerLabel: ' ',
-      drawerIcon: () => <Image
-        source={require('../icon/user1.png')}//{ uri: store.state.userLogin.avatar.url }
-        style={imageIcon} />
     }
   },
   Auth: {
@@ -83,14 +108,15 @@ const MainDrawer = createDrawerNavigator({
   //initialRouteName: 'Tab',
   drawerBackgroundColor: brown,
   //drawerPosition: 'right',
-  drawerType: 'front',
+  drawerType: 'slide',
   drawerWidth: 220,
   swipeDistanceThreshold: 100,
   contentOptions: {
     itemConteinerStyle: {
       marginVertical: 10
     }
-  }
+  },
+  contentComponent: CustomDrowerComponent
 });
 
 const NavigationUser = createStackNavigator(

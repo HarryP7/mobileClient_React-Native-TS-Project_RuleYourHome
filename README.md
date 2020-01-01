@@ -1,6 +1,8 @@
-## AwesomeTSProject
-
-Инструкция по развертыванию клиента React Native приведена ниже:
+## Mobile Client React Native TypeScript
+### Сервер WebApiRH .NET CORE 2.1
+Находится здесь -> [WebApiRH_.NET_CORE_2.1](https://github.com/HarryP7/WebApiRH-JWT-REST_.NET-CORE_2.1/tree/master/WebApiRH)
+--------------
+### Инструкция по развертыванию клиента React Native приведена ниже:
 1. Скачиваем дистрибутивы для разработки: 
     * nodejs – https://nodejs.org/en/download/;
     *	python3 – https://www.python.org/downloads/;
@@ -37,12 +39,6 @@
         `$ git clone https://github.com/HarryP7/mobile-client_React-Native_AwesomeTS-Project_RuleYourHome.git`
         * в консоле введите путь приложения, и клавишу Enter; 
         * после чего введите команду:  `$ npm i `	
-     * Для создания нового проекта выполним команды в командной строке: 
-```bash
-    $ npx react-native init AwesomeTSProject --template react-native-template-typescript 
-    $ cd AwesomeTSProject 
-    $ code . 
-```
 7. Подготовка устройства Android: 
     *	Включить отладку по USB:
         1. Необходимо зайти в Настройки -> «О телефоне», затем коснитесь Build number семь раз. Затем вы вернитесь в Настройки -> Параметры разработчика, и включите «Отладку по USB»
@@ -53,7 +49,15 @@
     * откройте проект в Visual Studio Code и откройте терминал;
     * введите в терминале следующую команду, чтобы установить и запустить приложение на устройстве:
     `npx react-native run-android`
-Если создавалось новое приложение, то необходимо выполнить следующее: 
+
+------------------
+### Для создания нового проекта, то необходимо выполнить следующее: 
+     *  выполним команды в командной строке: 
+```bash
+    $ npx react-native init AwesomeTSProject --template react-native-template-typescript 
+    $ cd AwesomeTSProject 
+    $ code . 
+```
 9. Добавим возможность навигации в приложении, следующими командами:
 ```bash
     $ npm install --save react-navigation 

@@ -9,9 +9,10 @@ import { Header, globalStyles } from '..';
 import { h, w, brown } from '../../constants'
 import { backArrow } from '../../allSvg'
 import { User, arrText, arrBool } from '../../interfaces'
-import { actions } from '../../store'
+import { actions, store } from '../../store'
 import { NAVIGATIONAdmin, NAVIGATIONUser } from '../../routes';
-import { Card } from 'react-native-elements'
+import { Card, Input } from 'react-native-elements'
+import { Role } from '../../enum/Enums';
 
 
 interface Props { }
@@ -22,6 +23,7 @@ interface AuthData {
 }
 var arrTxt: arrText = {
   login: '',
+  email: '',
   name: '',
   surname: '',
   password: '',
@@ -29,6 +31,7 @@ var arrTxt: arrText = {
 };
 var arr: arrBool = {
   login: false,
+  email: false,
   name: false,
   surname: false,
   password: false,
@@ -36,6 +39,7 @@ var arr: arrBool = {
 };
 var arrColor: arrText = {
   login: brown,
+  email: brown,
   name: brown,
   surname: brown,
   password: brown,
@@ -44,8 +48,7 @@ var arrColor: arrText = {
 
 class AuthScreen extends PureComponent<any, State, Props> {
   state = {
-    login: '', password: '', color: brown,
-    good: true, passGood: false, submit: false,
+    login: '', password: '', good: true, submit: false, disBtn: true,
     badEnter: arr, errorText: arrTxt, colorIcon: arrColor, 
   }
 
@@ -56,12 +59,11 @@ class AuthScreen extends PureComponent<any, State, Props> {
 
   render() {
     console.log('Props AuthScreen', this.props)
-    const { login, password, color, badEnter, errorText, colorIcon, passGood, submit,
-      good } = this.state
+    const { login, password, badEnter, errorText, colorIcon, submit,
+      good, disBtn } = this.state
     const { navigation } = this.props
-    const { fixToText, icon, textInput, input, button, buttonContainer, buttonTitle, indicator,
-      link, error } = locStyles
-    const { im, cardStyle } = globalStyles
+    const { fixToText, icon, textInput, input, button, buttonContainer, buttonTitle } = locStyles
+    const { im, cardStyle, indicator, error } = globalStyles
     console.log('login: ' + login)
     console.log('badEnter.login: ' + badEnter.login + ' badEnter.password: ' + badEnter.password)
     console.log('good', good)
@@ -74,11 +76,9 @@ class AuthScreen extends PureComponent<any, State, Props> {
             navigation.goBack();
           }}
         />
-        <View>
-          <Image source={require('../../../image/brick_texture1.jpg')} style={im}></Image></View>
-        <Card containerStyle={cardStyle} >
-          {submit && <ActivityIndicator style={indicator} size={70} color="#92582D" />}
+        <View><Image source={require('../../../image/brick_texture1.jpg')} style={im}></Image></View>
 
+        <Card containerStyle={cardStyle} >
           <View style={fixToText}>
             <SvgXml xml={user} style={icon} fill={colorIcon.login} />
             <View style={textInput}>
@@ -89,12 +89,14 @@ class AuthScreen extends PureComponent<any, State, Props> {
                 autoCompleteType='name'
                 value={login}
                 onEndEditing={() => this.onCheckLogin(login)}
+                editable={!submit}
+                // errorMessage={badEnter.login ? errorText.login : ''}
               />
               {badEnter.login && <Text style={error}>{errorText.login}</Text>}
             </View>
           </View>
 
-          <View style={fixToText}>
+          <View style={[fixToText, {marginTop: 20,}]}>
             <SvgXml xml={lock} style={icon} fill={colorIcon.password} />
             <View style={textInput}>
               <TextInput
@@ -106,32 +108,41 @@ class AuthScreen extends PureComponent<any, State, Props> {
                 secureTextEntry={true}
                 value={password}
                 onEndEditing={() => this.onCheckPass(password)}
+                editable={!submit}
+                //errorMessage={badEnter.password ? errorText.password : ''}
               />
               {badEnter.password && <Text style={error}>{errorText.password}</Text>}
             </View>
           </View>
-
-
-          {/* <TouchableOpacity
-            onPress={this.onPress.bind(this)}
-            disabled={submit} >
-            <Text style={link}>{signup ? 'Вход' : 'Регистрация'}</Text>
-          </TouchableOpacity> */}
-
         </Card>
+
         <View style={{ alignItems: "center" }}>
           <View style={button}>
             <TouchableOpacity
               onPress={this.onSubmit.bind(this)}
-              disabled={submit}>
+              disabled={disBtn}>
               <View style={buttonContainer}>
                 <Text style={buttonTitle}>Войти</Text>
               </View>
             </TouchableOpacity>
           </View>
         </View>
+          {submit && <ActivityIndicator style={indicator} size={70} color="#92582D" />}
+        
+          {/* <TouchableOpacity
+            onPress={this.onPress.bind(this)}
+            disabled={submit} >
+            <Text style={link}>{'Забыли пароль?'}</Text>
+          </TouchableOpacity> */}
+          
       </View>
     );
+  }
+  private checkFields() {
+    const {login, password, badEnter} = this.state
+    if(login && password && !badEnter.login && !badEnter.password ){
+      this.setState({ disBtn: false })
+    }    
   }
 
   private onChangeLogin(login: string) {
@@ -148,6 +159,7 @@ class AuthScreen extends PureComponent<any, State, Props> {
       badEnter.login = false;
       colorIcon.login = brown
       this.setState({ login });
+      this.checkFields();
     }
   }
   private onCheckLogin(login: string) {
@@ -159,11 +171,6 @@ class AuthScreen extends PureComponent<any, State, Props> {
       this.setState({ badEnter, errorText, login, good: false });
       return;
     }
-    else {
-      badEnter.login = false;
-      colorIcon.login = brown
-      this.setState({ login, badEnter });
-    }
   }
 
   private onChangePassword(password: string) {
@@ -173,6 +180,7 @@ class AuthScreen extends PureComponent<any, State, Props> {
       badEnter.password = false
       colorIcon.password = 'green'
       this.setState({ colorIcon, badPass: false });
+      this.checkFields();
     }
     this.setState({ password });
   }
@@ -237,7 +245,7 @@ class AuthScreen extends PureComponent<any, State, Props> {
     url = 'http://192.168.43.80:5000/api/auth/signin';
     log = 'Входа'
 
-    this.setState({ submit: true })
+    this.setState({ submit: true, disBtn: true })
     fetch(url, {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
       headers: {
@@ -273,23 +281,35 @@ class AuthScreen extends PureComponent<any, State, Props> {
       })
       .then(function (data: AuthData) {
         if (data) {
-          actions.Login(data.token, data.userLogin)
-          if (data.userLogin.fk_Role == 1)
+          if (!store.state.token) {
+            actions.Login(data.token, data.userLogin)
+          }
+          if (data.userLogin.fk_Role == Role.admin){
             navigation.navigate(NAVIGATIONAdmin);
-          else
+          }
+          else{
             navigation.navigate(NAVIGATIONUser);
+          }
         }
       })
       .catch(error => {
         console.log('Внимание', 'Ошибка ' + log + ' Post fetch: ' + error);
-        Alert.alert('Внимание', 'Ошибка входа: ' + error, [{ text: 'OK' }]);
-        $this.setState({ submit: false })
+        if (error == 'TypeError: Network request failed') {
+          Alert.alert('Внимание', 'Сервер не доступен: ' + error, [{ text: 'OK' }]);
+          $this.setState({ submit: false })
+        }
+        else {
+          Alert.alert('Внимание', 'Ошибка входа: ' + error, [{ text: 'OK' }]);
+          $this.setState({ submit: false })
+        }
+        return
       });
 
   }
   private setClearState() {
     var arr: arrBool = {
       login: false,
+      email: false,
       name: false,
       surname: false,
       password: false,
@@ -297,6 +317,7 @@ class AuthScreen extends PureComponent<any, State, Props> {
     };
     var arrCol: arrText = {
       login: brown,
+      email: brown,
       name: brown,
       surname: brown,
       password: brown,
@@ -326,14 +347,6 @@ const locStyles = StyleSheet.create({
     padding: 10,
     height: 40,
   },
-  inputMultiline: {
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    alignContent: 'flex-start',
-  },
   flex: {
     margin: 120,
     textAlign: 'center',
@@ -341,7 +354,6 @@ const locStyles = StyleSheet.create({
     paddingBottom: 200,
   },
   fixToText: {
-    marginTop: 20,
     flexDirection: 'row',
     justifyContent: 'center',
   },
@@ -359,22 +371,6 @@ const locStyles = StyleSheet.create({
   buttonTitle: {
     fontSize: 18,
     color: '#fff',
-  },
-  link: {
-    marginVertical: 20,
-    color: '#92582D',
-    textAlign: 'center',
-    fontSize: 20,
-  },
-  error: {
-    marginTop: 5,
-    color: 'red',
-    marginBottom: -10
-  },
-  indicator: {
-    marginTop: 50,
-    position: 'absolute',
-    alignSelf: 'center',
   },
   paddingBottom: {
     position: 'absolute',

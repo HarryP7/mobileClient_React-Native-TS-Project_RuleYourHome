@@ -12,6 +12,7 @@ import { h, w, brown } from '../../constants'
 import { Category } from '../../enum/Enums'
 import { backArrow } from '../../allSvg'
 import SafeAreaView from 'react-native-safe-area-view';
+import { globalStyles } from '..';
 //import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 //import {Fab} from '@material-ui/core';
 //import Save from '@material-ui/icons/Save';
@@ -62,23 +63,17 @@ class AddAdvertScreen extends Component<any, State, Props> {
       good, status, checked } = this.state
     const { navigation } = this.props
     const { container, fixToText, label, label2, label4, addPosition, textInput, textInput2,
-      iconButton, inputMultiline, button, buttonContainer, sectionTitle, styleSwitch, inputStyle,
+      iconButton,inputMultiline, button, buttonContainer, sectionTitle, styleSwitch, inputStyle,
       error } = styles
+    const { } = globalStyles
     let dataStatus = [{
-      value: Category.Repairs,
-    }, {
-      value: Category.EngineeringWorks,
-    }, {
-      value: Category.Overhaul,
-    }, {
-      value: Category.EnergySaving,
-    }, {
-      value: Category.Owners,
-    }, {
-      value: Category.CommunityInfrastructure,
-    }, {
-      value: Category.Attention,
-    },];
+      value: Category.Repairs }, {
+      value: Category.EngineeringWorks }, {
+      value: Category.Overhaul }, {
+      value: Category.EnergySaving }, {
+      value: Category.Owners }, {
+      value: Category.CommunityInfrastructure }, {
+      value: Category.Attention },];
     return (<View>
       <StatusBar backgroundColor={brown} barStyle="light-content" />
       <Header title='Добавление объявления'
@@ -160,7 +155,7 @@ class AddAdvertScreen extends Component<any, State, Props> {
             checkedColor='green'
             center
           ></CheckBox> */}
-          {checked && this.onPress()}
+          {checked && this.addVotingPress()}
 
           <View style={{ alignItems: 'flex-end' }}>
             <View style={button}>
@@ -182,7 +177,7 @@ class AddAdvertScreen extends Component<any, State, Props> {
     );
   }
 
-  private onPress() {
+  private addVotingPress() {
     const { text, title, category, question, answer,
       good, status, checked, isMulti } = this.state
     const { navigation } = this.props

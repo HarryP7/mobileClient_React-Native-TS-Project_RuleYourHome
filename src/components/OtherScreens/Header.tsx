@@ -39,13 +39,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#92582D',
     height: 60,
     flexDirection: 'row',
-    //justifyContent: 'space-between',
     alignItems: 'center',
     position: 'relative',
-    // ...ifIphoneX(
-    //   {height: 122},
-    //   {height: 90}
-    // })
   },
   containerBtn: {
     //backgroundColor: 'gold',

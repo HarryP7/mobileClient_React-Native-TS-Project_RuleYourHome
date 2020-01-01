@@ -1,46 +1,64 @@
-import React, { PureComponent, useState, useEffect } from 'react';
+import React, { PureComponent } from 'react';
 import {
   StyleSheet, ScrollView, View, Text, TouchableOpacity, TextInput, Alert,
   ActivityIndicator, Picker, SafeAreaView, Image
 } from 'react-native';
 import { SvgXml } from 'react-native-svg';
-import { user, home, homeLoc, write } from '../../allSvg'
-import { Header, globalStyles } from '..';
+import { user, home, homeLoc, write, notFound } from '../../allSvg'
+import { Header, globalStyles, HomeCard } from '..';
 import { h, w, brown } from '../../constants'
 import { backArrow } from '../../allSvg'
 import { User, adrText, adrBool } from '../../interfaces'
-import { actions } from '../../store'
-import { AUTH } from '../../routes';
+import { actions, store } from '../../store'
+import { AUTH, HOMEProfile } from '../../routes';
 import { CityList, VladimirStreetList } from './Lists'
-import { Icon, Card } from 'react-native-elements'
+import { Card, Input, CheckBox, Icon, ThemeConsumer } from 'react-native-elements'
 import { Dropdown, DropDownMargins } from 'react-native-material-dropdown';
+import { Home } from '../../interfaces'
+
+var arrTxt: adrText = { city: '', street: '', homeN: '', appartment: '', home: '' };
+var arr: adrBool = { city: false, street: false, homeN: false, appartment: false, home: false };
+var arrColor: adrText = { city: brown, street: brown, homeN: brown, appartment: brown, home: brown };
 
 interface Props { }
-interface State { }
+interface State {
+  appartment: string,
+  city: string,
+  street: string,
+  homeN: string,
+  good: boolean,
+  submit: boolean,
+  badEnter: adrBool,
+  errorText: adrText,
+  colorIcon: adrText,
+  search: boolean,
+  searchText: string,
+  dataHome: Home[],
+  dataOld: Home[],
+  loadHome: boolean,
+  checked: boolean[],
+  fk_home: string
+}
 interface AuthData {
   token: string,
   userLogin: User,
 }
-var arrTxt: adrText = { city: '', street: '', homeN: '', appartment: '', };
-var arr: adrBool = { city: false, street: false, homeN: false, appartment: false, };
-var arrColor: adrText = { city: brown, street: brown, homeN: brown, appartment: brown, };
 
 class AddressScreen extends PureComponent<any, State, Props> {
   state = {
-    appartment: '', city: '', street: '', homeN: '', password: '', repeatPassword: '', color: brown,
-    good: true, passGood: false, submit: false, badEnter: arr, errorText: arrTxt, colorIcon: arrColor,
-  }
-
-  UNSAFE_componentWillReceiveProps = () => { }
-  UNSAFE_componentWillUpdate = () => { }
+    appartment: '', city: '', street: '', homeN: '',
+    good: true, submit: false, badEnter: arr, errorText: arrTxt, colorIcon: arrColor,
+    search: false, searchText: '', dataHome: [], dataOld: [], loadHome: false, checked: [], fk_home: ''
+  } as State
 
   render() {
     console.log('Props AddresScreen', this.props)
-    const { appartment, city, street, homeN, color, badEnter, errorText, colorIcon, submit,
-      good } = this.state
+    const { appartment, city, street, homeN, badEnter, errorText, colorIcon, submit,
+      good, loadHome, dataHome, search, checked }: State = this.state
     const { navigation } = this.props
-    const { fixToText, icon, textInput, input, button, buttonContainer, buttonTitle, } = locStyles
-      const { body, im, indicator, label2, cardStyle, inputMultiline, dropdownStyle, contStyle, error,} = globalStyles
+    const { fixToText, icon, textInput, input, button, buttonContainer, buttonTitle, notFoundStyle, } = locStyles
+    const { im, indicator, label, label2, label3, cardStyle, inputMultiline, dropdownStyle, contStyle, error,
+    } = globalStyles
     console.log('good', good)
     return (
       <View>
@@ -51,76 +69,122 @@ class AddressScreen extends PureComponent<any, State, Props> {
             navigation.goBack();
           }}
         />
-        <View style={body}>
-          {submit && <ActivityIndicator style={indicator} size={70} color={brown} />}
+        <View>
           <Image source={require('../../../image/brick_texture1.jpg')} style={im}></Image>
-          
+        </View>
+        <ScrollView >
           <Card containerStyle={cardStyle} >
-          <View>
-            <View style={fixToText}>
-              <SvgXml xml={homeLoc} style={icon} fill={colorIcon.city} />
-              <View style={textInput}>
-                <View style={{ flexDirection: 'row' }}>
-                  <Text style={label2}> Город <Text style={{ color: 'red' }}>*</Text></Text>
+            {submit && <ActivityIndicator style={indicator} size={70} color={brown} />}
+            <View>
+              <View style={fixToText}>
+                <SvgXml xml={homeLoc} style={icon} fill={colorIcon.city} />
+                <View style={textInput}>
+                  <View style={{ flexDirection: 'row' }}>
+                    <Text style={label2}> Город <Text style={{ color: 'red' }}>*</Text></Text>
+                  </View>
+                  <Dropdown
+                    data={CityList}
+                    onChangeText={this.onChangeCity.bind(this)}
+                    value={city}
+                    containerStyle={contStyle}
+                    pickerStyle={[dropdownStyle, inputMultiline]}
+                    dropdownPosition={0}
+                    disabled={submit}
+                  />
+                  {badEnter.city && <Text style={error}>{errorText.city}</Text>}
                 </View>
-                <Dropdown
-                  data={CityList}
-                  onChangeText={this.onChangeCity.bind(this)}
-                  value={city}
-                  containerStyle={contStyle}
-                  pickerStyle={[dropdownStyle, inputMultiline]}
-                  dropdownPosition={0}
-                />
-                {badEnter.city && <Text style={error}>{errorText.city}</Text>}
               </View>
-            </View>
-            <View style={fixToText}>
-              <SvgXml xml={homeLoc} style={icon} fill={colorIcon.street} />
-              <View style={textInput}>
-                <Text style={label2}> Улица <Text style={{ color: 'red' }}>*</Text></Text>
-                <Dropdown
-                  data={VladimirStreetList}
-                  onChangeText={this.onChangeStreet.bind(this)}
-                  value={street}
-                  containerStyle={contStyle}
-                  pickerStyle={[dropdownStyle, inputMultiline]}
-                  dropdownPosition={0}
-                />
-                {badEnter.street && <Text style={error}>{errorText.street}</Text>}
+              <View style={fixToText}>
+                <SvgXml xml={homeLoc} style={icon} fill={colorIcon.street} />
+                <View style={textInput}>
+                  <Text style={label2}> Улица <Text style={{ color: 'red' }}>*</Text></Text>
+                  <Dropdown
+                    data={VladimirStreetList}
+                    onChangeText={this.onChangeStreet.bind(this)}
+                    value={street}
+                    containerStyle={contStyle}
+                    pickerStyle={[dropdownStyle, inputMultiline]}
+                    dropdownPosition={0}
+                    disabled={submit}
+                  />
+                  {badEnter.street && <Text style={error}>{errorText.street}</Text>}
+                </View>
               </View>
-            </View>
-            <View style={fixToText}>
-              <SvgXml xml={home} style={icon} fill={colorIcon.homeN} />
-              <View style={textInput}>
-                <TextInput
-                  style={input}
-                  onChangeText={this.onChangeHomeN.bind(this)}
-                  placeholder='Номер дома'
-                  value={homeN}
-                  keyboardType='visible-password'
-                />
-                {badEnter.homeN && <Text style={error}>{errorText.homeN}</Text>}
+              <View style={fixToText}>
+                <SvgXml xml={home} style={icon} fill={colorIcon.homeN} />
+                <View style={textInput}>
+                  <Text style={label}> Номер дома <Text style={{ color: 'red' }}>*</Text></Text>
+                  <TextInput
+                    style={input}
+                    onChangeText={this.onChangeHomeN.bind(this)}
+                    placeholder='Номер дома'
+                    value={homeN}
+                    keyboardType='visible-password'
+                    editable={!submit}
+                  />
+                  {badEnter.homeN && <Text style={error}>{errorText.homeN}</Text>}
+                </View>
               </View>
-            </View>
 
-            <View style={fixToText}>
-              <SvgXml xml={write} style={icon} fill={colorIcon.appartment} />
-              <View style={textInput}>
-                <TextInput
-                  style={input}
-                  onChangeText={this.onChangeAppartment.bind(this)}
-                  placeholder='Кваритира'
-                  value={appartment}
-                  onEndEditing={() => this.onCheckAppartment(appartment)}
-                  keyboardType='number-pad'
-                />
-                {badEnter.appartment && <Text style={error}>{errorText.appartment}</Text>}
+              <View style={fixToText}>
+                <SvgXml xml={write} style={icon} fill={colorIcon.appartment} />
+                <View style={textInput}>
+                  <Text style={label}> Квартира <Text style={{ color: 'red' }}>*</Text></Text>
+                  <TextInput
+                    style={input}
+                    onChangeText={this.onChangeAppartment.bind(this)}
+                    placeholder='Кваритира'
+                    value={appartment}
+                    onEndEditing={() => this.onCheckAppartment(appartment)}
+                    keyboardType='number-pad'
+                    editable={!submit}
+                  />
+                  {badEnter.appartment && <Text style={error}>{errorText.appartment}</Text>}
+                  {badEnter.home && <Text style={[error, { marginTop: 15 }]}>{errorText.home}</Text>}
+                </View>
               </View>
             </View>
-          </View>
           </Card>
+          {search && (
+            loadHome ?
+              dataHome.length ?
+                <View >
+                  <View style={label3}>
+                    <Text style={notFoundStyle}> Выберите свой дом: <Text style={{ color: 'red' }}>*</Text></Text>
 
-          <View style={{alignItems: 'center'}}>
+                  </View>
+                  {dataHome.map((item, id: number) => {
+                    return <View style={{ flexDirection: 'row' }}>
+                      <HomeCard data={item} key={item.uid}
+                        onPress={() => navigation.navigate(HOMEProfile, (item))}
+                        disabled={submit}
+                      />
+                      <CheckBox //title='Выбрать дом'
+                        checked={checked[id]}
+                        onPress={() => {
+                          var { badEnter } = this.state
+                          badEnter.home = false;
+                          var check = checked;
+                          check[id] = !check[id];
+                          this.setState({ checked: check, fk_home: item.uid, badEnter })
+                        }}
+                        checkedColor='green'
+                        right
+                        containerStyle={{ marginTop: 50, marginLeft: -50, height: 40 }}
+
+                      ></CheckBox>
+                    </View>
+                  })}
+                </View> :
+                <View style={{ alignItems: 'center' }} >
+                  <Text style={notFoundStyle}> По заданным параметрам ничего не найдено! </Text>
+                  <SvgXml xml={notFound} style={{ marginVertical: 10 }} />
+                </View> :
+              <ActivityIndicator style={indicator} size={50} color={brown} />
+          )
+          }
+
+          <View style={{ alignItems: 'center' }}>
             <TouchableOpacity
               onPress={this.onSubmit.bind(this)}
               disabled={submit} >
@@ -131,13 +195,61 @@ class AddressScreen extends PureComponent<any, State, Props> {
           </View>
 
           <View style={{ margin: 50 }}><Text> </Text></View>
-        </View>
+        </ScrollView>
       </View>
     );
   }
 
+  private async onSearchHome() {
+    var { city, street, homeN } = this.state
+    var obj = {
+      City: city,
+      Street: street,
+      HomeNumber: homeN
+    }
+    var logAction = 'Изменение адреса дома'
+    var $this = this;
+
+    var { token, userLogin } = store.state
+    this.setState({ loadHome: false })
+    try {
+      fetch('http://192.168.43.80:5000/api/home/search', {
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        headers: {
+          'Accept': "application/json",
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(obj), //JSON.stringify(
+      })
+        .then(function (response) {
+          var dataHome = response.json()
+          console.log('Успех fetch home search', dataHome)
+          return dataHome;
+        })
+        .then(function (dataHome) {
+          $this.setState({ dataHome, loadHome: true })
+        })
+        .catch(error => {
+          console.log('Внимание', 'Ошибка ' + logAction + ' Post fetch: ' + error);
+          if (error == 'TypeError: Network request failed') {
+            Alert.alert('Внимание', 'Сервер не доступен: ' + error, [{ text: 'OK' }]);
+            this.setState({ loadHome: false })
+          }
+          else {
+            Alert.alert('Внимание', 'Ошибка сервера: ' + error, [{ text: 'OK' }]);
+            this.setState({ loadHome: false })
+          }
+          return
+        });
+
+    } catch (e) {
+      throw e
+    }
+  }
+
   private onChangeCity(city: string) {
-    var {badEnter, errorText, colorIcon} = this.state
+    var { badEnter, errorText, colorIcon } = this.state
     if (city == ' ') { return }
     if (!city) {
       badEnter.city = true;
@@ -149,11 +261,12 @@ class AddressScreen extends PureComponent<any, State, Props> {
     else {
       badEnter.city = false;
       colorIcon.city = 'green'
-      this.setState({ city, badEnter });
+      this.setState({ city, badEnter, search: true });
+      this.onSearchHome();
     }
   }
   private onChangeStreet(street: string) {
-    var {badEnter, errorText, colorIcon} = this.state
+    var { badEnter, errorText, colorIcon } = this.state
     if (street == ' ') { return }
     if (!street) {
       badEnter.street = true;
@@ -165,11 +278,12 @@ class AddressScreen extends PureComponent<any, State, Props> {
     else {
       badEnter.street = false;
       colorIcon.street = 'green'
-      this.setState({ street, colorIcon });
+      this.setState({ street, colorIcon, search: true });
+      this.onSearchHome();
     }
   }
   private onChangeHomeN(homeN: string) {
-    var {badEnter, errorText, colorIcon} = this.state
+    var { badEnter, errorText, colorIcon } = this.state
     if (homeN == ' ') { return }
     if (!homeN) {
       badEnter.homeN = true;
@@ -181,11 +295,12 @@ class AddressScreen extends PureComponent<any, State, Props> {
     else {
       badEnter.homeN = false;
       colorIcon.homeN = 'green'
-      this.setState({ homeN });
+      this.setState({ homeN, search: true });
+      this.onSearchHome();
     }
   }
   private onChangeAppartment(appartment: string) {
-    var {badEnter, errorText, colorIcon} = this.state
+    var { badEnter, errorText, colorIcon } = this.state
     if (appartment == ' ') { return }
     if (!appartment) {
       badEnter.appartment = true;
@@ -201,7 +316,7 @@ class AddressScreen extends PureComponent<any, State, Props> {
     }
   }
   private onCheckAppartment(appartment: string) {
-    var {badEnter, errorText, colorIcon} = this.state
+    var { badEnter, errorText, colorIcon } = this.state
     if (+appartment > 1000) {
       badEnter.appartment = true;
       errorText.appartment = 'Квартира не может быть больше 1000!'
@@ -218,99 +333,108 @@ class AddressScreen extends PureComponent<any, State, Props> {
 
   private onSubmit() {
     const { appartment, city, street, homeN, badEnter, errorText,
-      colorIcon, good } = this.state
+      colorIcon, fk_home } = this.state
     const { navigation } = this.props
     var $this = this;
-    var obj, url, log: string;
+    var obj, url, logAction: string;
 
-    if (!city) {
+    if (!city && !street && !homeN) {
       badEnter.city = true;
-      errorText.city = 'Поле не заполнено!'
+      errorText.city = 'Заполните хотябы одно поле для поиска по: Городу, улице или номеру дома'
       colorIcon.city = 'red'
       this.setState({ badEnter, errorText, colorIcon, good: false });
     }
-    if (!street) {
-      badEnter.street = true;
-      errorText.street = 'Поле не заполнено!'
-      colorIcon.street = 'red'
-      this.setState({ badEnter, errorText, colorIcon, good: false });
-    }
-    if (!homeN) {
-      badEnter.homeN = true;
-      errorText.homeN = 'Поле не заполнено!'
-      colorIcon.homeN = 'red'
-      this.setState({ badEnter, errorText, colorIcon, good: false });
-    }
+
     if (!appartment) {
       badEnter.appartment = true;
-      errorText.appartment = 'Поле не заполнено!'
+      errorText.appartment = 'Поле обязательно!'
       colorIcon.appartment = 'red'
       this.setState({ badEnter, errorText, colorIcon, good: false });
     }
+    if (!fk_home) {
+      badEnter.home = true;
+      errorText.home = 'Выберите дом! Для этого заполните поля для поиска по: Городу, улице или номеру дома'
+      colorIcon.home = 'red'
+      this.setState({ badEnter, errorText, colorIcon, good: false });
+    }
 
-    if (badEnter.appartment || badEnter.city || badEnter.street || badEnter.homeN) {
-      this.setState({ good: false }); 
+    if (badEnter.appartment || badEnter.city || badEnter.street || badEnter.homeN || badEnter.home) {
+      this.setState({ good: false });
       Alert.alert('Внимание', 'Заполните поля правильно!',
         [{ text: 'OK' }]);
-
       return;
     }
     else this.setState({ good: true });
-//Address: city + ' ' + street+ ' ' +homeN+' ' +appartment,
-    var Fk_Home = '94fa3436-0f41-4ae8-89ae-571682b1b304'
-
-    var {token,userLogin} = this.props.navigation.state.params
-    url = 'http://192.168.43.80:5000/api/auth/address?Uid='+userLogin.uid+'&Fk_Home='+Fk_Home;//userLogin.fk_Home;
-    log = 'Адрес дома'
+    //Address: city + ' ' + street+ ' ' +homeN+' ' +appartment, 
+    //this.props.navigation.state.params
 
     debugger;
-      this.setState({ submit: true })
-      fetch(url, {
-        method: 'GET', // *GET, POST, PUT, DELETE, etc.
-        headers: {
-          'Accept': "application/json",
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-      })
-        .then(function (response) {
-          if (response.status == 200 || response.status == 201) {
-            console.log('Успех ' + log + ' Post статус: ' + response.status + ' ok: ' + response.ok);
-            console.log(response);
+    var { token, userLogin } = store.state
+    var { back } = this.props.navigation.state.params
+
+    url = 'http://192.168.43.80:5000/api/auth/address?Uid=' + userLogin.uid + '&Fk_Home=' + fk_home
+      + '&Appartment=' + appartment;
+    logAction = 'Изменение адреса дома'
+
+    this.setState({ submit: true })
+    fetch(url, {
+      method: 'GET', // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        'Accept': "application/json",
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+    })
+      .then(function (response) {
+        if (response.status == 200 || response.status == 201) {
+          console.log('Успех ' + logAction + ' Post статус: ' + response.status + ' ok: ' + response.ok);
+          console.log(response);
+          if (!back) {
             Alert.alert('Данные сохранены!', 'Пожалуйста, войдите в систему используя свой логин и пароль',
               [{ text: 'OK' }]);
-            return response.json();
           }
-          else if (response.status == 500) {
-            console.log('Server Error', "Status: " + response.status + ' ' + response)
-            Alert.alert('Внимание', 'Ошибка сервера!',
-              [{ text: 'OK' }]);
-          }
-          else if(response.status == 400) {
-            console.log('Bad Request', "Status: " + response.status + ' ' + response)
-            Alert.alert('Внимание', 'Логин или пароль не верны!',
-              [{ text: 'OK' }]);
-          } 
-          else {
-            console.log(response.statusText, "Status: " + response.status + ' ' + response)
-            Alert.alert('Внимание', response.statusText+ " Status: " + response.status + ' ' + response,
-              [{ text: 'OK' }]);
-          } 
-          $this.setState({submit: false});
-          return          
-        })
-        .then(function (data: AuthData) {
-          console.log('data: ', data);    
-          $this.setClearState();
+          return response.json();
+        }
+        else if (response.status == 500) {
+          console.log('Server Error', "Status: " + response.status + ' ' + response)
+          Alert.alert('Внимание', 'Ошибка сервера!',
+            [{ text: 'OK' }]);
+        }
+        else if (response.status == 400) {
+          console.log('Bad Request', "Status: " + response.status + ' ' + response)
+          Alert.alert('Внимание', 'Логин или пароль не верны!',
+            [{ text: 'OK' }]);
+        }
+        else {
+          console.log(response.statusText, "Status: " + response.status + ' ' + response)
+          Alert.alert('Внимание', response.statusText + " Status: " + response.status + ' ' + response,
+            [{ text: 'OK' }]);
+        }
+        $this.setState({ submit: false });
+        return
+      })
+      .then(function (data: AuthData) {
+        console.log('data: ', data);
+        $this.setClearState();
+        if (back) {
+          navigation.goBack();
+        }
+        else {
           navigation.navigate(AUTH, data.userLogin);
-
-        })
-        .catch(error => {
-          console.log('Внимание', 'Ошибка ' + log + ' Post fetch: ' + error);
-          Alert.alert('Внимание', 'Ошибка ' + log + ' Post fetch: ' + error, [{ text: 'OK' }]);
-          $this.setState({submit: false});
-          return
-        });
+        }
+      })
+      .catch(error => {
+        console.log('Внимание', 'Ошибка ' + logAction + ' Post fetch: ' + error);
+        if (error == 'TypeError: Network request failed') {
+          Alert.alert('Внимание', 'Сервер не доступен: ' + error, [{ text: 'OK' }]);
+          $this.setState({ submit: false })
+        }
+        else {
+          Alert.alert('Внимание', 'Ошибка входа: ' + error, [{ text: 'OK' }]);
+          $this.setState({ submit: false })
+        }
+        return
+      });
   }
   private setClearState() {
     var arrColor: adrText = {
@@ -318,18 +442,19 @@ class AddressScreen extends PureComponent<any, State, Props> {
       street: brown,
       homeN: brown,
       appartment: brown,
+      home: ''
     };
     var arr: adrBool = {
       city: false,
       street: false,
       homeN: false,
       appartment: false,
+      home: false
     };
     this.setState({
-      appartment: '', city: '', street: '', homeN: '',
-      password: '', repeatPassword: '', color: brown,
-      signup: false, good: true, passGood: false, submit: false,
-      badEnter: arr, colorIcon: arrColor,
+      appartment: '', city: '', street: '', homeN: '', good: true, submit: false,
+      badEnter: arr, errorText: arrTxt, colorIcon: arrColor,
+      search: false, searchText: '', dataHome: [], dataOld: [], loadHome: false,
     })
   }
 }
@@ -348,6 +473,7 @@ const locStyles = StyleSheet.create({
     width: 35,
     height: 35,
     marginRight: 10,
+    marginTop: 20
   },
   textInput: {
     width: w * 0.8,
@@ -394,12 +520,6 @@ const locStyles = StyleSheet.create({
     fontSize: 18,
     color: '#fff',
   },
-  link: {
-    marginVertical: 20,
-    color: '#92582D',
-    textAlign: 'center',
-    fontSize: 20,
-  },
   error: {
     marginTop: 5,
     color: 'red',
@@ -437,6 +557,12 @@ const locStyles = StyleSheet.create({
   buttonText: {
     color: "#FFF",
     fontSize: 18,
+  },
+  notFoundStyle: {
+    paddingTop: 10,
+    paddingHorizontal: 20,
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 })
 

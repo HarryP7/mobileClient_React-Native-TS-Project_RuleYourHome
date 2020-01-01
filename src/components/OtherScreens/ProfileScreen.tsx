@@ -75,26 +75,23 @@ class ProfileScreen extends React.Component<any, State> {
 
   private Login() {
     const { navigation } = this.props
-    const { noImages, im, button2, buttonContainer, buttonTitle } = globalStyles
+    const { noImages, im, button2, buttonContainer, buttonTitle, link } = globalStyles
     return <View>
       <Image source={require('../../../image/brick_texture1.jpg')} style={im}></Image>
       <Card containerStyle={{ paddingBottom: 20, borderRadius: 10 }} >
         <Image source={require('../../../icon/user1.png')}
-          style={[noImages]} />
+          style={noImages} />
         <View style={button2}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate(AUTH)}>
-            <View style={buttonContainer}>
-              <Text style={buttonTitle}>Войти</Text>
-            </View>
-          </TouchableOpacity>
-          <View style={{ width: 20 }}></View>
-          <TouchableOpacity
-            onPress={() => navigation.navigate(REGISTRATION)}>
-            <View style={buttonContainer}>
-              <Text style={buttonTitle}>Зарегистрироваться</Text>
-            </View>
-          </TouchableOpacity>
+        <TouchableOpacity
+                onPress={() => navigation.navigate(AUTH)}>
+                <View style={buttonContainer}>
+                  <Text style={buttonTitle}>Войти</Text>
+                </View>
+              </TouchableOpacity>                              
+              <TouchableOpacity
+                onPress={() => navigation.navigate(REGISTRATION)}>                
+                  <Text style={link}>Зарегистрироваться</Text>
+              </TouchableOpacity>
         </View>
       </Card>
     </View>

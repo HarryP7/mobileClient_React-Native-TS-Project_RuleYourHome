@@ -3,9 +3,13 @@ import {
   StyleSheet
 } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { h, w } from '../constants'
+import { h, w, brown } from '../constants'
 
 const globalStyles = StyleSheet.create({
+  headDrawer: { 
+    height: 200, 
+    backgroundColor: '#BE8F6C' 
+  },
   im: {
     position: 'absolute',
     height: h,
@@ -102,14 +106,23 @@ const globalStyles = StyleSheet.create({
     color: '#fff',
   },
   imageIcon: {
-    width: 100,
-    height: 100,
-    justifyContent: 'flex-end',
-    marginLeft: 150,
+    width: 130,
+    height: 130,
+    borderRadius: 60
+  },
+  imageCont: {
+    width: 130,
+    height: 130,
+    borderRadius: 60,
+    marginLeft: 20,
+    marginTop: 20,
     paddingBottom: 30,
   },
   back: {
-    marginLeft: 330,
+    marginLeft: 170,
+    marginBottom: -60,
+    borderRadius: 50,
+    padding: 20,
   },
   icon: {
     width: 24,
@@ -155,6 +168,16 @@ const globalStyles = StyleSheet.create({
     marginHorizontal: 15,
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },    
+  button3: {
+    marginTop: 20,
+    width: 200,
+  },
+  button4: {
+    marginHorizontal: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginLeft: 20
   },
   images: {
     width: w,
@@ -210,15 +233,11 @@ const globalStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
   },
-  button3: {
-    marginTop: 20,
-    width: 200,
-  },
   link: {
-    marginTop: 20,
-    color: '#92582D',
+    paddingVertical: 15,
+    color: brown,
     textAlign: 'center',
-    fontSize: 20,
+    fontSize: 18,
   },
   error: {
     marginTop: 5,
@@ -237,18 +256,23 @@ const globalStyles = StyleSheet.create({
     fontWeight: 'bold',
     marginLeft: -7
   },
+  label3: {
+    backgroundColor: 'white', 
+    borderRadius: 10,
+    margin: 5, 
+    paddingBottom: 8,
+    borderColor: '#ccc'
+  },
   label: {
     marginTop: -10,
     marginBottom: 5,
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
   },  
   inputMultiline: {
     borderColor: 'gray',
     borderWidth: 1,
     borderRadius: 10,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
     alignContent: 'flex-start',
   },
   contStyle: {
@@ -259,6 +283,10 @@ const globalStyles = StyleSheet.create({
   },
   dropdownStyle: {
     height: 500
+  },  
+  sub: {
+    alignItems: 'center',
+    flexDirection: 'row',
   },
 });
 

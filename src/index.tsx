@@ -1,20 +1,20 @@
 import {createStackNavigator} from 'react-navigation-stack';
-import {NotAuthNAVIGATION,NAVIGATIONAdmin, NAVIGATIONUser, GroupLIST, 
-    GroupPRO, AUTH, REGISTRATION, ADDRESSScreen, HOMEScreen, AddHOME,SEARCHHomeScreen, AddGROUP, 
+import {NotAuthNAVIGATION,NAVIGATIONAdmin, NAVIGATIONUser, PROFILE, AUTH, REGISTRATION, 
+    ADDRESSScreen, HOMEProfile, GroupLIST,GroupPRO, AddHOME,SEARCHHomeScreen, AddGROUP, 
     AddADVERT} from './routes'
-import {GroupScreen, GroupProfile, AuthScreen, RegistrationScreen, AddressScreen, AddHomeScreen, 
-    AddGroupScreen, AddAdvertScreen, SearchHomeScreen} from './components'
+import {GroupScreen, GroupProfile, ProfileScreen, AuthScreen, RegistrationScreen, AddressScreen, AddHomeScreen, 
+    AddGroupScreen, AddAdvertScreen, SearchHomeScreen, HomeProfile} from './components'
 import NotAuthNavigation from './NotAuthNavigation'
 import NavigationAdmin from './NavigationAdmin'
 import NavigationUser from './NavigationUser'
-import HomeScreen from './components/HomeTab/HomeScreen'
 
 export default createStackNavigator(
     {
         [NotAuthNAVIGATION]: NotAuthNavigation,
         [NAVIGATIONAdmin]: NavigationAdmin,
         [NAVIGATIONUser]: NavigationUser,
-        [HOMEScreen]: HomeScreen,
+        [PROFILE]: ProfileScreen,
+        [HOMEProfile]: HomeProfile,
         [GroupLIST]: GroupScreen,
         [GroupPRO]: GroupProfile,
         [AUTH]: AuthScreen,

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, ScrollView, View, Text, TouchableOpacity, TouchableWithoutFeedback,
-  Button, TextInput, Alert
+  StyleSheet, ScrollView, View, Text, TouchableOpacity, Image,
+  Button, TextInput, Alert, ActivityIndicator
 } from 'react-native';
 import {
   LearnMoreLinks, Colors, DebugInstructions, ReloadInstructions,
@@ -10,56 +10,80 @@ import { SvgXml } from 'react-native-svg';
 import { save } from '../../allSvg'
 import { Header } from '..';//, styles 
 import { Dropdown, DropDownMargins } from 'react-native-material-dropdown';
-import { h, w } from '../../constants'
+import { h, w, brown } from '../../constants'
 import { GroupStatus } from '../../enum/Enums'
 import { backArrow } from '../../allSvg'
 import { useGlobal, store } from '../../store'
 import { globalStyles } from '../globalStyles';
+import { Card, Input } from 'react-native-elements';
 //import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 //import {Fab} from '@material-ui/core';
 //import Save from '@material-ui/icons/Save';
 
 interface Props { }
 interface State { }
+interface arrGroupBool {
+  title: Boolean, status: Boolean
+}
+interface arrGroupText {
+  title: string, status: string
+}
+var arr: arrGroupBool = {
+  title: false, status: false
+};
+var arrTxt: arrGroupText = {
+  title: '', status: ''
+};
 
 class AddGroupScreen extends Component<any, State, Props> {
   state = {
-     title: '',status: '', colorT: '#000', colorPass: '#000',
+    title: '', status: '', badEnter: arr, errorText: arrTxt,
     good: false, submit: false,
 
   }
 
   render() {
     console.log('Props AddGroupScreen', this.props)
-    const { submit, title,  colorT,
-       good, status } = this.state
+    const { submit, title, status, badEnter, errorText } = this.state
     const { navigation } = this.props
-    const { container, fixToText,  textInput, textInput2, input,
-      button, iconMin, sectionContainer, sectionTitle } = styles
-      const { labelDropdown, label, label2} = globalStyles
+    const { container, textInput, textInput2, input,
+      button, fixToText, sectionContainer, sectionTitle } = styles
+    const { im, label, label2, indicator, cardStyle, inputMultiline, 
+      contStyle, error } = globalStyles
     let dataStatus = [{
-      value: GroupStatus.Public, }, {
-      value: GroupStatus.Pravite, },];
+      value: GroupStatus.Public,
+    }, {
+      value: GroupStatus.Pravite,
+    },];
     return (<View>
       <Header title='Добавить группу'
-          leftIcon={backArrow}
-          onPressLeft={() => {
-            this.setClearState();
-            navigation.goBack();
-          }} />
+        leftIcon={backArrow}
+        onPressLeft={() => {
+          this.setClearState();
+          navigation.goBack();
+        }} />
+      <View>
+        <Image source={require('../../../image/brick_texture1.jpg')} style={im}></Image></View>
       <ScrollView>
-        <View style={container}>
+        <View>
+        {submit && <ActivityIndicator style={indicator} size={70} color={brown} />}
+        </View>
+        <Card containerStyle={cardStyle} >
           <View style={fixToText}>
             <View style={textInput}>
               <View style={{ flexDirection: 'row' }}>
                 <Text style={label}> Название <Text style={{ color: 'red' }}>*</Text></Text>
               </View>
-              <TextInput
-                style={input}
+              <Input
+                inputContainerStyle={inputMultiline}
                 onChangeText={this.onChangeTitle.bind(this)}
                 placeholder='Название..'
                 autoCorrect={true}
                 value={title}
+                multiline={true}
+                numberOfLines={1}
+                editable={!submit}
+                errorMessage={badEnter.title && errorText.title}
               />
             </View>
           </View>
@@ -69,19 +93,23 @@ class AddGroupScreen extends Component<any, State, Props> {
                 <Text style={label2}> Статус группы <Text style={{ color: 'red' }}>*</Text></Text>
               </View>
               <Dropdown
+                containerStyle={contStyle}
                 data={dataStatus}
                 onChangeText={this.onChangeStatus.bind(this)}
                 value={status}
+                pickerStyle={inputMultiline}
+                dropdownPosition={0}
+                disabled={submit}
               />
-              {/* placeholder='Выберите статус..' */}
+              {badEnter.status && <Text style={error}>{errorText.status}</Text>}
             </View>
           </View>
-        </View>
+        </Card>
 
         <View style={{ alignItems: 'flex-end' }}>
           <View style={button}>
-            <TouchableOpacity onPress={this.onSubmit.bind(this)} 
-                  disabled={submit}>
+            <TouchableOpacity onPress={this.onSubmit.bind(this)}
+              disabled={submit}>
               <View style={sectionContainer}>
                 <SvgXml
                   xml={save}
@@ -89,14 +117,9 @@ class AddGroupScreen extends Component<any, State, Props> {
                 <Text style={sectionTitle}>Сохранить</Text>
               </View>
             </TouchableOpacity>
-            {/* className={extendedIcon} */}
-            {/* <Fab variant="extended">
-        <Save />
-        Сохранить
-      </Fab> */}
           </View>
-        </View>        
-        <View style={{margin: 30}}><Text> </Text></View>
+        </View>
+        <View style={{ margin: 30 }}><Text> </Text></View>
       </ScrollView>
     </View>
 
@@ -104,39 +127,56 @@ class AddGroupScreen extends Component<any, State, Props> {
   }
 
   private onChangeTitle(title: string) {
-    this.setState({ title });
+    var { badEnter, errorText } = this.state
+    if (!title) {
+      badEnter.title = true;
+      errorText.title = 'Поле не заполнено!'
+    }
+    else if (title.trim().length < 4 || title.trim().length > 25) {
+      badEnter.title = true;
+      errorText.title = 'Название должно быть больше 4х символов и меньше 25!'
+      this.setState({ badEnter, errorText, title, good: false });
+      return;
+    }
+    else {
+      badEnter.title = false;
+    }
+    this.setState({ title, badEnter });
   }
   private onChangeStatus(status: string) {
-    this.setState({ status });
+    var { badEnter, errorText } = this.state
+    if (!status) {
+      badEnter.status = true;
+      errorText.status = 'Поле не заполнено!'
+    }
+    else {
+      badEnter.status = false;
+    }
+    this.setState({ status, badEnter });
   }
 
 
   private onSubmit() {
-    //     e.preventDefault();
-    const {  title,  good, status } = this.state
-    
+    const { title,  status, badEnter, errorText } = this.state
+
     const { navigation } = this.props
     var $this = this;
     var obj, url, log: string;
-    //if (signup) {
-      if ( !title || !status) {
-        Alert.alert('Внимание', 'Не все поля заполнены!',
-          [{ text: 'OK' }],
-          { cancelable: false },
-        );
-        return;
-      }
-      // else if (year.length < 4 || year.length > 4) {
-      //   Alert.alert('Внимание', 'Год должен иметь длину в 4 знака!',
-      //     [{ text: 'OK' }],
-      //     { cancelable: false },
-      //   );
-      //   this.setState({ good: false })
-      //   return;
-      // }
+    
+    if (title.trim().length < 4 || title.trim().length > 25) {
+      badEnter.title = true;
+      errorText.title = 'Название должно быть больше 4х символов и меньше 25!'
+      this.setState({ badEnter, errorText, title, good: false });
       
-    // }
-    //else 
+    }
+    if (!title || !status) {
+      Alert.alert('Внимание', 'Не все поля заполнены!',
+        [{ text: 'OK' }],
+        { cancelable: false },
+      );
+      return;
+    }
+    
     this.setState({ good: true, submit: true })
     obj = {
       Admin: store.state.userLogin.uid,
@@ -164,7 +204,7 @@ class AddGroupScreen extends Component<any, State, Props> {
           // if (signup)
           //   $this.setClearState();
           // else
-            navigation.goBack();
+          navigation.goBack();
         }
         if (response.status == 500)
           console.log('Server Error', "Status: " + response.status + ' ' + response.json())
