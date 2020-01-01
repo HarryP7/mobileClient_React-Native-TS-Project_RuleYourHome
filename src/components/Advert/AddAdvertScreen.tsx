@@ -8,7 +8,7 @@ import { SvgXml } from 'react-native-svg';
 import { save, add } from '../../allSvg'
 import { Header } from '..';//, styles 
 import { Dropdown } from 'react-native-material-dropdown';
-import { h, w, brown } from '../../constants'
+import { h, w, brown, serverUrl } from '../../constants'
 import { Category } from '../../enum/Enums'
 import { backArrow } from '../../allSvg'
 import SafeAreaView from 'react-native-safe-area-view';
@@ -304,7 +304,7 @@ class AddAdvertScreen extends Component<any, State, Props> {
                 status == Category.CommunityInfrastructure ? 6 : 7,
       LocalGroup: navigation.state.params[0].fk_LocalGroup
     }
-    url = 'http://192.168.43.80:5000/api/adverts/create/';
+    url = serverUrl+'adverts/create/';
     log = 'Добавить обьявление'
 
     fetch(url, {

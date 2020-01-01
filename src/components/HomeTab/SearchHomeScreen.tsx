@@ -2,9 +2,9 @@ import * as React from 'react';
 import {
   View,Text, ScrollView, ActivityIndicator, Image, Alert, RefreshControl } from 'react-native';
 import { Header, SearchHeader, HomeCard,  globalStyles } from '..';
-import {  menu, search,backArrow } from '../../allSvg'
+import {  menu, search,backArrow, rightBack } from '../../allSvg'
 import {  HOMEProfile } from '../../routes';
-import { brown } from '../../constants';
+import { brown, serverUrl } from '../../constants';
 import {  ListItem, Button, Icon } from 'react-native-elements'
 import { Home } from '../../interfaces'
 import { SvgXml } from 'react-native-svg';
@@ -27,7 +27,7 @@ class SearchHomeScreen extends React.PureComponent<any, State> {
     this.setState({loadError: false})
     var logAction = 'home all';
     try {
-      const response = await fetch('http://192.168.43.80:5000/api/home/all')
+      const response = await fetch(serverUrl+'home/all')
       const data = await response.json()
       this.setState({ data, dataOld: data, load: true })
       console.log('Успех fetch '+logAction,data)
@@ -75,7 +75,7 @@ class SearchHomeScreen extends React.PureComponent<any, State> {
     return (<View>
       {visibleSearch ?
        <SearchHeader           
-         rightIcon={backArrow}
+         rightIcon={rightBack}
          onChangeText={this.onSearchHome.bind(this)}
          value={this.state.text}
          onPressRight={() => this.setState({visibleSearch: false, data: this.state.dataOld})}

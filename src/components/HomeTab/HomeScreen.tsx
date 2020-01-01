@@ -6,7 +6,7 @@ import {
 import { Header, globalStyles } from '..';
 import { menu } from '../../allSvg'
 import { HomeStatus, Role } from '../../enum/Enums';
-import { h, w, brown, NoFoto } from '../../constants'
+import { h, w, brown, NoFoto, serverUrl } from '../../constants'
 import { AddGROUP, AUTH, REGISTRATION, GroupLIST, ADDRESSScreen } from '../../routes';
 import { Home, User } from '../../interfaces'
 import { useGlobal, store } from '../../store'
@@ -47,7 +47,7 @@ class HomeScreen extends PureComponent<any, State, Props> {
       //console.log('Uid ',JSON.stringify(dataR.uid))
       var uid = userLogin.fk_Home;
       if (token) {
-        const response = await fetch('http://192.168.43.80:5000/api/home?Uid=' + uid,
+        const response = await fetch(serverUrl+'home?Uid=' + uid,
           {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             headers: {
@@ -205,7 +205,7 @@ class HomeScreen extends PureComponent<any, State, Props> {
       }
     >
       <Image source={{ uri: imageUrl ? imageUrl.url : NoFoto }} style={images} />
-      <Text style={h1}>г. {city}, ул. {street}, д. {homeNumber}</Text>
+      <Text style={[h1,{paddingBottom:10}]}>г. {city}, {street}, д. {homeNumber}</Text>
       <Text style={status}>{fk_Status == 1 ? HomeStatus.Exploited : HomeStatus.Emergency}</Text>
 
       <View style={container}>

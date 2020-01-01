@@ -7,6 +7,7 @@ import { Header, AdvertCard, globalStyles } from '..';
 import { AddADVERT } from '../../routes';
 import { useGlobal, store } from '../../store'
 import { Role } from '../../enum/Enums';
+import { serverUrl } from '../../constants';
 
 interface Props { }
 interface Advert {
@@ -33,7 +34,7 @@ class GroupProfile extends Component<any, Props, State> {
         try {
             const { userLogin, token } = store.state;
             const { uid } = this.props.navigation.state.params
-            const response = await fetch('http://192.168.43.80:5000/api/adverts?Fk_Group='+ uid,
+            const response = await fetch(serverUrl+'adverts?Fk_Group='+ uid,
             { headers: {  'Authorization': `Bearer ${token}` }
             })
             const adverts = await response.json()

@@ -2,9 +2,9 @@ import * as React from 'react';
 import {
   View,Text, ScrollView, ActivityIndicator,Image } from 'react-native';
 import { Header, SearchHeader, GroupCard,  globalStyles } from '..';
-import {  backArrow, search } from '../../allSvg'
+import {  backArrow, search, rightBack } from '../../allSvg'
 import { GroupPRO } from '../../routes';
-import { brown } from '../../constants';
+import { brown, serverUrl } from '../../constants';
 import { useGlobal, store } from '../../store'
 import { Group } from '../../interfaces'
 
@@ -22,7 +22,7 @@ class GroupScreen extends React.PureComponent<any, State> {
   componentDidMount = async () => {
     try {
       const { userLogin, token } = store.state;
-      const response = await fetch('http://192.168.43.80:5000/api/groups',
+      const response = await fetch(serverUrl+'groups',
       { headers: {  'Authorization': `Bearer ${token}` }})
       const data = await response.json()
       this.setState({ data, load: true, dataOld: data })
@@ -50,7 +50,7 @@ class GroupScreen extends React.PureComponent<any, State> {
     return (<View>
       {visibleSearch ?
         <SearchHeader           
-          rightIcon={backArrow}
+          rightIcon={rightBack}
           onChangeText={this.onSearchGroup}
           value={this.state.text}
           onPressRight={() => this.setState({visibleSearch: false, data: this.state.dataOld})}

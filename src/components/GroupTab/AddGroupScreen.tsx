@@ -10,7 +10,7 @@ import { SvgXml } from 'react-native-svg';
 import { save } from '../../allSvg'
 import { Header } from '..';//, styles 
 import { Dropdown, DropDownMargins } from 'react-native-material-dropdown';
-import { h, w, brown } from '../../constants'
+import { h, w, brown, serverUrl } from '../../constants'
 import { GroupStatus } from '../../enum/Enums'
 import { backArrow } from '../../allSvg'
 import { useGlobal, store } from '../../store'
@@ -74,8 +74,8 @@ class AddGroupScreen extends Component<any, State, Props> {
               <View style={{ flexDirection: 'row' }}>
                 <Text style={label}> Название <Text style={{ color: 'red' }}>*</Text></Text>
               </View>
-              <Input
-                inputContainerStyle={inputMultiline}
+              <TextInput
+                style={inputMultiline}
                 onChangeText={this.onChangeTitle.bind(this)}
                 placeholder='Название..'
                 autoCorrect={true}
@@ -83,8 +83,8 @@ class AddGroupScreen extends Component<any, State, Props> {
                 multiline={true}
                 numberOfLines={1}
                 editable={!submit}
-                errorMessage={badEnter.title && errorText.title}
               />
+              {badEnter.title && <Text style={error}>{errorText.title}</Text>}
             </View>
           </View>
           <View style={fixToText}>
@@ -185,7 +185,7 @@ class AddGroupScreen extends Component<any, State, Props> {
       Status: status == GroupStatus.Public ? 1 : 2,
       Image: '5ddc6bd0-627b-42da-a603-d62adab55efe'
     }
-    url = 'http://192.168.43.80:5000/api/groups/create/';
+    url = serverUrl+'groups/create/';
     log = 'Добавить группу'
 
 

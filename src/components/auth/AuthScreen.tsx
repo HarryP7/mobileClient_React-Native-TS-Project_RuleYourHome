@@ -6,7 +6,7 @@ import {
 import { SvgXml } from 'react-native-svg';
 import { user, homeLoc, lock, lockRep, shield } from '../../allSvg'
 import { Header, globalStyles } from '..';
-import { h, w, brown } from '../../constants'
+import { h, w, brown, serverUrl } from '../../constants'
 import { backArrow } from '../../allSvg'
 import { User, arrText, arrBool } from '../../interfaces'
 import { actions, store } from '../../store'
@@ -242,7 +242,7 @@ class AuthScreen extends PureComponent<any, State, Props> {
       Login: login,
       Password: password,
     }
-    url = 'http://192.168.43.80:5000/api/auth/signin';
+    url = serverUrl+'auth/signin';
     log = 'Входа'
 
     this.setState({ submit: true, disBtn: true })

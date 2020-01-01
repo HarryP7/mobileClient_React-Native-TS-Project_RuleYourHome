@@ -13,11 +13,6 @@ const SearchHeader = ({ onPressRight, rightIcon, onChangeText, value, onBlur }: 
   return (
     <View style={container}>
       <View style={sub}>
-      <TouchableOpacity onPress={onPressRight}
-        style={containerBtn} >
-          <SvgXml xml={rightIcon}
-            style={iconRightStyle} fill='#fff' />
-        </TouchableOpacity>
         <SearchBar
           containerStyle={container}
           inputContainerStyle={containerInput}
@@ -27,6 +22,11 @@ const SearchHeader = ({ onPressRight, rightIcon, onChangeText, value, onBlur }: 
           value={value}
           onBlur={onBlur}
         />       
+        <TouchableOpacity onPress={onPressRight}
+          style={containerBtn} >
+            <SvgXml xml={rightIcon}
+              style={iconRightStyle} fill='#fff' />
+          </TouchableOpacity>
       </View>
     </View>
   )

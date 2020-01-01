@@ -7,7 +7,7 @@ import { Header, globalStyles } from '..';
 import { backArrow } from '../../allSvg'
 import { useGlobal, store } from '../../store'
 import { User, initialUser } from '../../interfaces'
-import { h, w, brown } from '../../constants'
+import { h, w, brown, serverUrl } from '../../constants'
 import { Gender } from '../../enum/Enums';
 import { AddGROUP, AUTH, REGISTRATION, GroupLIST } from '../../routes';
 import { Card } from 'react-native-elements'
@@ -26,7 +26,7 @@ class ProfileScreen extends React.Component<any, State> {
       const { userLogin, token } = store.state;
       var uid = userLogin.uid;
       if (token) {
-        const response = await fetch('http://192.168.43.80:5000/api/profile?Uid=' + uid,
+        const response = await fetch(serverUrl+'profile?Uid=' + uid,
           {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             headers: {

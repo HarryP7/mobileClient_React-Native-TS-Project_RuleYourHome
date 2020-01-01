@@ -6,7 +6,7 @@ import {
 import { SvgXml } from 'react-native-svg';
 import { user, home, homeLoc, write, notFound } from '../../allSvg'
 import { Header, globalStyles, HomeCard } from '..';
-import { h, w, brown } from '../../constants'
+import { h, w, brown, serverUrl } from '../../constants'
 import { backArrow } from '../../allSvg'
 import { User, adrText, adrBool } from '../../interfaces'
 import { actions, store } from '../../store'
@@ -213,7 +213,7 @@ class AddressScreen extends PureComponent<any, State, Props> {
     var { token, userLogin } = store.state
     this.setState({ loadHome: false })
     try {
-      fetch('http://192.168.43.80:5000/api/home/search', {
+      fetch(serverUrl+'home/search', {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         headers: {
           'Accept': "application/json",
@@ -372,7 +372,7 @@ class AddressScreen extends PureComponent<any, State, Props> {
     var { token, userLogin } = store.state
     var { back } = this.props.navigation.state.params
 
-    url = 'http://192.168.43.80:5000/api/auth/address?Uid=' + userLogin.uid + '&Fk_Home=' + fk_home
+    url = serverUrl+'auth/address?Uid=' + userLogin.uid + '&Fk_Home=' + fk_home
       + '&Appartment=' + appartment;
     logAction = 'Изменение адреса дома'
 
