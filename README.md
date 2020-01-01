@@ -8,8 +8,8 @@
 ### Инструкция по развертыванию клиента React Native приведена ниже:
 1. Скачиваем дистрибутивы для разработки: 
     * nodejs – https://nodejs.org/en/download/;
-    *	python3 – https://www.python.org/downloads/;
-    *	jdk8 – https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
+    * python3 – https://www.python.org/downloads/;
+    * jdk8 – https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
     - Если вы уже установили Node в своей системе, убедитесь, что это Node 8.3 или новее. Если у вас уже есть JDK в вашей системе, убедитесь, что это версия 8 или новее;
 2. Установите Android Studio:
     * Скачайте и установите Android Studio. Выберите «Пользовательские» настройки, когда будет предложено выбрать тип установки. Убедитесь, что установлены флажки рядом со всем следующим:
@@ -54,24 +54,24 @@
     `npx react-native run-android`
 
 ------------------
-### Для создания нового проекта, то необходимо выполнить следующее: 
-     *  выполним команды в командной строке: 
+### Для создания нового проекта, необходимо: 
+1.  Выполним команды в командной строке: 
 ```bash
     $ npx react-native init AwesomeTSProject --template react-native-template-typescript 
     $ cd AwesomeTSProject 
     $ code . 
 ```
-9. Добавим возможность навигации в приложении, следующими командами:
+2. Добавим возможность навигации в приложении, следующими командами:
 ```bash
-    $ npm install --save react-navigation 
-    $ npm install --save react-native-gesture-handler //обработчик жестов;
-    $ npm install --save react-navigation-stack  //стек навигации;
-    $ npm install --save react-native-reanimated 
-    $ npm install --save react-native-screens@^1.0.0-alpha.23
-    $ yarn add react-navigation-tabs  //нижняя навигация табами; 
+    $ npm i --save react-navigation 
+    $ npm i --save react-native-gesture-handler //обработчик жестов;
+    $ npm i --save react-navigation-stack  //стек навигации;
+    $ npm i --save react-native-reanimated 
+    $ npm i --save react-native-screens@^1.0.0-alpha.23
+    $ npm i --save react-navigation-tabs  //нижняя навигация табами; 
     $ npm i --save react-navigation-drawer  //боковая оконная навигация
 ```
-10. Добавим библиотеку для иконок для навигации:
+3. Добавим библиотеку для иконок для навигации:
 `$ npm i --save react-native-svg`
-11. Добавим поле выпадающего списка
+4. Добавим поле выпадающего списка
 `$ npm install --save react-native-material-dropdown`
