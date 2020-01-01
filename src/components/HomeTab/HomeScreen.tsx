@@ -6,7 +6,7 @@ import {
 import { Header, globalStyles } from '..';
 import { menu } from '../../allSvg'
 import { HomeStatus, Role } from '../../enum/Enums';
-import { h, w, brown, NoFoto, serverUrl } from '../../constants'
+import { h, w, brown, NoFoto, serverUrl, BackgroundImage } from '../../constants'
 import { AddGROUP, AUTH, REGISTRATION, GroupLIST, ADDRESSScreen } from '../../routes';
 import { Home, User } from '../../interfaces'
 import { useGlobal, store } from '../../store'
@@ -90,7 +90,7 @@ class HomeScreen extends PureComponent<any, State, Props> {
           userLogin.appartament ? (
             load ? this.HomeData()
               : <View>
-                <Image source={require('../../../image/brick_texture1.jpg')} style={im}></Image>
+                <Image source={BackgroundImage} style={im}></Image>
                 <ActivityIndicator style={indicator} size={50} color={brown} />
               </View>
           )
@@ -109,7 +109,7 @@ class HomeScreen extends PureComponent<any, State, Props> {
     const { navigation } = this.props
     const { h2, scrollView } = locStyles
     return (<View>
-      <Image source={require('../../../image/brick_texture1.jpg')} style={im}></Image>
+      <Image source={BackgroundImage} style={im}></Image>
       <ScrollView
         contentContainerStyle={scrollView}
         refreshControl={
@@ -143,7 +143,7 @@ class HomeScreen extends PureComponent<any, State, Props> {
     const { navigation } = this.props
     const { h2, scrollView } = locStyles
     return (<View>
-      <Image source={require('../../../image/brick_texture1.jpg')} style={im}></Image>
+      <Image source={BackgroundImage} style={im}></Image>
       <ScrollView
         contentContainerStyle={scrollView}
         refreshControl={
@@ -168,7 +168,7 @@ class HomeScreen extends PureComponent<any, State, Props> {
     const { h2} = locStyles
     const back = true;
     return <View>
-      <Image source={require('../../../image/brick_texture1.jpg')} style={im}></Image>
+      <Image source={BackgroundImage} style={im}></Image>
       <ScrollView
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={this.onRefresh.bind(this)} />

@@ -10,7 +10,7 @@ import { SvgXml } from 'react-native-svg';
 import { save } from '../../allSvg'
 import { Header } from '..';//, styles 
 import { Dropdown, DropDownMargins } from 'react-native-material-dropdown';
-import { h, w, brown, serverUrl } from '../../constants'
+import { h, w, brown, serverUrl, BackgroundImage } from '../../constants'
 import { GroupStatus } from '../../enum/Enums'
 import { backArrow } from '../../allSvg'
 import { useGlobal, store } from '../../store'
@@ -63,7 +63,7 @@ class AddGroupScreen extends Component<any, State, Props> {
           navigation.goBack();
         }} />
       <View>
-        <Image source={require('../../../image/brick_texture1.jpg')} style={im}></Image></View>
+        <Image source={BackgroundImage} style={im}></Image></View>
       <ScrollView>
         <View>
         {submit && <ActivityIndicator style={indicator} size={70} color={brown} />}
@@ -183,11 +183,10 @@ class AddGroupScreen extends Component<any, State, Props> {
       Title: title,
       Home: navigation.state.params.uid,
       Status: status == GroupStatus.Public ? 1 : 2,
-      Image: '5ddc6bd0-627b-42da-a603-d62adab55efe'
+      //Image: '5ddc6bd0-627b-42da-a603-d62adab55efe'
     }
     url = serverUrl+'groups/create/';
     log = 'Добавить группу'
-
 
     fetch(url, {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -201,9 +200,6 @@ class AddGroupScreen extends Component<any, State, Props> {
         if (response.status == 200 || response.status == 201) {
           console.log('Успех ' + log + ' Post статус: ' + response.status + ' ok: ' + response.ok);
           console.log(response);
-          // if (signup)
-          //   $this.setClearState();
-          // else
           navigation.goBack();
         }
         if (response.status == 500)

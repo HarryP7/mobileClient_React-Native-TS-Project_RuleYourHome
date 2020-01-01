@@ -7,7 +7,7 @@ import { SvgXml } from 'react-native-svg';
 import { save } from '../../allSvg'
 import { Header, globalStyles } from '..';//, styles 
 import { Dropdown } from 'react-native-material-dropdown';
-import { h, w, brown, serverUrl } from '../../constants'
+import { h, w, brown, serverUrl, BackgroundImage } from '../../constants'
 import { HomeStatus, Role } from '../../enum/Enums'
 import { backArrow } from '../../allSvg'
 import { TextInput } from 'react-native-gesture-handler';
@@ -59,7 +59,7 @@ class AddHomeScreen extends Component<any, State, Props> {
           navigation.goBack();
         }} />
       <ScrollView>          
-          <Image source={require('../../../image/brick_texture1.jpg')} style={imScroll}></Image>
+          <Image source={BackgroundImage} style={imScroll}></Image>
           {submit && <ActivityIndicator style={indicator} size={70} color={brown} />}
 
           <Card containerStyle={cardStyle} >

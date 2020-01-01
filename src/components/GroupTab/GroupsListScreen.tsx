@@ -4,7 +4,7 @@ import {
 import { Header, SearchHeader, GroupCard,  globalStyles } from '..';
 import {  backArrow, search, rightBack } from '../../allSvg'
 import { GroupPRO } from '../../routes';
-import { brown, serverUrl } from '../../constants';
+import { brown, serverUrl, BackgroundImage } from '../../constants';
 import { useGlobal, store } from '../../store'
 import { Group } from '../../interfaces'
 
@@ -64,7 +64,7 @@ class GroupScreen extends React.PureComponent<any, State> {
         />
       }      
       <View>
-      <Image source={require('../../../image/brick_texture1.jpg')} style={im}></Image></View>
+      <Image source={BackgroundImage} style={im}></Image></View>
       <ScrollView >
         {load ?
           <View style={container}>

@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import { Header, globalStyles } from '..';
 import { menu } from '../../allSvg'
+import { BackgroundImage } from '../../constants';
 
 interface Props { }
 
@@ -19,7 +20,7 @@ class NotificationScreen extends React.Component<any, Props> {
           navigation.openDrawer()
         }} icon={menu} />
       <View>
-        <Image source={require('../../../image/brick_texture1.jpg')} style={im}></Image>
+        <Image source={BackgroundImage} style={im}></Image>
       </View >
       <View style={{ alignItems: 'center', justifyContent: 'center' }}>
         {/* <Text style={label2}>Нет уведомлений</Text> */}

@@ -9,6 +9,7 @@ import { initialUser } from '../../interfaces'
 import { menu } from '../../allSvg';
 import { NotAuthNAVIGATION } from '../../routes'
 import { backArrow } from '../../allSvg'
+import { BackgroundImage } from '../../constants';
 
 class ExitScreen extends PureComponent<any> {
 
@@ -24,7 +25,7 @@ class ExitScreen extends PureComponent<any> {
         }}
       />
         <View>
-      <Image source={require('../../../image/brick_texture1.jpg')} style={im}></Image>
+      <Image source={BackgroundImage} style={im}></Image>
       </View>
       <View style={indicator}>
         <Card containerStyle={{ paddingBottom: 20, borderRadius: 10 }} >

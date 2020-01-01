@@ -6,7 +6,7 @@ import {
 import { SvgXml } from 'react-native-svg';
 import { user, homeLoc, lock, lockRep, shield } from '../../allSvg'
 import { Header, globalStyles } from '..';
-import { h, w, brown, serverUrl } from '../../constants'
+import { h, w, brown, serverUrl, BackgroundImage } from '../../constants'
 import { backArrow } from '../../allSvg'
 import { User, arrText, arrBool } from '../../interfaces'
 import { actions, store } from '../../store'
@@ -76,7 +76,7 @@ class AuthScreen extends PureComponent<any, State, Props> {
             navigation.goBack();
           }}
         />
-        <View><Image source={require('../../../image/brick_texture1.jpg')} style={im}></Image></View>
+        <View><Image source={BackgroundImage} style={im}></Image></View>
 
         <Card containerStyle={cardStyle} >
           <View style={fixToText}>

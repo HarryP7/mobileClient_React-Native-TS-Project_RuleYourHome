@@ -6,7 +6,7 @@ import {
 import { SvgXml } from 'react-native-svg';
 import { user, homeLoc, lock, lockRep, shield } from '../../allSvg'
 import { Header, globalStyles } from '..';
-import { h, w, brown, serverUrl } from '../../constants'
+import { h, w, brown, serverUrl, BackgroundImage } from '../../constants'
 import { backArrow } from '../../allSvg'
 import { User, arrText, arrBool } from '../../interfaces'
 import { actions } from '../../store'
@@ -75,7 +75,7 @@ class RegistrationScreen extends Component<any, State, Props> {
         />
 
         <View >
-          <Image source={require('../../../image/brick_texture1.jpg')} style={im}></Image></View>
+          <Image source={BackgroundImage} style={im}></Image></View>
         <ScrollView>
           <Card containerStyle={cardStyle} >
             {submit && <ActivityIndicator style={indicator} size={70} color="#92582D" />}
