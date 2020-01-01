@@ -1,4 +1,5 @@
 ## Mobile Client React Native TypeScript
+Взаимодействие жильцов в многоэтажном доме по вопросам ЖКХ
 
 ### Сервер WebApiRH .NET CORE 2.1
 Находится здесь -> [WebApiRH_.NET_CORE_2.1](https://github.com/HarryP7/WebApiRH-JWT-REST_.NET-CORE_2.1/tree/master/WebApiRH)
