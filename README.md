@@ -72,14 +72,18 @@
     $ npm i --save react-navigation-tabs  //нижняя навигация табами; 
     $ npm i --save react-navigation-drawer  //боковая оконная навигация
 ```
-3. Добавить библиотеку для иконок для навигации:
+3. Добавить библиотеку для иконок:
+```bash
 `$ npm i --save react-native-svg`
 `$ npm i --save react-native-vector-icons`
+`$ react-native link react-native-vector-icons`
+```
 
-
-4. Добавить поле выпадающего списка:
+4. Добавить библиотеку для выпадающего списка:
+```bash
 `$ npm i --save react-native-material-dropdown`
 `$ npm i --save @types/react-native-material-dropdown`
+```
 
 5. Добавить библиотеку расширенных компонентов:
 `$ npm i --save react-native-elements`
