@@ -7,7 +7,7 @@ import { Header, AdvertCard, globalStyles } from '..';
 import { AddADVERT } from '../../routes';
 import { useGlobal, store } from '../../store'
 import { Role } from '../../enum/Enums';
-import { serverUrl } from '../../constants';
+import { serverUrl, ColorApp } from '../../constants';
 
 interface Props { }
 interface Advert {
@@ -68,22 +68,22 @@ class GroupProfile extends Component<any, Props, State> {
                             <Button
                                 title='Добавить'
                                 onPress={() => navigation.navigate(AddADVERT, (adverts))}//navigation.navigate(GroupPRO, (adverts))
-                                color='#92582D' />
+                                color={ColorApp} />
                             : <Button
                             title='Приосединиться'
                             onPress={() => this.onJoin(userLogin.uid)}
-                            color='#92582D' />
+                            color={ColorApp} />
                             }
                         </View>
                         {/* <Button
                         title='Присоединиться'
                         onPress={this.onJoin}
-                        color='#92582D' /> */}
+                        color=ColorApp /> */}
                         <View style={{ width: 150 }}>
                             <Button
                                 title='Обсуждения'
                                 onPress={this.onDiscussions}
-                                color='#92582D' />
+                                color={ColorApp} />
                         </View>
                     </View>
                     {load ?
@@ -93,7 +93,7 @@ class GroupProfile extends Component<any, Props, State> {
                                     onPress={() => console.log('onPress AdvertCard')} />//navigation.navigate(GroupPRO, (item))
                             })}
                         </View>
-                        : <ActivityIndicator style={indicator} size={50} color="#92582D" />
+                        : <ActivityIndicator style={indicator} size={50} color={ColorApp} />
                     }                    
                     <View style={{ margin: 30 }}><Text> </Text></View>
                 </ScrollView>

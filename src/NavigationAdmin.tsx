@@ -17,7 +17,7 @@ import { ColorApp } from './constants';
 import { useGlobal, store } from './store'
 import { PROFILE } from './routes';
 
-const { headDrawer, icon, back, imageIcon, imageCont, link, buttonTitle } = globalStyles
+const { headDrawer, icon, back, imageIcon, imageCont, link, buttonTitle, button4 } = globalStyles
 const { userLogin, token } = store.state;
 
 const BottomTab = createBottomTabNavigator({
@@ -72,19 +72,16 @@ const CustomDrowerComponent = (props: any) => (
           <Image
             source={userLogin.avatar ? { uri: userLogin.avatar.url } : require('../icon/user1.png')}
             style={imageIcon} />
-            <View style={link}>
-              <Text style={buttonTitle}>{userLogin.fullName}</Text>
-            </View>
         </TouchableOpacity>
 
-        {/* <View style={button4}>
+        <View style={button4}>
           <TouchableOpacity
             onPress={() => props.navigation.navigate(PROFILE)}>
             <View style={link}>
               <Text style={buttonTitle}>{userLogin.fullName}</Text>
             </View>
           </TouchableOpacity>
-        </View> */}
+        </View>
       </View>
       <DrawerItems {...props} />
     </ScrollView>
@@ -95,7 +92,8 @@ const MainDrawer = createDrawerNavigator({
   Tab: {
     screen: BottomTabStack,
     navigationOptions: {
-      drawerLabel: ' ',   
+      drawerLabel: 'Дом',
+      drawerIcon: ({tintColor}) => <SvgXml xml={home} style={icon} fill={tintColor} /> 
     }
   },
   AddHome: {
@@ -122,7 +120,8 @@ const MainDrawer = createDrawerNavigator({
   contentOptions: {
     itemConteinerStyle: {
       marginVertical: 10
-    }
+    },
+    activeTintColor: 'white',
   },
   contentComponent: CustomDrowerComponent
 });

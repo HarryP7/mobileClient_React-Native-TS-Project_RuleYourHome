@@ -442,9 +442,9 @@ class AddHomeScreen extends Component<any, State, Props> {
     this.setState({ submit: true })
     const { userLogin, token } = store.state;
     
-    if (userLogin.fk_Role== Role.admin) {
+    if (userLogin.fk_Role != Role.user) {
       obj = {
-        Admin: userLogin.uid,
+        Manager: userLogin.uid,
         City: city,
         Street: street,
         HomeNumber: homeN,

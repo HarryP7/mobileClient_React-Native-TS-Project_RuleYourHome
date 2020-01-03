@@ -4,6 +4,7 @@ import {
   StyleSheet, View, Text, TouchableOpacity
 } from 'react-native';
 import { SvgXml } from 'react-native-svg';
+import { ColorApp } from '../../constants';
 
 
 const Header = ({ title, onPressLeft, leftIcon, onPressRight, rightIcon }: any) => {
@@ -36,8 +37,8 @@ const Header = ({ title, onPressLeft, leftIcon, onPressRight, rightIcon }: any) 
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#92582D',
-    height: 60,
+    backgroundColor: ColorApp,
+    height: 55,
     flexDirection: 'row',
     alignItems: 'center',
     position: 'relative',

@@ -1,3 +1,5 @@
+import { ColorApp } from "../constants";
+
 export interface User {
   uid: string,
   fullName: string,
@@ -10,7 +12,8 @@ export interface User {
   appartament: string,
   myGroups: Group[],
   address: string,
-  phone: string
+  phone: string,
+  isApprovedHome: boolean,
   // createdAt: Date,
   // editedAt: Date,
   //removed: boolean,
@@ -26,7 +29,7 @@ export interface Home {
   city: string,
   street: string,
   homeNumber: string,
-  fk_Admin: string,
+  fk_Manager: string,
   fk_Image: string,
   fk_Status: number,
   appartaments: number,
@@ -38,13 +41,14 @@ export interface Home {
   removed: boolean,
   imageUrl: ImageUrl,
   tenants: User[],
-  localGroups: Group[]
+  localGroups: Group[],
+  manager: User,
 }
 
 export interface Group {
   uid: string,
   title: string,
-  fk_Admin: string,
+  fk_Supervisor: string,
   fk_Image: string,
   fk_Status: number,
   fk_Home: string,
@@ -79,6 +83,10 @@ export interface adrText {
   appartment: string,
   home: string
 };
+export interface AuthData {
+  token: string,
+  userLogin: User,
+}
 export interface adrBool {
   city: boolean,
   street: boolean,
@@ -115,16 +123,41 @@ export const initialUser: User = {
     createdAt: '',
     removed: false
   },
-  fk_Role: 0, fk_Home: '', fk_Avatar: '', fk_Gender: 0, login: '', appartament: '', myGroups: [], address: '', phone: ''
+  fk_Role: 0, fk_Home: '', fk_Avatar: '', fk_Gender: 0, login: '', appartament: '', myGroups: [], address: '', phone: '',
+  isApprovedHome: false
 }
 /**{
-    uid: '', title: '', fk_Admin: '', fk_Image: '', fk_Status: 0, fk_Home: '', createdAt: new Date, editedAt: new Date, removed: false
+    uid: '', title: '', fk_Supervisor: '', fk_Image: '', fk_Status: 0, fk_Home: '', createdAt: new Date, editedAt: new Date, removed: false
   } */
 
 export const InitialImage = { uid: '', url: '', removed: false, createdAt: '' }
 export const InitialHome: Home = {
-      uid: '', city: '', street: '', homeNumber: '', fk_Admin: '', fk_Image: '',
+      uid: '', city: '', street: '', homeNumber: '', fk_Manager: '', fk_Image: '',
       fk_Status: 0, appartaments: 0, floors: 0, porches: 0, yearCommissioning: '',
       imageUrl: InitialImage, createdAt: new Date, editedAt: new Date, removed: false, tenants: [],
-      localGroups: []
+      localGroups: [], manager: initialUser
     }
+export const initArrBool: arrBool = {
+  login: false,
+  email: false,
+  name: false,
+  surname: false,
+  password: false,
+  repeatPassword: false
+};
+export const initArrTxt: arrText = {
+  login: '',
+  email: '',
+  name: '',
+  surname: '',
+  password: '',
+  repeatPassword: ''
+};
+export const initArrColor: arrText = {
+  login: ColorApp,
+  email: ColorApp,
+  name: ColorApp,
+  surname: ColorApp,
+  password: ColorApp,
+  repeatPassword: ColorApp
+};

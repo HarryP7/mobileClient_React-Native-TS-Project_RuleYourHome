@@ -43,10 +43,11 @@ class GroupScreen extends React.PureComponent<any, State> {
 
   render() {
     const { data, load, visibleSearch } = this.state
-    const dataR = [{ "admin": null, "adverts": [Array], "createdAt": "2019-11-15T00:00:00", "editedAt": "2019-11-15T00:00:00", "fk_Admin": "0000e0000-t0t-00t0-t000-00000000000", "fk_Home": null, "fk_Image": "5ddc6bd0-627b-42da-a603-d62adab55efe", "fk_Status": 1, "home": null, "image": { createdAt: "2019-11-15T00:00:00", removed: false, uid: "3f7d7280-dba7-4119-9cdf-71dd30647d6e", url: "https://i.ibb.co/c1Tc0Pp/house-1876063-960-720.jpg" }, "messages": [Array], "removed": false, "title": "Дом - Объявления", "uid": "3f685871-7ff7-4e1e-8280-f93064bd4f2a", "users": [Array] }, { "admin": null, "adverts": [Array], "createdAt": "2019-11-15T00:00:00", "editedAt": "2019-11-15T00:00:00", "fk_Admin": "0000e0000-t0t-00t0-t000-00000000000", "fk_Home": null, "fk_Image": "3f7d7280-dba7-4119-9cdf-71dd30647d6e", "fk_Status": 1, "home": null, "image": { createdAt: "2019-11-15T00:00:00", removed: false, uid: "5ddc6bd0-627b-42da-a603-d62adab55efe", url: "https://i.ibb.co/bQcGvqJ/yxz-Pf-v-Yy3g.jpg" }, "messages": [Array], "removed": false, "title": "1й подъезд - Объявления", "uid": "dac7bf05-4260-4d0f-9e32-d2eee80589db", "users": [Array] }]
     const { background, container, indicator, im } = globalStyles
     const { navigation } = this.props
-    console.log(this.props)
+    var localGroups = this.props.navigation.state.params 
+    console.log("props", this.props)
+    console.log("param: ", localGroups)
     return (<View>
       {visibleSearch ?
         <SearchHeader           

@@ -8,7 +8,7 @@ import { user, homeLoc, lock, lockRep, shield } from '../../allSvg'
 import { Header, globalStyles } from '..';
 import { h, w, ColorApp, serverUrl, BackgroundImage } from '../../constants'
 import { backArrow } from '../../allSvg'
-import { User, arrText, arrBool } from '../../interfaces'
+import { User, initArrBool, initArrTxt, arrText, AuthData } from '../../interfaces'
 import { actions, store } from '../../store'
 import { NAVIGATIONAdmin, NAVIGATIONUser } from '../../routes';
 import { Card, Input } from 'react-native-elements'
@@ -17,27 +17,7 @@ import { Role } from '../../enum/Enums';
 
 interface Props { }
 interface State { }
-interface AuthData {
-  token: string,
-  userLogin: User,
-}
-var arrTxt: arrText = {
-  login: '',
-  email: '',
-  name: '',
-  surname: '',
-  password: '',
-  repeatPassword: ''
-};
-var arr: arrBool = {
-  login: false,
-  email: false,
-  name: false,
-  surname: false,
-  password: false,
-  repeatPassword: false
-};
-var arrColor: arrText = {
+export const initArrColor: arrText = {
   login: ColorApp,
   email: ColorApp,
   name: ColorApp,
@@ -49,12 +29,12 @@ var arrColor: arrText = {
 class AuthScreen extends PureComponent<any, State, Props> {
   state = {
     login: '', password: '', good: true, submit: false, disBtn: true,
-    badEnter: arr, errorText: arrTxt, colorIcon: arrColor, 
+    badEnter: initArrBool, errorText: initArrTxt, colorIcon: initArrColor, 
   }
 
   componentDidMount = async () => {
     var user: User = this.props.navigation.state.params
-    if (user) this.setState({ login: user.login })
+    if (user) this.setState({ login: user.login, colorIcon: initArrColor })
   }
 
   render() {
@@ -64,9 +44,6 @@ class AuthScreen extends PureComponent<any, State, Props> {
     const { navigation } = this.props
     const { fixToText, icon, textInput, input, button, buttonContainer, buttonTitle } = locStyles
     const { im, cardStyle, indicator, error } = globalStyles
-    console.log('login: ' + login)
-    console.log('badEnter.login: ' + badEnter.login + ' badEnter.password: ' + badEnter.password)
-    console.log('good', good)
     return (
       <View style={{ height: h }}>
         <Header title={'Вход'}
@@ -83,7 +60,7 @@ class AuthScreen extends PureComponent<any, State, Props> {
             <SvgXml xml={user} style={icon} fill={colorIcon.login} />
             <View style={textInput}>
               <TextInput
-                style={input}
+                style={[input, {borderColor: colorIcon.login}]}
                 onChangeText={this.onChangeLogin.bind(this)}
                 placeholder='Логин'
                 autoCompleteType='name'
@@ -100,7 +77,7 @@ class AuthScreen extends PureComponent<any, State, Props> {
             <SvgXml xml={lock} style={icon} fill={colorIcon.password} />
             <View style={textInput}>
               <TextInput
-                style={input}
+                style={[input, {borderColor: colorIcon.password}]}
                 onChangeText={this.onChangePassword.bind(this)}
                 placeholder='Пароль'
                 autoCompleteType='password'
@@ -111,7 +88,7 @@ class AuthScreen extends PureComponent<any, State, Props> {
                 editable={!submit}
                 //errorMessage={badEnter.password ? errorText.password : ''}
               />
-              {badEnter.password && <Text style={error}>{errorText.password}</Text>}
+              {badEnter.password ? <Text style={error}>{errorText.password}</Text> : <View></View>}
             </View>
           </View>
         </Card>
@@ -127,7 +104,7 @@ class AuthScreen extends PureComponent<any, State, Props> {
             </TouchableOpacity>
           </View>
         </View>
-          {submit && <ActivityIndicator style={indicator} size={70} color="#92582D" />}
+          {submit && <ActivityIndicator style={indicator} size={70} color={ColorApp} />}
         
           {/* <TouchableOpacity
             onPress={this.onPress.bind(this)}
@@ -179,10 +156,12 @@ class AuthScreen extends PureComponent<any, State, Props> {
     if (password.trim().length >= 8) {
       badEnter.password = false
       colorIcon.password = 'green'
-      this.setState({ colorIcon, badPass: false });
+      this.setState({ password, colorIcon, badPass: false });
       this.checkFields();
-    }
-    this.setState({ password });
+      return
+    }    
+    colorIcon.password = ColorApp
+    this.setState({ password, colorIcon });
   }
   private onCheckPass(pass: string) {
     var badEnter = this.state.badEnter
@@ -238,6 +217,10 @@ class AuthScreen extends PureComponent<any, State, Props> {
     }
     else
       this.setState({ good: true });
+      
+    console.log('login: ' + login)
+    console.log('badEnter.login: ' + badEnter.login + ' badEnter.password: ' + badEnter.password)
+    console.log('good', good)
     obj = {
       Login: login,
       Password: password,
@@ -276,7 +259,7 @@ class AuthScreen extends PureComponent<any, State, Props> {
           Alert.alert('Внимание', response.statusText + " Status: " + response.status + ' ' + response,
             [{ text: 'OK' }]);
         }
-        $this.setState({ submit: false });
+        $this.setState({ submit: false, disBtn: false });
         return
       })
       .then(function (data: AuthData) {
@@ -287,7 +270,10 @@ class AuthScreen extends PureComponent<any, State, Props> {
           if (data.userLogin.fk_Role == Role.admin){
             navigation.navigate(NAVIGATIONAdmin);
           }
-          else{
+          if (data.userLogin.fk_Role == Role.moderator){
+            navigation.navigate(NAVIGATIONAdmin);
+          }
+          else if (data.userLogin.fk_Role == Role.user){
             navigation.navigate(NAVIGATIONUser);
           }
         }
@@ -296,37 +282,20 @@ class AuthScreen extends PureComponent<any, State, Props> {
         console.log('Внимание', 'Ошибка ' + log + ' Post fetch: ' + error);
         if (error == 'TypeError: Network request failed') {
           Alert.alert('Внимание', 'Сервер не доступен: ' + error, [{ text: 'OK' }]);
-          $this.setState({ submit: false })
         }
         else {
           Alert.alert('Внимание', 'Ошибка входа: ' + error, [{ text: 'OK' }]);
-          $this.setState({ submit: false })
         }
+        $this.setState({ submit: false, disBtn: false })
         return
       });
 
   }
-  private setClearState() {
-    var arr: arrBool = {
-      login: false,
-      email: false,
-      name: false,
-      surname: false,
-      password: false,
-      repeatPassword: false
-    };
-    var arrCol: arrText = {
-      login: ColorApp,
-      email: ColorApp,
-      name: ColorApp,
-      surname: ColorApp,
-      password: ColorApp,
-      repeatPassword: ColorApp
-    };
+  private setClearState() {    
     this.setState({
       login: '', password: '', color: ColorApp,
       good: true, passGood: false, submit: false,
-      badEnter: arr, errorText: arrTxt, colorIcon: arrCol,
+      badEnter: initArrBool, errorText: initArrTxt, colorIcon: initArrColor,
     })
   }
 }
@@ -362,7 +331,7 @@ const locStyles = StyleSheet.create({
     width: 250,
   },
   buttonContainer: {
-    backgroundColor: '#92582D',
+    backgroundColor: ColorApp,
     height: 40,
     alignItems: 'center',
     justifyContent: 'center',

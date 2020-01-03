@@ -71,19 +71,16 @@ const CustomDrowerComponent = (props: any) => (
           <Image
             source={userLogin.avatar ? { uri: userLogin.avatar.url } : require('../icon/user1.png')}
             style={imageIcon} />
-            <View style={link}>
-              <Text style={buttonTitle}>{userLogin.fullName}</Text>
-            </View>
         </TouchableOpacity>
 
-        {/* <View style={button4}>
+        <View style={button4}>
           <TouchableOpacity
             onPress={() => props.navigation.navigate(PROFILE)}>
             <View style={link}>
               <Text style={buttonTitle}>{userLogin.fullName}</Text>
             </View>
           </TouchableOpacity>
-        </View> */}
+        </View>
       </View>
       <DrawerItems {...props} />
     </ScrollView>
@@ -94,14 +91,15 @@ const MainDrawer = createDrawerNavigator({
   Tab: {
     screen: BottomTabStack,
     navigationOptions: {
-      drawerLabel: ' ',
+      drawerLabel: 'Дом',
+      drawerIcon: ({tintColor}) => <SvgXml xml={home} style={icon} fill={tintColor} />
     }
   },
   Auth: {
     screen: ExitScreen,
     navigationOptions: {
       drawerLabel: 'Выход',
-      drawerIcon: () => <SvgXml xml={login} style={icon} />
+      drawerIcon: ({tintColor}) => <SvgXml xml={login} style={icon} fill={tintColor}/>
     },
   },
 }, {
@@ -114,7 +112,8 @@ const MainDrawer = createDrawerNavigator({
   contentOptions: {
     itemConteinerStyle: {
       marginVertical: 10
-    }
+    },
+    activeTintColor: 'white',
   },
   contentComponent: CustomDrowerComponent
 });

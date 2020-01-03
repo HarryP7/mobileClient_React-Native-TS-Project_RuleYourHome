@@ -1,12 +1,12 @@
 import * as React from 'react';
 import {
   View,Text, ScrollView, ActivityIndicator, Image, Alert, RefreshControl } from 'react-native';
-import { Header, SearchHeader, HomeCard,  globalStyles } from '..';
-import {  menu, search,backArrow, rightBack } from '../../allSvg'
-import {  HOMEProfile } from '../../routes';
-import { ColorApp, serverUrl, BackgroundImage } from '../../constants';
+import { Header, SearchHeader, HomeCard,  globalStyles } from '../..';
+import {  menu, search,backArrow, rightBack } from '../../../allSvg'
+import {  HOMEProfile } from '../../../routes';
+import { ColorApp, serverUrl, BackgroundImage } from '../../../constants';
 import {  ListItem, Button, Icon } from 'react-native-elements'
-import { Home } from '../../interfaces'
+import { Home } from '../../../interfaces'
 
 interface State {
   data: Home[],
@@ -18,7 +18,7 @@ interface State {
   loadError: boolean
 }
 
-class SearchHomeScreen extends React.PureComponent<any, State> {
+class TentantsScreen extends React.PureComponent<any, State> {
   state = { data: [], dataOld: [], load: false, visibleSearch: false, 
     text: '', refreshing: false, loadError: false } as State
   
@@ -47,7 +47,7 @@ class SearchHomeScreen extends React.PureComponent<any, State> {
     }
   }
 
-  onSearchHome = (text: string) => {
+  onTentants = (text: string) => {
     var txt: Home[] = this.state.dataOld;
     if(text){
       var filtered = txt.filter((el) =>
@@ -76,7 +76,7 @@ class SearchHomeScreen extends React.PureComponent<any, State> {
       {visibleSearch ?
        <SearchHeader           
          rightIcon={rightBack}
-         onChangeText={this.onSearchHome.bind(this)}
+         onChangeText={this.onTentants.bind(this)}
          value={this.state.text}
          onPressRight={() => this.setState({visibleSearch: false, data: this.state.dataOld})}
          onBlur={() => this.setState({visibleSearch: false})}
@@ -117,4 +117,4 @@ class SearchHomeScreen extends React.PureComponent<any, State> {
 
 
 
-export {SearchHomeScreen} //connect(mapStateToProps,{searchChanged})
+export {TentantsScreen} //connect(mapStateToProps,{searchChanged})

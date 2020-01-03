@@ -34,8 +34,8 @@ const SearchHeader = ({ onPressRight, rightIcon, onChangeText, value, onBlur }: 
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#92582D',
-    height: 60,
+    backgroundColor: ColorApp,
+    height: 55,
     justifyContent: 'center',
     alignItems: 'center',
     borderColor: ColorApp

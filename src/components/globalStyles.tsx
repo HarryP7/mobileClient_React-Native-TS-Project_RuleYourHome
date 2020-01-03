@@ -7,11 +7,20 @@ import { h, w, ColorApp } from '../constants'
 
 const globalStyles = StyleSheet.create({
   headDrawer: { 
-    height: 200, 
+    height: 210, 
     backgroundColor: '#BE8F6C' 
+  },
+  scrollView: {
+    flex: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   im: {
     position: 'absolute',
+    height: h,
+    width: w
+  },
+  screenWH: {
     height: h,
     width: w
   },
@@ -24,9 +33,6 @@ const globalStyles = StyleSheet.create({
     paddingBottom: 30,
     marginHorizontal: 5,
     borderRadius: 10
-  },
-  scrollView: {
-    backgroundColor: Colors.lighter,
   },
   engine: {
     position: 'absolute',
@@ -83,7 +89,7 @@ const globalStyles = StyleSheet.create({
     bottom: 50,
   },
   buttonContainer: {
-    backgroundColor: '#92582D',
+    backgroundColor: ColorApp,
     height: 40,
     alignItems: 'center',
     justifyContent: 'center',
@@ -242,7 +248,8 @@ const globalStyles = StyleSheet.create({
   error: {
     marginTop: 5,
     color: 'red',
-    marginBottom: -10
+    marginBottom: -10,
+    fontSize: 14
   },
   labelDropdown: {
     marginLeft: -8,
@@ -287,6 +294,11 @@ const globalStyles = StyleSheet.create({
   sub: {
     alignItems: 'center',
     flexDirection: 'row',
+  },  
+  inputStyle: {
+    fontSize: 16,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
   },
 });
 

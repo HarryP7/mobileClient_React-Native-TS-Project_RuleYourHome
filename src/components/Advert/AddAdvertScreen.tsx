@@ -63,9 +63,9 @@ class AddAdvertScreen extends Component<any, State, Props> {
       good, status, checked } = this.state
     const { navigation } = this.props
     const { container, fixToText, label, label2, label4, addPosition, textInput, textInput2,
-      iconButton,inputMultiline, button, buttonContainer, sectionTitle, styleSwitch, inputStyle,
+      iconButton,inputMultiline, button, buttonContainer, sectionTitle, styleSwitch, 
       error } = styles
-    const { } = globalStyles
+    const { inputStyle,} = globalStyles
     let dataStatus = [{
       value: Category.Repairs }, {
       value: Category.EngineeringWorks }, {
@@ -99,6 +99,7 @@ class AddAdvertScreen extends Component<any, State, Props> {
                   numberOfLines={1}
                   value={title}
                   errorMessage={badEnter.title ? 'Поле не заполнено!' : ''}
+                  errorStyle={error}
                 />
               </View>
             </View>
@@ -182,8 +183,8 @@ class AddAdvertScreen extends Component<any, State, Props> {
       good, status, checked, isMulti } = this.state
     const { navigation } = this.props
     const { container, fixToText, label, label4, textInput, containerStyle,
-      iconButton, inputMultiline, inputStyle,
-      advertContainer, addPosition } = styles
+      iconButton, inputMultiline, advertContainer, addPosition } = styles
+    const {inputStyle,} = globalStyles
     return <View>
       <View style={advertContainer}>
         <View style={fixToText}>
@@ -413,11 +414,6 @@ const styles = StyleSheet.create({
   label4: {
     marginVertical: 5,
     fontSize: 17,
-  },
-  inputStyle: {
-    fontSize: 16,
-    paddingVertical: 5,
-    paddingHorizontal: 10,
   },
   iconButton: {
     width: 20,

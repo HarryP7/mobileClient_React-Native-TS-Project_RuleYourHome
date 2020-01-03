@@ -27,6 +27,7 @@ const initialState: IAppState = {
         myGroups: [],
         address: '',
         phone: '',
+        isApprovedHome: false
         
     }
 }

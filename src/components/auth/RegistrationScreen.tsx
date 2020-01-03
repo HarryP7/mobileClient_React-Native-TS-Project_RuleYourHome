@@ -78,7 +78,7 @@ class RegistrationScreen extends Component<any, State, Props> {
           <Image source={BackgroundImage} style={im}></Image></View>
         <ScrollView>
           <Card containerStyle={cardStyle} >
-            {submit && <ActivityIndicator style={indicator} size={70} color="#92582D" />}
+            {submit && <ActivityIndicator style={indicator} size={70} color={ColorApp} />}
             <View>
               <View style={fixToText}>
                 <SvgXml xml={user} style={icon} fill={color} />
@@ -497,7 +497,7 @@ class RegistrationScreen extends Component<any, State, Props> {
         'Accept': "application/json",
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(obj), //JSON.stringify(
+      body: JSON.stringify(obj), 
     })
       .then(function (response) {
         if (response.status == 200 || response.status == 201) {
@@ -609,7 +609,7 @@ const locStyles = StyleSheet.create({
     width: 250,
   },
   buttonContainer: {
-    backgroundColor: '#92582D',
+    backgroundColor: ColorApp,
     height: 40,
     alignItems: 'center',
     justifyContent: 'center',
@@ -621,7 +621,7 @@ const locStyles = StyleSheet.create({
   },
   link: {
     marginVertical: 20,
-    color: '#92582D',
+    color: ColorApp,
     textAlign: 'center',
     fontSize: 20,
   },

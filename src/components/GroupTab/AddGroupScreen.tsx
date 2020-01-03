@@ -34,22 +34,25 @@ var arr: arrGroupBool = {
 var arrTxt: arrGroupText = {
   title: '', status: ''
 };
+var arrColor: arrGroupText = {
+  title: 'gray', status: 'gray'
+};
 
 class AddGroupScreen extends Component<any, State, Props> {
   state = {
-    title: '', status: '', badEnter: arr, errorText: arrTxt,
+    title: '', status: '', badEnter: arr, errorText: arrTxt, fieldColor: arrColor,
     good: false, submit: false,
 
   }
 
   render() {
     console.log('Props AddGroupScreen', this.props)
-    const { submit, title, status, badEnter, errorText } = this.state
+    const { submit, title, status, badEnter, errorText, fieldColor } = this.state
     const { navigation } = this.props
     const { container, textInput, textInput2, input,
       button, fixToText, sectionContainer, sectionTitle } = styles
     const { im, label, label2, indicator, cardStyle, inputMultiline, 
-      contStyle, error } = globalStyles
+      contStyle, error, inputStyle } = globalStyles
     let dataStatus = [{
       value: GroupStatus.Public,
     }, {
@@ -74,7 +77,7 @@ class AddGroupScreen extends Component<any, State, Props> {
               <View style={{ flexDirection: 'row' }}>
                 <Text style={label}> Название <Text style={{ color: 'red' }}>*</Text></Text>
               </View>
-              <TextInput
+              {/* <TextInput
                 style={inputMultiline}
                 onChangeText={this.onChangeTitle.bind(this)}
                 placeholder='Название..'
@@ -84,7 +87,21 @@ class AddGroupScreen extends Component<any, State, Props> {
                 numberOfLines={1}
                 editable={!submit}
               />
-              {badEnter.title && <Text style={error}>{errorText.title}</Text>}
+              {badEnter.title && <Text style={error}>{errorText.title}</Text>} */}
+              
+              <Input
+                  inputContainerStyle={[inputMultiline, {borderColor: fieldColor.title,}]}
+                  inputStyle={inputStyle}
+                  onChangeText={this.onChangeTitle.bind(this)}
+                  placeholder='Название..'
+                  autoCorrect={true}
+                  multiline={true}
+                  numberOfLines={1}
+                  value={title}
+                  errorMessage={badEnter.title ? errorText.title : ''}
+                  errorStyle={error}
+                  onEndEditing={() => this.onCheckTitle(title)}
+                />
             </View>
           </View>
           <View style={fixToText}>
@@ -125,23 +142,45 @@ class AddGroupScreen extends Component<any, State, Props> {
 
     );
   }
-
-  private onChangeTitle(title: string) {
-    var { badEnter, errorText } = this.state
+  onCheckTitle(title: string): void {
+    var { badEnter, errorText, fieldColor } = this.state
     if (!title) {
       badEnter.title = true;
       errorText.title = 'Поле не заполнено!'
+      fieldColor.title = 'red'
+      this.setState({ fieldColor, badEnter, errorText, title, good: false });
     }
     else if (title.trim().length < 4 || title.trim().length > 25) {
       badEnter.title = true;
       errorText.title = 'Название должно быть больше 4х символов и меньше 25!'
-      this.setState({ badEnter, errorText, title, good: false });
-      return;
+      fieldColor.title = 'red'
+      this.setState({ fieldColor, badEnter, errorText, title, good: false });
     }
     else {
       badEnter.title = false;
+      this.setState({ title, badEnter });
     }
-    this.setState({ title, badEnter });
+  }
+
+  private onChangeTitle(title: string) {
+    var { badEnter, errorText, fieldColor } = this.state
+    
+    if (title.trim().length > 4 && title.trim().length < 25) {
+      fieldColor.title = 'green';
+      badEnter.title = false;
+      this.setState({ badEnter, errorText, title, good: false });
+      return;
+    }
+    else if(title.trim().length > 25) {
+      badEnter.title = true;
+      errorText.title = 'Название должно быть больше меньше 25!'
+      fieldColor.title = 'red'
+      this.setState({ fieldColor, badEnter, errorText, title, good: false });      
+    }
+    else {
+      badEnter.title = false;
+      this.setState({ title, badEnter });
+    }
   }
   private onChangeStatus(status: string) {
     var { badEnter, errorText } = this.state
@@ -179,7 +218,7 @@ class AddGroupScreen extends Component<any, State, Props> {
     
     this.setState({ good: true, submit: true })
     obj = {
-      Admin: store.state.userLogin.uid,
+      Supervisor: store.state.userLogin.uid,
       Title: title,
       Home: navigation.state.params.uid,
       Status: status == GroupStatus.Public ? 1 : 2,
@@ -215,9 +254,8 @@ class AddGroupScreen extends Component<any, State, Props> {
   }
   private setClearState() {
     this.setState({
-      appartament: '', title: '', floors: '', porches: '',
-      year: '', status: '', colorT: '#000', colorPass: '#000',
-      good: false, submit: false
+      title: '', status: '', badEnter: arr, errorText: arrTxt, fieldColor: arrColor,
+      good: false, submit: false,
     })
   }
 }

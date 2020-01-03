@@ -10,6 +10,7 @@ import NavigationAdmin from '../../NavigationAdmin';
 import { globalStyles } from '..'
 import { useGlobal, store } from '../../store'
 import { Role } from '../../enum/Enums';
+import { NotAuthNAVIGATION, NAVIGATIONAdmin, NAVIGATIONUser } from '../../routes';
 
 interface Props { }
 
@@ -50,7 +51,7 @@ const { userLogin, token } = store.state;
 const RootStack = createStackNavigator(
   {
     Splash: SplashScreen,
-    App: !token ? NotAuthNavigation : userLogin.fk_Role == Role.admin ? NavigationAdmin : NavigationUser,
+    App: !token ? NotAuthNavigation : userLogin.fk_Role == Role.admin ? NavigationAdmin : userLogin.fk_Role == Role.moderator ? NavigationAdmin : NavigationUser,
   },
   {
     initialRouteName: 'Splash',

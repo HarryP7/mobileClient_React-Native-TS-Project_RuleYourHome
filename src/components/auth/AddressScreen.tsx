@@ -10,11 +10,12 @@ import { h, w, ColorApp, serverUrl, BackgroundImage } from '../../constants'
 import { backArrow } from '../../allSvg'
 import { User, adrText, adrBool } from '../../interfaces'
 import { actions, store } from '../../store'
-import { AUTH, HOMEProfile } from '../../routes';
+import { AUTH, HOMEProfile, NAVIGATIONAdmin, NAVIGATIONUser } from '../../routes';
 import { CityList, VladimirStreetList } from './Lists'
-import { Card, Input, CheckBox, Icon, ThemeConsumer } from 'react-native-elements'
+import { Card, Input, CheckBox, Icon, ThemeConsumer, Button } from 'react-native-elements'
 import { Dropdown, DropDownMargins } from 'react-native-material-dropdown';
 import { Home } from '../../interfaces'
+import { Role } from '../../enum/Enums';
 
 var arrTxt: adrText = { city: '', street: '', homeN: '', appartment: '', home: '' };
 var arr: adrBool = { city: false, street: false, homeN: false, appartment: false, home: false };
@@ -37,7 +38,9 @@ interface State {
   dataOld: Home[],
   loadHome: boolean,
   checked: boolean[],
-  fk_home: string
+  fk_home: string,
+  disBtn: boolean,
+  address: string
 }
 interface AuthData {
   token: string,
@@ -46,7 +49,7 @@ interface AuthData {
 
 class AddressScreen extends PureComponent<any, State, Props> {
   state = {
-    appartment: '', city: '', street: '', homeN: '',
+    appartment: '', city: '', street: '', homeN: '', disBtn: true, address: '',
     good: true, submit: false, badEnter: arr, errorText: arrTxt, colorIcon: arrColor,
     search: false, searchText: '', dataHome: [], dataOld: [], loadHome: false, checked: [], fk_home: ''
   } as State
@@ -54,7 +57,7 @@ class AddressScreen extends PureComponent<any, State, Props> {
   render() {
     console.log('Props AddresScreen', this.props)
     const { appartment, city, street, homeN, badEnter, errorText, colorIcon, submit,
-      good, loadHome, dataHome, search, checked }: State = this.state
+      good, loadHome, dataHome, search, checked, disBtn, address }: State = this.state
     const { navigation } = this.props
     const { fixToText, icon, textInput, input, button, buttonContainer, buttonTitle, notFoundStyle, } = locStyles
     const { im, indicator, label, label2, label3, cardStyle, inputMultiline, dropdownStyle, contStyle, error,
@@ -62,7 +65,7 @@ class AddressScreen extends PureComponent<any, State, Props> {
     console.log('good', good)
     return (
       <View>
-        <Header title={'Адрес дома'}
+        <Header title={'Адрес проживания'}
           leftIcon={backArrow}
           onPressLeft={() => {
             //this.setClearState()
@@ -74,13 +77,13 @@ class AddressScreen extends PureComponent<any, State, Props> {
         </View>
         <ScrollView >
           <Card containerStyle={cardStyle} >
-            {submit && <ActivityIndicator style={indicator} size={70} color={ColorApp} />}
+          {submit && <ActivityIndicator style={indicator} size={70} color={ColorApp} />}
             <View>
               <View style={fixToText}>
                 <SvgXml xml={homeLoc} style={icon} fill={colorIcon.city} />
                 <View style={textInput}>
                   <View style={{ flexDirection: 'row' }}>
-                    <Text style={label2}> Город <Text style={{ color: 'red' }}>*</Text></Text>
+                    <Text style={label2}> Город *</Text>
                   </View>
                   <Dropdown
                     data={CityList}
@@ -97,7 +100,7 @@ class AddressScreen extends PureComponent<any, State, Props> {
               <View style={fixToText}>
                 <SvgXml xml={homeLoc} style={icon} fill={colorIcon.street} />
                 <View style={textInput}>
-                  <Text style={label2}> Улица <Text style={{ color: 'red' }}>*</Text></Text>
+                  <Text style={label2}> Улица *</Text>
                   <Dropdown
                     data={VladimirStreetList}
                     onChangeText={this.onChangeStreet.bind(this)}
@@ -113,7 +116,7 @@ class AddressScreen extends PureComponent<any, State, Props> {
               <View style={fixToText}>
                 <SvgXml xml={home} style={icon} fill={colorIcon.homeN} />
                 <View style={textInput}>
-                  <Text style={label}> Номер дома <Text style={{ color: 'red' }}>*</Text></Text>
+                  <Text style={label}> Номер дома *</Text>
                   <TextInput
                     style={input}
                     onChangeText={this.onChangeHomeN.bind(this)}
@@ -140,21 +143,20 @@ class AddressScreen extends PureComponent<any, State, Props> {
                     editable={!submit}
                   />
                   {badEnter.appartment && <Text style={error}>{errorText.appartment}</Text>}
-                  {badEnter.home && <Text style={[error, { marginTop: 15 }]}>{errorText.home}</Text>}
                 </View>
               </View>
             </View>
-          </Card>
+          </Card>          
           {search && (
-            loadHome ?
-              dataHome.length ?
+            loadHome ? (
+              dataHome.length ? (
                 <View >
                   <View style={label3}>
                     <Text style={notFoundStyle}> Выберите свой дом: <Text style={{ color: 'red' }}>*</Text></Text>
-
+                    {badEnter.home && <Text style={[error, { marginHorizontal: 20, marginBottom: 5 }]}>{errorText.home}</Text>}
                   </View>
                   {dataHome.map((item, id: number) => {
-                    return <View style={{ flexDirection: 'row' }}>
+                    return <View>
                       <HomeCard data={item} key={item.uid}
                         onPress={() => navigation.navigate(HOMEProfile, (item))}
                         disabled={submit}
@@ -166,28 +168,31 @@ class AddressScreen extends PureComponent<any, State, Props> {
                           badEnter.home = false;
                           var check = checked;
                           check[id] = !check[id];
-                          this.setState({ checked: check, fk_home: item.uid, badEnter })
+                          var uid;
+                          !check[id] ? uid = '' : uid = item.uid;
+                          var address = 'г. ' + item.city + ', ' + item.street + ', д. ' + item.homeNumber
+                          this.setState({ address, checked: check, fk_home: uid, badEnter })
                         }}
                         checkedColor='green'
                         right
-                        containerStyle={{ marginTop: 50, marginLeft: -50, height: 40 }}
-
+                        containerStyle={{ marginTop: -50, marginLeft: -50, height: 40 }}
                       ></CheckBox>
                     </View>
                   })}
-                </View> :
+                </View>
+              ) :
                 <View style={{ alignItems: 'center' }} >
                   <Text style={notFoundStyle}> По заданным параметрам ничего не найдено! </Text>
-                  <SvgXml xml={notFound} style={{ marginVertical: 10 }} />
-                </View> :
+                  <Image source={require('../../../icon/notFound.png')} />
+                </View>
+            ) :
               <ActivityIndicator style={indicator} size={50} color={ColorApp} />
-          )
-          }
+          )}
 
           <View style={{ alignItems: 'center' }}>
             <TouchableOpacity
               onPress={this.onSubmit.bind(this)}
-              disabled={submit} >
+              disabled={disBtn} >
               <View style={[buttonContainer, button]}>
                 <Text style={buttonTitle}>Подтверить</Text>
               </View>
@@ -205,15 +210,15 @@ class AddressScreen extends PureComponent<any, State, Props> {
     var obj = {
       City: city,
       Street: street,
-      HomeNumber: homeN
+      HomeNumber: homeN,
     }
-    var logAction = 'Изменение адреса дома'
+    var logAction = 'Изменение адреса пользователя'
     var $this = this;
 
     var { token, userLogin } = store.state
     this.setState({ loadHome: false })
     try {
-      fetch(serverUrl+'home/search', {
+      fetch(serverUrl + 'home/search', {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         headers: {
           'Accept': "application/json",
@@ -248,6 +253,16 @@ class AddressScreen extends PureComponent<any, State, Props> {
     }
   }
 
+  private checkFields() {
+    const { appartment, city, street, homeN, badEnter } = this.state
+    if ((appartment || city || street || homeN) && !badEnter.appartment && !badEnter.city
+      && !badEnter.street && !badEnter.homeN && !badEnter.home) {
+      this.setState({ disBtn: false })
+    }
+    else
+    this.setState({ disBtn: true })
+  }
+
   private onChangeCity(city: string) {
     var { badEnter, errorText, colorIcon } = this.state
     if (city == ' ') { return }
@@ -263,6 +278,7 @@ class AddressScreen extends PureComponent<any, State, Props> {
       colorIcon.city = 'green'
       this.setState({ city, badEnter, search: true });
       this.onSearchHome();
+      this.checkFields();
     }
   }
   private onChangeStreet(street: string) {
@@ -280,6 +296,7 @@ class AddressScreen extends PureComponent<any, State, Props> {
       colorIcon.street = 'green'
       this.setState({ street, colorIcon, search: true });
       this.onSearchHome();
+      this.checkFields();
     }
   }
   private onChangeHomeN(homeN: string) {
@@ -297,6 +314,7 @@ class AddressScreen extends PureComponent<any, State, Props> {
       colorIcon.homeN = 'green'
       this.setState({ homeN, search: true });
       this.onSearchHome();
+      this.checkFields();
     }
   }
   private onChangeAppartment(appartment: string) {
@@ -313,6 +331,7 @@ class AddressScreen extends PureComponent<any, State, Props> {
       badEnter.appartment = false;
       colorIcon.appartment = 'green'
       this.setState({ appartment, colorIcon });
+      this.checkFields();
     }
   }
   private onCheckAppartment(appartment: string) {
@@ -324,23 +343,18 @@ class AddressScreen extends PureComponent<any, State, Props> {
       this.setState({ badEnter, errorText, appartment, good: false });
       return;
     }
-    else {
-      badEnter.appartment = false;
-      colorIcon.appartment = 'green'
-      this.setState({ appartment, badEnter });
-    }
   }
 
   private onSubmit() {
     const { appartment, city, street, homeN, badEnter, errorText,
-      colorIcon, fk_home } = this.state
+      colorIcon, fk_home, address } = this.state
     const { navigation } = this.props
     var $this = this;
     var obj, url, logAction: string;
 
     if (!city && !street && !homeN) {
       badEnter.city = true;
-      errorText.city = 'Заполните хотябы одно поле для поиска по: Городу, улице или номеру дома'
+      errorText.city = 'Заполните хотябы одно поле для поиска по: городу, улице или номеру дома'
       colorIcon.city = 'red'
       this.setState({ badEnter, errorText, colorIcon, good: false });
     }
@@ -353,7 +367,7 @@ class AddressScreen extends PureComponent<any, State, Props> {
     }
     if (!fk_home) {
       badEnter.home = true;
-      errorText.home = 'Выберите дом! Для этого заполните поля для поиска по: Городу, улице или номеру дома'
+      errorText.home = 'Выберите дом! Для этого заполните поля для поиска по: городу, улице или номеру дома'
       colorIcon.home = 'red'
       this.setState({ badEnter, errorText, colorIcon, good: false });
     }
@@ -365,25 +379,29 @@ class AddressScreen extends PureComponent<any, State, Props> {
       return;
     }
     else this.setState({ good: true });
-    //Address: city + ' ' + street+ ' ' +homeN+' ' +appartment, 
-    //this.props.navigation.state.params
 
-    debugger;
     var { token, userLogin } = store.state
-    var { back } = this.props.navigation.state.params
-
-    url = serverUrl+'auth/address?Uid=' + userLogin.uid + '&Fk_Home=' + fk_home
-      + '&Appartment=' + appartment;
+    var back = this.props.navigation.state.params
+    
+    obj = {
+      Fk_User: userLogin.uid,
+      Fk_Home: fk_home,
+      Appartment: appartment,
+      Address: address + ', кв. ' + appartment,
+    }
+    var reload = true
+    url = serverUrl + 'auth/address';
     logAction = 'Изменение адреса дома'
 
     this.setState({ submit: true })
     fetch(url, {
-      method: 'GET', // *GET, POST, PUT, DELETE, etc.
+      method: 'POST', // *GET, POST, PUT, DELETE, etc.
       headers: {
         'Accept': "application/json",
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
+      body: JSON.stringify(obj),
     })
       .then(function (response) {
         if (response.status == 200 || response.status == 201) {
@@ -416,8 +434,17 @@ class AddressScreen extends PureComponent<any, State, Props> {
       .then(function (data: AuthData) {
         console.log('data: ', data);
         $this.setClearState();
+        actions.Login(token, data.userLogin)
         if (back) {
-          navigation.goBack();
+          if (data.userLogin.fk_Role == Role.admin){
+            navigation.navigate(NAVIGATIONAdmin, reload);
+          }
+          else if (data.userLogin.fk_Role == Role.moderator){
+            navigation.navigate(NAVIGATIONAdmin, reload);
+          }
+          else if (data.userLogin.fk_Role == Role.user){
+            navigation.navigate(NAVIGATIONUser, reload);
+          };
         }
         else {
           navigation.navigate(AUTH, data.userLogin);
@@ -510,7 +537,7 @@ const locStyles = StyleSheet.create({
     width: 250,
   },
   buttonContainer: {
-    backgroundColor: '#92582D',
+    backgroundColor: ColorApp,
     height: 40,
     alignItems: 'center',
     justifyContent: 'center',
