@@ -4,7 +4,7 @@ import { h, w, NoFoto } from '../../constants'
 import { HomeStatus } from '../../enum/Enums'
 
 const HomeCard = ({ data, onPress }: any) => {
-    const { container, images, h1, containerText, access } = styles
+    const { container, images, h1, containerText, homeStatusGood, homeStatusBad } = styles
     const { imageUrl, city, street, homeNumber, fk_Status } = data
     return (
         <TouchableOpacity onPress={onPress}>
@@ -13,7 +13,7 @@ const HomeCard = ({ data, onPress }: any) => {
                     style={images} />
                 <View style={containerText}>
                     <Text style={h1}>г. {city}, {street}, д. {homeNumber}</Text>
-                    <Text style={access}>{fk_Status == 1 ? HomeStatus.Exploited : HomeStatus.Emergency} </Text>
+                    <Text style={fk_Status == 1 ? homeStatusGood :homeStatusBad }>{fk_Status == 1 ? HomeStatus.Exploited : HomeStatus.Emergency} </Text>
                 </View>
             </View>
         </TouchableOpacity>
@@ -38,8 +38,11 @@ const styles = StyleSheet.create({
         fontSize: 20,
         width: w * 0.67,
     },
-    access: {
-        color: '#656565'
+    homeStatusGood: {
+        color: '#13CE66'
+    },
+    homeStatusBad: {
+        color: '#ff3437'
     },
     images: {
         width: w / 4,

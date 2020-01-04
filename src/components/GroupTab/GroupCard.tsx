@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Image, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import { h, w } from '../../constants'
+import { h, w, NoFoto } from '../../constants'
 import { Access } from '../../enum/Enums'
 
 const GroupCard = ({ data, onPress }: any) => {
@@ -9,7 +9,7 @@ const GroupCard = ({ data, onPress }: any) => {
     return (
         <TouchableOpacity onPress={onPress}>
             <View style={container}>
-                <Image source={{ uri: image.url }}
+                <Image source={{ uri: image ? image.url : NoFoto }}
                     style={images} />
                 <View style={containerText}>
                     <Text style={h1}>{title} </Text>

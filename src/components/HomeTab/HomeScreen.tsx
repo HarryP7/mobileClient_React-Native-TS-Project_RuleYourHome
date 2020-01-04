@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import {
   StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Image, ScrollView,
   ActivityIndicator, RefreshControl, Alert,
@@ -8,9 +8,9 @@ import { menu } from '../../allSvg'
 import { HomeStatus, Role } from '../../enum/Enums';
 import { h, w, ColorApp, NoFoto, serverUrl, BackgroundImage } from '../../constants'
 import { AddGROUP, AUTH, REGISTRATION, GroupLIST, ADDRESSScreen, TENTENScreen, PROFILE } from '../../routes';
-import { Home, User, InitialHome } from '../../interfaces'
+import { Home, User, InitialHome, HomeData } from '../../interfaces'
 import { useGlobal, store } from '../../store'
-import { Card, Badge } from 'react-native-elements'
+import { Card, Badge, Divider } from 'react-native-elements'
 
 interface State {
   data: Home,
@@ -22,15 +22,9 @@ interface State {
   reload: boolean
 }
 
-interface HomeData {
-  homeData: Home,
-  tantains: User[],
-  newTantains: User[],
-}
-
 interface Props { }
 
-class HomeScreen extends PureComponent<any, State, Props> {
+class HomeScreen extends Component<any, State, Props> {
   state = {
     data: InitialHome, load: false, refreshing: false, loadError: false,
     approvedTentants: [], newTenants: [], reload: false
@@ -42,12 +36,10 @@ class HomeScreen extends PureComponent<any, State, Props> {
     try {
       const { userLogin, token } = store.state;
       var Fk_Home = userLogin.fk_Home;
-      const reload = this.props.navigation.state.params
       console.log('componentDidMount token: ', token)
       console.log('componentDidMount userLogin: ', userLogin)
-      console.log('componentDidMount reload: ', reload)
       if ((token && userLogin.fk_Home && userLogin.isApprovedHome) ||
-        (token && userLogin.fk_Home) || (token && reload)) {
+        (token && userLogin.fk_Home)) {
         const response = await fetch(serverUrl + 'home?Fk_Home=' + Fk_Home,
           {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
@@ -95,8 +87,8 @@ class HomeScreen extends PureComponent<any, State, Props> {
     console.log('token: ', token)
     console.log('load: ', load)
     console.log('userLogin: ', userLogin)
-    var reload = this.props.navigation.state.params
-    this.setState({ reload })
+    const reload = this.props.navigation.state.params
+    if(reload) this.onRefresh()
     console.log('reload: ', reload)
     return (<View>
       <Header title='Дом'
@@ -129,7 +121,7 @@ class HomeScreen extends PureComponent<any, State, Props> {
     );
   }
   private Login(text: string) {
-    const { indicator, h2, link, buttonContainer, buttonTitle, im, scrollView } = globalStyles
+    const { positionCard, h2, link, buttonContainer, buttonTitle, im, scrollView } = globalStyles
     const { refreshing } = this.state
     const { navigation } = this.props
     return (<View>
@@ -141,7 +133,7 @@ class HomeScreen extends PureComponent<any, State, Props> {
             <RefreshControl refreshing={refreshing} onRefresh={this.onRefresh.bind(this)} />
           }
         >
-          <View style={indicator}>
+          <View style={positionCard}>
             <Card containerStyle={{ paddingBottom: 20, borderRadius: 10 }} >
               <Image source={require('../../../icon/warning-shield.png')}
                 style={{ alignSelf: 'center' }} />
@@ -223,11 +215,11 @@ class HomeScreen extends PureComponent<any, State, Props> {
   private HomeData() {
     const { userLogin } = store.state;
     const { navigation } = this.props
-    const { images, h1, h3, sub, link } = globalStyles
-    const { status, sectionContainer, sectionTitle, container,
+    const { images, h1, h3, sub, link, } = globalStyles
+    const { status, sectionContainer, sectionTitle, homeStatusGood, homeStatusBad,
       sectionContainer1, sectionTitle1, } = locStyles
     const { data, refreshing, approvedTentants, newTenants } = this.state
-    const { imageUrl, city, street, homeNumber, appartaments, floors, porches, fk_Status,
+    const { uid, imageUrl, city, street, homeNumber, appartaments, floors, porches, fk_Status,
       yearCommissioning, localGroups, fk_Manager, manager } = data
     return <SafeAreaView>
       <ScrollView
@@ -237,44 +229,51 @@ class HomeScreen extends PureComponent<any, State, Props> {
       >
         <Image source={{ uri: imageUrl ? imageUrl.url : NoFoto }} style={images} />
         <Text style={[h1, { paddingBottom: 10 }]}>г. {city}, {street}, д. {homeNumber}</Text>
-        <Text style={status}>{fk_Status == 1 ? HomeStatus.Exploited : HomeStatus.Emergency}</Text>
+          <Text style={[status, fk_Status == 1 ? homeStatusGood: homeStatusBad]}>
+          {fk_Status == 1 ? HomeStatus.Exploited : HomeStatus.Emergency}</Text>
 
-        <View style={container}>          
-        <TouchableOpacity onPress={() => navigation.navigate(GroupLIST, localGroups)} >
+        <View style={sub}>
+          <TouchableOpacity onPress={() => 
+                localGroups.length ? navigation.navigate(GroupLIST, uid): navigation.navigate(AddGROUP, (uid))} >
             <View style={sectionContainer1}>
               <Text style={sectionTitle1}>Группы    {localGroups.length}</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate(TENTENScreen, data)} >
+          <TouchableOpacity 
+            onPress={() => (approvedTentants.length || newTenants.length) && 
+                      navigation.navigate(TENTENScreen, {approvedTentants, newTenants, uid})
+                    } >
             <View style={sectionContainer1}>
               <Text style={sectionTitle1}>Жители   {approvedTentants.length}</Text>
             </View>
-            {((userLogin.fk_Role != Role.user || userLogin.uid == fk_Manager) && newTenants.length) &&
-                <Badge
-                  status='warning'
-                  containerStyle={{ position: 'absolute', top: 5, right: 40 }}
-                  value={newTenants.length}
-                  textStyle={{ fontSize: 14 }}
-                /> 
-              }
+            {((userLogin.fk_Role != Role.user || userLogin.uid == fk_Manager) && newTenants.length) ?
+              <Badge
+                status='warning'
+                containerStyle={{ position: 'absolute', top: 5, right: 40 }}
+                value={newTenants.length}
+                textStyle={{ fontSize: 14 }}
+              />
+              : <View></View>
+            }
           </TouchableOpacity>
         </View>
 
         {userLogin.fk_Role != Role.user &&
-            <TouchableOpacity onPress={() => navigation.navigate(AddGROUP, (userLogin.uid))} >
-              <View style={sectionContainer}>
-                <Text style={sectionTitle}>Добавить группу</Text>
-              </View>
-            </TouchableOpacity>
-        }
-
-        <View style={sub}>
-        <Text style={h3}>Управляющий дома: </Text> 
-        <TouchableOpacity
-            onPress={() => navigation.navigate(PROFILE, fk_Manager)}>
-              <Text style={link}> {manager.fullName}</Text>
+          <TouchableOpacity onPress={() => navigation.navigate(AddGROUP, (uid))} >
+            <View style={sectionContainer}>
+              <Text style={sectionTitle}>Добавить группу</Text>
+            </View>
           </TouchableOpacity>
-          </View>
+        }
+        
+        <Divider />
+        <View style={sub}>
+          <Text style={h3}>Управляющий дома: </Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate(PROFILE, fk_Manager)}>
+            <Text style={link}> {manager.fullName}</Text>
+          </TouchableOpacity>
+        </View>
         <Text style={h3}>Кол-во квартир: {appartaments} </Text>
         <Text style={h3}>Кол-во этажей: {floors} </Text>
         <Text style={h3}>Кол-во подъездов: {porches} </Text>
@@ -282,9 +281,6 @@ class HomeScreen extends PureComponent<any, State, Props> {
         <View style={{ margin: 55 }}><Text> </Text></View>
       </ScrollView>
     </SafeAreaView>
-  }
-  private onAddTenant() {
-
   }
 
   private async onRefresh() {
@@ -300,15 +296,16 @@ class HomeScreen extends PureComponent<any, State, Props> {
 const locStyles = StyleSheet.create({
   status: {
     alignSelf: 'center',
-    backgroundColor: '#13CE66',
     borderRadius: 6,
     color: '#fff',
     paddingVertical: 1,
     paddingHorizontal: 7,
   },
-  container: {
-    flexDirection: 'row',
-    alignSelf: 'center'
+  homeStatusGood: {
+    backgroundColor: '#13CE66'
+  },
+  homeStatusBad: {
+    backgroundColor: '#ff3437'
   },
   sectionContainer: {
     backgroundColor: '#15a009',

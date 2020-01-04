@@ -165,6 +165,11 @@ const globalStyles = StyleSheet.create({
   },
   indicator: {
     marginTop: 50,
+    position: 'absolute',
+    alignSelf: 'center',
+  },
+  positionCard: {
+    marginTop: 50,
     flex: 0,
     alignItems: 'center',
     justifyContent: 'center',
@@ -261,7 +266,7 @@ const globalStyles = StyleSheet.create({
     fontSize: 18,
     //color: 'white',
     fontWeight: 'bold',
-    marginLeft: -7
+    //marginLeft: -7
   },
   label3: {
     backgroundColor: 'white', 
@@ -289,7 +294,8 @@ const globalStyles = StyleSheet.create({
     borderBottomWidth: 1
   },
   dropdownStyle: {
-    height: 500
+    height: 500, 
+    marginTop: 45 
   },  
   sub: {
     alignItems: 'center',
@@ -299,6 +305,11 @@ const globalStyles = StyleSheet.create({
     fontSize: 16,
     paddingVertical: 5,
     paddingHorizontal: 10,
+  },
+  cardUsersStyle:{ 
+    marginHorizontal: 7, 
+    padding: 5, 
+    borderRadius: 10 
   },
 });
 

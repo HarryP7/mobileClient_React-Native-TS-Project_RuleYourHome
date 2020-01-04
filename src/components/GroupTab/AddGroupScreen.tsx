@@ -215,12 +215,12 @@ class AddGroupScreen extends Component<any, State, Props> {
       );
       return;
     }
-    
+    console.log("params" , "Fk_Home: " +navigation.state.params)
     this.setState({ good: true, submit: true })
     obj = {
       Supervisor: store.state.userLogin.uid,
       Title: title,
-      Home: navigation.state.params.uid,
+      Home: navigation.state.params,
       Status: status == GroupStatus.Public ? 1 : 2,
       //Image: '5ddc6bd0-627b-42da-a603-d62adab55efe'
     }

@@ -124,14 +124,14 @@ class ProfileScreen extends React.Component<any, State> {
     const { images, noImages, h1, } = globalStyles
     const { sectionContainer1, sectionTitle1, h3 } = locStyles
     var { data, refreshing } = this.state
-    var { myGroups, address, phone, fk_Gender, fullName, uid } = data
+    var { myGroups, address, phone, fk_Gender, fullName, avatar, uid } = data
     return <ScrollView
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={this.onRefresh.bind(this)} />
         }
       >
-        {data.avatar ?
-          <Image source={{ uri: data.avatar.url }}
+        {avatar ?
+          <Image source={{ uri: avatar.url }}
             style={images} /> :
           <Image source={require('../../../icon/user1.png')}
             style={noImages} />}

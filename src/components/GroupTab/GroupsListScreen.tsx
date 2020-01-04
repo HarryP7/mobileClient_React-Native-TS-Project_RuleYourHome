@@ -16,15 +16,17 @@ interface State {
   text: string
 }
 
-class GroupScreen extends React.PureComponent<any, State> {
+class GroupListScreen extends React.PureComponent<any, State> {
   state = { data: [], dataOld: [], load: false, visibleSearch: false, text: '' } as State
   
   componentDidMount = async () => {
     try {
       const { userLogin, token } = store.state;
-      const response = await fetch(serverUrl+'groups',
+      var Fk_Home = this.props.navigation.state.params 
+      const response = await fetch(serverUrl+'groups/home?Fk_Home='+Fk_Home,
       { headers: {  'Authorization': `Bearer ${token}` }})
       const data = await response.json()
+      console.log("Успех HomeGroups fetch: ", data)
       this.setState({ data, load: true, dataOld: data })
     } catch (e) {
       throw e
@@ -45,9 +47,8 @@ class GroupScreen extends React.PureComponent<any, State> {
     const { data, load, visibleSearch } = this.state
     const { background, container, indicator, im } = globalStyles
     const { navigation } = this.props
-    var localGroups = this.props.navigation.state.params 
     console.log("props", this.props)
-    console.log("param: ", localGroups)
+    console.log("data: ", data)
     return (<View>
       {visibleSearch ?
         <SearchHeader           
@@ -58,8 +59,8 @@ class GroupScreen extends React.PureComponent<any, State> {
           onBlur={() => this.setState({visibleSearch: false})}
         /> : 
         <Header title='Группы'          
-        leftIcon={backArrow}
-        onPressLeft={() => navigation.goBack()}
+          leftIcon={backArrow}
+          onPressLeft={() => navigation.goBack()}
           rightIcon={search}
           onPressRight={() => this.setState({visibleSearch: true})}
         />
@@ -83,4 +84,4 @@ class GroupScreen extends React.PureComponent<any, State> {
   }
 }
 
-export {GroupScreen} 
+export {GroupListScreen} 

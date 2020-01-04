@@ -33,12 +33,12 @@ class AuthScreen extends PureComponent<any, State, Props> {
   }
 
   componentDidMount = async () => {
+    console.log('Props AuthScreen', this.props)
     var user: User = this.props.navigation.state.params
     if (user) this.setState({ login: user.login, colorIcon: initArrColor })
   }
 
   render() {
-    console.log('Props AuthScreen', this.props)
     const { login, password, badEnter, errorText, colorIcon, submit,
       good, disBtn } = this.state
     const { navigation } = this.props
@@ -56,6 +56,7 @@ class AuthScreen extends PureComponent<any, State, Props> {
         <View><Image source={BackgroundImage} style={im}></Image></View>
 
         <Card containerStyle={cardStyle} >
+          {submit && <ActivityIndicator style={indicator} size={70} color={ColorApp} />}
           <View style={fixToText}>
             <SvgXml xml={user} style={icon} fill={colorIcon.login} />
             <View style={textInput}>
@@ -104,7 +105,6 @@ class AuthScreen extends PureComponent<any, State, Props> {
             </TouchableOpacity>
           </View>
         </View>
-          {submit && <ActivityIndicator style={indicator} size={70} color={ColorApp} />}
         
           {/* <TouchableOpacity
             onPress={this.onPress.bind(this)}

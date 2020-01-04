@@ -1,56 +1,68 @@
 import React, { Component } from 'react';
 import {
   StyleSheet, ScrollView, View, Text, TouchableOpacity, ActivityIndicator,
-  Button, Alert, Image
+  Alert, Image
 } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { save } from '../../allSvg'
 import { Header, globalStyles } from '..';//, styles 
-import { Dropdown } from 'react-native-material-dropdown';
+import { Dropdown, DropDownData } from 'react-native-material-dropdown';
 import { h, w, ColorApp, serverUrl, BackgroundImage } from '../../constants'
 import { HomeStatus, Role } from '../../enum/Enums'
 import { backArrow } from '../../allSvg'
 import { TextInput } from 'react-native-gesture-handler';
 import { Card } from 'react-native-elements'
 import { CityList, VladimirStreetList } from '../auth/Lists'
-import { User, adrHomeText, adrHomeBool } from '../../interfaces'
+import { User, initAdrBool, initAdrTxt, adrHomeBool, adrHomeText } from '../../interfaces'
 import { store } from '../../store';
-//import { createStyles, makeStyles, Theme } from '@material-ui/core/locStyles';
-//import {Fab} from '@material-ui/core';
-//import Save from '@material-ui/icons/Save';
+import { HOMEProfile } from '../../routes';
 
 interface Props { }
-interface State { }
+interface User_Op {
+  label: string,
+  value: string
+}
+interface State {
+  uid: string,
+  supervisor: string,
+  city: string,
+  street: string,
+  homeN: string,
+  appartments: string,
+  floors: string,
+  porches: string,
+  year: string,
+  status: string,
+  good: boolean,
+  submit: boolean,
+  user_options: User_Op[],
+  badEnter: adrHomeBool,
+  errorText: adrHomeText,
+  loadUser: boolean,
+  
+}
 
-var arrTxt: adrHomeText = {
-  city: '', street: '', homeN: '', appartments: '',
-  floors: '', porches: '', year: '', status: ''
-};
-var arr: adrHomeBool = {
-  city: false, street: false, homeN: false, appartments: false,
-  floors: false, porches: false, year: false, status: false
-};
 var year = new Date().getFullYear().toString();
 
 class AddHomeScreen extends Component<any, State, Props> {
   state = {
-    city: '', street: '', homeN: '', appartments: '', floors: '', porches: '',
-    year: year, status: '', good: true, submit: false,
-    badEnter: arr, errorText: arrTxt
-  }
+    uid: '', supervisor: '', city: '', street: '', homeN: '', appartments: '', floors: '', porches: '',
+    year: year, status: HomeStatus.Exploited, good: true, submit: false, user_options: [],
+    badEnter: initAdrBool, errorText: initAdrTxt, loadUser: false
+  } as State
 
   render() {
     console.log('Props AddHomeScreen', this.props)
-    const { submit, city, street, homeN, appartments, floors, porches, year,
-      good, status, badEnter, errorText } = this.state
+    const { submit, supervisor, city, street, homeN, appartments, floors, porches, year,
+      good, status, badEnter, errorText, user_options, loadUser } = this.state
     const { navigation } = this.props
     const { container, fixToText, label, textInput, textInput2, iconMin,
-      input, button, buttonContainer, buttonTitle} = locStyles
-    var { indicator, im, imScroll, cardStyle, body, dropdownStyle, contStyle, inputMultiline, 
+      input, button, buttonContainer, buttonTitle } = locStyles
+    var { indicator, im, imScroll, cardStyle, body, dropdownStyle, contStyle, inputMultiline,
       error, labelDropdown, label2 } = globalStyles
     let dataStatus = [{
       value: HomeStatus.Exploited }, {
-      value: HomeStatus.Emergency },];
+      value: HomeStatus.Emergency  },];
     return (<View>
       <Header title='Добавить дом'
         leftIcon={backArrow}
@@ -58,161 +70,252 @@ class AddHomeScreen extends Component<any, State, Props> {
           this.setClearState();
           navigation.goBack();
         }} />
-      <ScrollView>          
-          <Image source={BackgroundImage} style={imScroll}></Image>
-          {submit && <ActivityIndicator style={indicator} size={70} color={ColorApp} />}
+      <ScrollView>
+        <Image source={BackgroundImage} style={imScroll}></Image>
 
-          <Card containerStyle={cardStyle} >
-            <View>
-              <View style={fixToText}>
-                <View style={textInput}>
-                  <View style={{ flexDirection: 'row' }}>
-                    <Text style={label2}> Город <Text style={{ color: 'red' }}>*</Text></Text>
-                  </View>
-                  <Dropdown
-                    data={CityList}
-                    onChangeText={this.onChangeCity.bind(this)}
-                    value={city}
-                    containerStyle={contStyle}
-                    pickerStyle={[dropdownStyle, inputMultiline]}
-                    dropdownPosition={0}
-                    disabled={submit}
-                  />
-                  {badEnter.city && <Text style={error}>{errorText.city}</Text>}
-                </View>
-              </View>
-              <View style={fixToText}>
-                <View style={textInput}>
-                  <Text style={label2}> Улица <Text style={{ color: 'red' }}>*</Text></Text>
-                  <Dropdown
-                    data={VladimirStreetList}
-                    onChangeText={this.onChangeStreet.bind(this)}
-                    value={street}
-                    containerStyle={contStyle}
-                    pickerStyle={[dropdownStyle, inputMultiline]}
-                    dropdownPosition={0}
-                    disabled={submit}
-                  />
-                  {badEnter.street && <Text style={error}>{errorText.street}</Text>}
-                </View>
-              </View>
-              <View style={fixToText}>
-                <View style={textInput}>
-                  <Text style={label}> Номер дома <Text style={{ color: 'red' }}>*</Text></Text>
-                  <TextInput
-                    style={input}
-                    onChangeText={this.onChangeHomeN.bind(this)}
-                    placeholder='Номер дома'
-                    value={homeN}
-                    keyboardType='visible-password'
-                    editable={!submit}
-                  />
-                  {badEnter.homeN && <Text style={error}>{errorText.homeN}</Text>}
-                </View>
-              </View>
-
-              <View style={fixToText}>
-                <View style={textInput}>
-                  <View style={{ flexDirection: 'row' }}>
-                    <Text style={label}> Количество квартир <Text style={{ color: 'red' }}>*</Text></Text>
-                  </View>
-                  <TextInput
-                    style={input}
-                    onChangeText={this.onChangeNumAppart.bind(this)}
-                    placeholder='Введите..'
-                    value={appartments}
-                    keyboardType='number-pad'
-                    editable={!submit}
-                  />
-                  {badEnter.appartments && <Text style={error}>{errorText.appartments}</Text>}
-                </View>
-              </View>
-              <View style={fixToText}>
-                <View style={textInput}>
-                  <View style={{ flexDirection: 'row' }}>
-                    <Text style={label}> Количество этажей <Text style={{ color: 'red' }}>*</Text></Text>
-                  </View>
-                  <TextInput
-                    style={input}
-                    onChangeText={this.onChangeFloors.bind(this)}
-                    placeholder='Введите..'
-                    value={floors}
-                    keyboardType='number-pad'
-                    editable={!submit}
-                  />
-                  {badEnter.floors && <Text style={error}>{errorText.floors}</Text>}
-                </View>
-              </View>
-              <View style={fixToText}>
-                <View style={textInput}>
-                  <View style={{ flexDirection: 'row' }}>
-                    <Text style={label}> Количество подъездов <Text style={{ color: 'red' }}>*</Text></Text>
-                  </View>
-                  <TextInput
-                    style={input}
-                    onChangeText={this.onChangePorches.bind(this)}
-                    placeholder='Введите..'
-                    value={porches}
-                    keyboardType='number-pad'
-                    editable={!submit}
-                  />
-                  {badEnter.porches && <Text style={error}>{errorText.porches}</Text>}
-                </View>
-              </View>
-              <View style={fixToText}>
-                <View style={textInput}>
-                  <View style={{ flexDirection: 'row' }}>
-                    <Text style={label}> Год ввода в эксплуатацию <Text style={{ color: 'red' }}>*</Text></Text>
-                  </View>
-                  <TextInput
-                    style={input}
-                    onChangeText={this.onChangeYear.bind(this)}
-                    placeholder='Введите..'
-                    value={year}
-                    keyboardType='number-pad'
-                    autoCompleteType='cc-exp-year'
-                    onEndEditing={() => this.onCheckYear(year)}
-                    editable={!submit}
-                  />
-                  {badEnter.year && <Text style={error}>{errorText.year}</Text>}
-                </View>
-              </View>
-              <View style={fixToText}>
-                <View style={textInput2}>
-                  <View style={{ flexDirection: 'row' }}>
-                    <Text style={labelDropdown}> Статус дома <Text style={{ color: 'red' }}>*</Text></Text>
-                  </View>
-                  <Dropdown
-                    data={dataStatus}
-                    onChangeText={this.onChangeStatus.bind(this)}
-                    value={status}
-                    disabled={submit}
-                  />
-                  {badEnter.status && <Text style={error}>{errorText.status}</Text>}
-                </View>
+        <Card containerStyle={cardStyle} >
+        {submit && <ActivityIndicator style={[indicator,{marginTop: h/2}]} size={50} color={ColorApp} />}
+          <View>
+            <View style={fixToText}>
+              <View style={textInput}>
+                <Text style={label}> Управляющий <Text style={{ color: 'red' }}>*</Text></Text>
+                <TextInput
+                  style={input}
+                  onChangeText={this.onChangeSupervisor.bind(this)}
+                  placeholder='Введите..'
+                  value={supervisor}
+                  editable={!submit}
+                />
+                <Dropdown
+                  data={user_options}
+                  onChangeText={this.onChoiceSupervisor.bind(this)}
+                  value={supervisor}
+                  containerStyle={[contStyle, { marginTop: -63, width: 30, alignSelf: 'flex-end' }]}
+                  pickerStyle={[dropdownStyle, inputMultiline, textInput, { marginLeft: -w * 0.78, height:200}]}
+                  dropdownPosition={0}
+                  disabled={submit}
+                />
+                {loadUser && <ActivityIndicator style={indicator} size={70} color={ColorApp} />}
+                {badEnter.supervisor && <Text style={error}>{errorText.supervisor}</Text>}
               </View>
             </View>
-          </Card>
-
-          <View style={{ alignItems: 'flex-end' }}>
-            <View style={button}>
-              <TouchableOpacity onPress={this.onSubmit.bind(this)} 
-              disabled={submit} >
-                <View style={buttonContainer}>
-                  <SvgXml
-                    xml={save}
-                    style={iconMin} fill='#fff' />
-                  <Text style={buttonTitle}>Сохранить</Text>
+            <View style={fixToText}>
+              <View style={textInput}>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={label2}> Город <Text style={{ color: 'red' }}>*</Text></Text>
                 </View>
-              </TouchableOpacity>
+                <Dropdown
+                  data={CityList}
+                  onChangeText={this.onChangeCity.bind(this)}
+                  value={city}
+                  useNativeDriver
+                  containerStyle={contStyle}
+                  pickerStyle={[dropdownStyle, inputMultiline]}
+                  dropdownPosition={0}
+                  disabled={submit}
+                />
+                {badEnter.city && <Text style={error}>{errorText.city}</Text>}
+              </View>
+            </View>
+            <View style={fixToText}>
+              <View style={textInput}>
+                <Text style={label2}> Улица <Text style={{ color: 'red' }}>*</Text></Text>
+                <Dropdown
+                  data={VladimirStreetList}
+                  onChangeText={this.onChangeStreet.bind(this)}
+                  value={street}
+                  containerStyle={contStyle}
+                  pickerStyle={[dropdownStyle, inputMultiline]}
+                  dropdownPosition={0}
+                  disabled={submit}
+                />
+                {badEnter.street && <Text style={error}>{errorText.street}</Text>}
+              </View>
+            </View>
+            <View style={fixToText}>
+              <View style={textInput}>
+                <Text style={label}> Номер дома <Text style={{ color: 'red' }}>*</Text></Text>
+                <TextInput
+                  style={input}
+                  onChangeText={this.onChangeHomeN.bind(this)}
+                  placeholder='Номер дома'
+                  value={homeN}
+                  keyboardType='visible-password'
+                  editable={!submit}
+                />
+                {badEnter.homeN && <Text style={error}>{errorText.homeN}</Text>}
+              </View>
+            </View>
+
+            <View style={fixToText}>
+              <View style={textInput}>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={label}> Количество квартир <Text style={{ color: 'red' }}>*</Text></Text>
+                </View>
+                <TextInput
+                  style={input}
+                  onChangeText={this.onChangeNumAppart.bind(this)}
+                  placeholder='Введите..'
+                  value={appartments}
+                  keyboardType='number-pad'
+                  editable={!submit}
+                />
+                {badEnter.appartments && <Text style={error}>{errorText.appartments}</Text>}
+              </View>
+            </View>
+            <View style={fixToText}>
+              <View style={textInput}>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={label}> Количество этажей <Text style={{ color: 'red' }}>*</Text></Text>
+                </View>
+                <TextInput
+                  style={input}
+                  onChangeText={this.onChangeFloors.bind(this)}
+                  placeholder='Введите..'
+                  value={floors}
+                  keyboardType='number-pad'
+                  editable={!submit}
+                />
+                {badEnter.floors && <Text style={error}>{errorText.floors}</Text>}
+              </View>
+            </View>
+            <View style={fixToText}>
+              <View style={textInput}>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={label}> Количество подъездов <Text style={{ color: 'red' }}>*</Text></Text>
+                </View>
+                <TextInput
+                  style={input}
+                  onChangeText={this.onChangePorches.bind(this)}
+                  placeholder='Введите..'
+                  value={porches}
+                  keyboardType='number-pad'
+                  editable={!submit}
+                />
+                {badEnter.porches && <Text style={error}>{errorText.porches}</Text>}
+              </View>
+            </View>
+            <View style={fixToText}>
+              <View style={textInput}>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={label}> Год ввода в эксплуатацию <Text style={{ color: 'red' }}>*</Text></Text>
+                </View>
+                <TextInput
+                  style={input}
+                  onChangeText={this.onChangeYear.bind(this)}
+                  placeholder='Введите..'
+                  value={year}
+                  keyboardType='number-pad'
+                  autoCompleteType='cc-exp-year'
+                  onEndEditing={() => this.onCheckYear(year)}
+                  editable={!submit}
+                />
+                {badEnter.year && <Text style={error}>{errorText.year}</Text>}
+              </View>
+            </View>
+            <View style={fixToText}>
+              <View style={textInput2}>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={labelDropdown}> Статус дома <Text style={{ color: 'red' }}>*</Text></Text>
+                </View>
+                <Dropdown
+                  data={dataStatus}
+                  onChangeText={this.onChangeStatus.bind(this)}
+                  value={status}
+                  disabled={submit}
+                />
+                {badEnter.status && <Text style={error}>{errorText.status}</Text>}
+              </View>
             </View>
           </View>
-          <View style={{ margin: 30 }}><Text> </Text></View>
+        </Card>
+
+        <View style={{ alignItems: 'flex-end' }}>
+          <View style={button}>
+            <TouchableOpacity onPress={this.onSubmit.bind(this)}
+              disabled={submit} >
+              <View style={buttonContainer}>
+                <SvgXml
+                  xml={save}
+                  style={iconMin} fill='#fff' />
+                <Text style={buttonTitle}>Сохранить</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View style={{ margin: 30 }}><Text> </Text></View>
       </ScrollView>
     </View>
     );
   }
 
+  private async onChangeSupervisor(supervisor: string) {
+    var { badEnter, errorText } = this.state
+    if (supervisor == ' ') { return }
+    if (!supervisor) {
+      badEnter.supervisor = true;
+      errorText.supervisor = 'Поле не заполнено!'
+      this.setState({ badEnter, errorText, supervisor, good: false });
+      return;
+    }
+    else if (supervisor.length > 2) {
+      badEnter.city = false;
+      this.setState({ supervisor, badEnter, loadUser: true });
+      try {
+        const { userLogin, token } = store.state;
+        var url = serverUrl + 'profile/search?Name='+supervisor
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
+        if (response.status == 200) {
+          const users: User[] = await response.json()
+          if (users.length != 0) {
+            var user_options: User_Op[] = [];
+            users.forEach(el => {
+              user_options.push({ value: el.uid, label: el.fullName});
+            })
+            console.log("Успех UsersSearch fetch: ", users)
+            this.setState({ user_options, loadUser: false })
+          }
+        }
+        if(response.status == 400){
+          console.log("Пользователь не найден: ", "status: 400")
+          this.setState({ loadUser: false })
+        }
+        else{
+          console.log("Ошибка: ", "response.status: " + response.status+" "+response.statusText+" "+response.text)
+          this.setState({ loadUser: false })
+        }
+      } catch (e) {
+        throw e
+      }
+    }
+    else {
+      badEnter.city = false;
+      this.setState({ supervisor, badEnter });
+    }
+  }
+  private onChoiceSupervisor(uid: string ) {
+    var { badEnter, errorText, user_options } = this.state
+    console.log("dropdown", "value: "+uid)
+    if (uid == ' ') { return }
+    if (!uid) {
+      badEnter.supervisor = true;
+      errorText.supervisor = 'Поле не заполнено!'
+      this.setState({ badEnter, errorText, uid, good: false });
+      return;
+    }
+    else {
+      badEnter.city = false;
+      var filtered = '';
+      var filter = user_options.find(x => x.value == uid)?.label
+      if(filter) filtered = filter
+      this.setState({ uid, supervisor: filtered, badEnter });
+    }
+  }
   private onChangeCity(city: string) {
     var { badEnter, errorText } = this.state
     if (city == ' ') { return }
@@ -331,8 +434,7 @@ class AddHomeScreen extends Component<any, State, Props> {
     this.setState({ porches, badEnter, good: true });
   }
   private onChangeYear(year: string) {
-    var badEnter = this.state.badEnter
-    var errorText = this.state.errorText
+    var {badEnter, errorText} = this.state
     if (!year) {
       badEnter.year = true;
       errorText.year = 'Поле не заполнено!'
@@ -345,43 +447,52 @@ class AddHomeScreen extends Component<any, State, Props> {
       errorText.year = 'Ввод только цифр!'
       this.setState({ badEnter, errorText, year, good: false });
       return;
+    }        
+    var date = new Date().getFullYear()
+    if (+year > date) {
+      badEnter.year = true;
+      errorText.year = 'Год не может быть больше текущего!'
+      this.setState({ year, badEnter, errorText, good: false });
+      return;
+    }
+    else if (+year < 1950) {
+      badEnter.year = true;
+      errorText.year = 'Год не может быть меньше 1950!'
+      this.setState({ year, badEnter, errorText, good: false });
+      return;
     }
     badEnter.year = false;
-    this.setState({ year, badEnter, good: true });
+    this.setState({ year, badEnter });
   }
   private onCheckYear(year: string) {
     var badEnter = this.state.badEnter
     var errorText = this.state.errorText
-    var date = new Date().getFullYear()
     if (year.length < 4 || year.length > 4) {
       badEnter.year = true;
       errorText.year = 'Год должен иметь длину в 4 знака!'
       this.setState({ badEnter, errorText, good: false });
     }
-    if (+year > date) {
-      badEnter.year = true;
-      errorText.year = 'Год не может быть больше текущего!'
-      this.setState({ badEnter, errorText, good: false });
-    }
-    else if (+year < 1950) {
-      badEnter.year = true;
-      errorText.year = 'Год не может быть меньше 1950!'
-      this.setState({ badEnter, errorText, good: false });
-    }
   }
   private onChangeStatus(status: string) {
+    var {badEnter, errorText} = this.state
+    badEnter.status = false;
     this.setState({ status });
   }
 
 
   private onSubmit() {
-    const { submit, city, street, homeN, appartments, floors, porches, year, status,
-      badEnter, errorText, good } = this.state
+    const { supervisor, city, street, homeN, appartments, floors, porches, year, status,
+      badEnter, errorText, uid } = this.state
     const { navigation } = this.props
     var $this = this;
     var obj, url, log: string, check = true;
-    //if (signup) {
 
+      if (!supervisor) {
+        badEnter.supervisor = true;
+        errorText.supervisor = 'Поле не заполнено!'
+        this.setState({ badEnter, errorText });
+        check = false;
+      }
     if (!city) {
       badEnter.city = true;
       errorText.city = 'Поле не заполнено!'
@@ -431,7 +542,7 @@ class AddHomeScreen extends Component<any, State, Props> {
       check = false;
     }
 
-    if (badEnter.city || badEnter.street || badEnter.homeN, badEnter.appartments ||
+    if (badEnter.supervisor || badEnter.city || badEnter.street || badEnter.homeN, badEnter.appartments ||
       badEnter.floors || badEnter.porches || badEnter.year || badEnter.status) {
       this.setState({ good: false });
       Alert.alert('Внимание', 'Заполните поля правильно!',
@@ -441,10 +552,10 @@ class AddHomeScreen extends Component<any, State, Props> {
 
     this.setState({ submit: true })
     const { userLogin, token } = store.state;
-    
+
     if (userLogin.fk_Role != Role.user) {
       obj = {
-        Manager: userLogin.uid,
+        Manager: uid,
         City: city,
         Street: street,
         HomeNumber: homeN,
@@ -455,7 +566,7 @@ class AddHomeScreen extends Component<any, State, Props> {
         Status: status == HomeStatus.Exploited ? 1 : 2,
         Fk_Role: userLogin.fk_Role,
       }
-      url = serverUrl+'home/create/';
+      url = serverUrl + 'home/create/';
       log = 'Добавить дом'
 
 
@@ -473,9 +584,9 @@ class AddHomeScreen extends Component<any, State, Props> {
             console.log('Успех ' + log + ' Post статус: ' + response.status + ' ok: ' + response.ok);
             console.log(response);
             $this.setClearState();
-            navigation.goBack();
+            return response.json();
           }
-          else if (response.status == 500){
+          else if (response.status == 500) {
             console.log('Server Error', "Status: " + response.status + ' ' + response.json())
           }
           else {
@@ -483,8 +594,11 @@ class AddHomeScreen extends Component<any, State, Props> {
             Alert.alert('Внимание', response.statusText + " Status: " + response.status + ' ' + response,
               [{ text: 'OK' }]);
           }
-        $this.setState({ submit: false });
-        return
+          $this.setState({ submit: false });
+          return
+        })
+        .then(function(data) {          
+          navigation.navigate(HOMEProfile, (data));
         })
         .catch(error => {
           console.log('Внимание', 'Ошибка ' + log + ' Post fetch: ' + error);
@@ -500,16 +614,16 @@ class AddHomeScreen extends Component<any, State, Props> {
           return
         });
     }
-    else{
-        Alert.alert('Внимание', 'У вас нет прав на выполнение данной операции',
-          [{ text: 'OK' }]);
+    else {
+      Alert.alert('Внимание', 'У вас нет прав на выполнение данной операции',
+        [{ text: 'OK' }]);
     }
   }
   private setClearState() {
-    this.setState({      
-    city: '', street: '', homeN: '', appartments: '', floors: '', porches: '',
-    year: year, status: '', good: true, submit: false,
-    badEnter: arr, errorText: arrTxt
+    this.setState({
+      supervisor: '', city: '', street: '', homeN: '', appartments: '', floors: '', porches: '',
+      year: year, status: '', good: true, submit: false,
+      badEnter: initAdrBool, errorText: initAdrTxt
     })
   }
 }

@@ -95,6 +95,7 @@ export interface adrBool {
   home: boolean
 };
 export interface adrHomeText {
+  supervisor: string,
   city: string,
   street: string,
   homeN: string,
@@ -105,6 +106,7 @@ export interface adrHomeText {
   status: string
 };
 export interface adrHomeBool {
+  supervisor: boolean,
   city: boolean,
   street: boolean,
   homeN: boolean,
@@ -114,6 +116,12 @@ export interface adrHomeBool {
   year: boolean, 
   status: boolean
 };
+
+export interface HomeData {
+  homeData: Home,
+  tantains: User[],
+  newTantains: User[],
+}
 
 export const initialUser: User = {
   uid: '',  fullName: '',
@@ -160,4 +168,13 @@ export const initArrColor: arrText = {
   surname: ColorApp,
   password: ColorApp,
   repeatPassword: ColorApp
+};
+
+export const initAdrTxt: adrHomeText = {
+  supervisor: '', city: '', street: '', homeN: '', appartments: '',
+  floors: '', porches: '', year: '', status: ''
+};
+export const initAdrBool: adrHomeBool = {
+  supervisor: false, city: false, street: false, homeN: false, appartments: false,
+  floors: false, porches: false, year: false, status: false
 };

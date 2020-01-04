@@ -10,6 +10,7 @@ export const AddHOME = 'AddHOME'
 
 //Tab 1
 export const HOMEProfile = 'HOMEProfile'
+export const HOMEScreen = 'HOMEScreen'
 export const TENTENScreen = 'TENTENScreen'
 export const AddGROUP = 'AddGROUP'
 export const AddADVERT = 'AddADVERT'
