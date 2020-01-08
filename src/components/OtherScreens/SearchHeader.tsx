@@ -69,6 +69,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 20,
     borderColor: ColorApp,
+    height: 40
   }
 })
 

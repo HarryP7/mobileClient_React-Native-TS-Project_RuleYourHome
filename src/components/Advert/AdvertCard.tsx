@@ -5,8 +5,9 @@ import { Category } from '../../enum/Enums'
 
 
 const AdvertCard = ({ data, onPress }: any) => {
-        const { dateStyle, container, h1, containerText, time, category, votings } = styles
-        const { title, fk_Category, createdAt, voting } = data
+        const { dateStyle, container, h1, containerText, time, category, voting } = styles
+        const { title, fk_Category, createdAt, votings } = data
+        //console.log("title: "+title+" voting "+ votings[0])
         return (
             <TouchableOpacity onPress={onPress}>
                 <Text style={dateStyle}>{toDate(createdAt)}</Text>
@@ -20,7 +21,7 @@ const AdvertCard = ({ data, onPress }: any) => {
                             fk_Category == 5 ? Category.Owners :
                             fk_Category == 6 ? Category.CommunityInfrastructure :
                             Category.Attention}</Text>
-                        {voting && <Text style={votings}>Голосование</Text>}
+                        {votings[0] && <Text style={voting}>Голосование</Text>}
                     </View>
                     <Text style={h1}> {title}</Text>
                 </View>
@@ -31,15 +32,17 @@ const AdvertCard = ({ data, onPress }: any) => {
     const toDate = (date: Date) => {
       var d = new Date(date);
       var day = d.getDate().toString();
+      var hours = (d.getHours()-3).toString();
+      day = +hours<0 ? (+day-1).toString(): day;
       day = day.length == 1  ? '0' + day : day ;
-      var month = d.getMonth().toString()
+      var month = (d.getMonth()+1).toString()
       month = month.length == 1 ? '0' + month : month;
       return day + '.' + month + '.' + d.getFullYear();
     }
     const toTime = (time: Date) => {
-        var date = new Date(time) ;
-        var hours = date.getHours().toString();
-        if(hours <'0') hours=(+hours+24).toString();
+        var date = new Date(time);
+        var hours = (date.getHours()-3).toString();
+        hours = +hours<0 ? (+hours+24).toString(): hours;
         hours = hours.length === 1 ? '0'+hours : hours;
         var minutes = date.getMinutes().toString();
         minutes = minutes.length === 1 ? '0'+minutes : minutes;
@@ -84,7 +87,7 @@ const AdvertCard = ({ data, onPress }: any) => {
             paddingVertical: 1,
             paddingHorizontal: 7
         },
-        votings: {
+        voting: {
             backgroundColor: '#2D3AF2',
             borderRadius: 6,
             color: '#fff',

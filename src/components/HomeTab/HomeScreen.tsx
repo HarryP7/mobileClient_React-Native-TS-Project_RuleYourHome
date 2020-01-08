@@ -9,7 +9,7 @@ import { HomeStatus, Role } from '../../enum/Enums';
 import { h, w, ColorApp, NoFoto, serverUrl, BackgroundImage } from '../../constants'
 import { AddGROUP, AUTH, REGISTRATION, GroupLIST, ADDRESSScreen, TENTENScreen, PROFILE } from '../../routes';
 import { Home, User, InitialHome, HomeData } from '../../interfaces'
-import { useGlobal, store } from '../../store'
+import { useGlobal, store, actions } from '../../store'
 import { Card, Badge, Divider } from 'react-native-elements'
 
 interface State {
@@ -36,8 +36,8 @@ class HomeScreen extends Component<any, State, Props> {
     try {
       const { userLogin, token } = store.state;
       var Fk_Home = userLogin.fk_Home;
-      console.log('componentDidMount token: ', token)
-      console.log('componentDidMount userLogin: ', userLogin)
+      console.log('token: ', token)
+      console.log('userLogin: ', userLogin)
       if ((token && userLogin.fk_Home && userLogin.isApprovedHome) ||
         (token && userLogin.fk_Home)) {
         const response = await fetch(serverUrl + 'home?Fk_Home=' + Fk_Home,
@@ -84,12 +84,12 @@ class HomeScreen extends Component<any, State, Props> {
     const { indicator, im, scrollView, screenWH } = globalStyles
     const { load, loadError, refreshing } = this.state
     var { userLogin, token } = store.state;
-    console.log('token: ', token)
-    console.log('load: ', load)
-    console.log('userLogin: ', userLogin)
     const reload = this.props.navigation.state.params
-    if(reload) this.onRefresh()
-    console.log('reload: ', reload)
+    if (reload) {
+      this.onRefresh()
+      console.log('reload: true')
+    }
+    console.log('userLogin.fk_Home: ' + userLogin.fk_Home + ' userLogin.isApprovedHome: ' + userLogin.isApprovedHome)
     return (<View>
       <Header title='Дом'
         leftIcon={menu}
@@ -156,7 +156,7 @@ class HomeScreen extends Component<any, State, Props> {
     );
   }
   private notApprovedHome(text: string) {
-    const { indicator, im, scrollView, h2 } = globalStyles
+    const { indicator, im, scrollView, h2, positionCard } = globalStyles
     const { refreshing } = this.state
     return (<View>
       <Image source={BackgroundImage} style={im}></Image>
@@ -167,7 +167,7 @@ class HomeScreen extends Component<any, State, Props> {
             <RefreshControl refreshing={refreshing} onRefresh={this.onRefresh.bind(this)} />
           }
         >
-          <View style={indicator}>
+          <View style={positionCard}>
             <Card containerStyle={{ paddingBottom: 20, borderRadius: 10 }} >
               <Image source={require('../../../icon/warning-shield.png')}
                 style={{ alignSelf: 'center' }} />
@@ -180,7 +180,7 @@ class HomeScreen extends Component<any, State, Props> {
     );
   }
   private notAddHome(text: string) {
-    const { indicator, buttonContainer, buttonTitle, im, h2 } = globalStyles
+    const { indicator, buttonContainer, buttonTitle, im, h2, positionCard } = globalStyles
     const { refreshing } = this.state
     const { navigation } = this.props
     const back = true;
@@ -192,7 +192,7 @@ class HomeScreen extends Component<any, State, Props> {
             <RefreshControl refreshing={refreshing} onRefresh={this.onRefresh.bind(this)} />
           }
         >
-          <View style={indicator}>
+          <View style={positionCard}>
             <Card containerStyle={{ paddingBottom: 20, borderRadius: 10 }} >
               <Image source={require('../../../icon/warning-shield.png')}
                 style={{ alignSelf: 'center' }} />
@@ -229,20 +229,20 @@ class HomeScreen extends Component<any, State, Props> {
       >
         <Image source={{ uri: imageUrl ? imageUrl.url : NoFoto }} style={images} />
         <Text style={[h1, { paddingBottom: 10 }]}>г. {city}, {street}, д. {homeNumber}</Text>
-          <Text style={[status, fk_Status == 1 ? homeStatusGood: homeStatusBad]}>
+        <Text style={[status, fk_Status == 1 ? homeStatusGood : homeStatusBad]}>
           {fk_Status == 1 ? HomeStatus.Exploited : HomeStatus.Emergency}</Text>
 
         <View style={sub}>
-          <TouchableOpacity onPress={() => 
-                localGroups.length ? navigation.navigate(GroupLIST, uid): navigation.navigate(AddGROUP, (uid))} >
+          <TouchableOpacity onPress={() =>
+            localGroups.length ? navigation.navigate(GroupLIST, uid) : navigation.navigate(AddGROUP, (uid))} >
             <View style={sectionContainer1}>
               <Text style={sectionTitle1}>Группы    {localGroups.length}</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity 
-            onPress={() => (approvedTentants.length || newTenants.length) && 
-                      navigation.navigate(TENTENScreen, {approvedTentants, newTenants, uid})
-                    } >
+          <TouchableOpacity
+            onPress={() => (approvedTentants.length || newTenants.length) &&
+              navigation.navigate(TENTENScreen, { approvedTentants, newTenants, uid })
+            } >
             <View style={sectionContainer1}>
               <Text style={sectionTitle1}>Жители   {approvedTentants.length}</Text>
             </View>
@@ -258,15 +258,14 @@ class HomeScreen extends Component<any, State, Props> {
           </TouchableOpacity>
         </View>
 
-        {userLogin.fk_Role != Role.user &&
+        {(userLogin.fk_Role != Role.user || userLogin.uid == fk_Manager)  &&
           <TouchableOpacity onPress={() => navigation.navigate(AddGROUP, (uid))} >
             <View style={sectionContainer}>
               <Text style={sectionTitle}>Добавить группу</Text>
             </View>
           </TouchableOpacity>
         }
-        
-        <Divider />
+
         <View style={sub}>
           <Text style={h3}>Управляющий дома: </Text>
           <TouchableOpacity
@@ -285,10 +284,50 @@ class HomeScreen extends Component<any, State, Props> {
 
   private async onRefresh() {
     this.setClearState();
+    this.UserReload()
     this.componentDidMount();
   }
   private setClearState() {
     this.setState({ data: InitialHome, load: false, refreshing: false, loadError: false })
+  }
+  private async UserReload() {
+    const { token, userLogin } = store.state
+    try {
+      if (token) {
+        const response = await fetch(serverUrl + 'profile?Uid=' + userLogin.uid,
+          {
+            method: 'GET', // *GET, POST, PUT, DELETE, etc.
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            }
+          })
+        const data: User = await response.json()
+        if (response.status == 200) {
+          actions.Login(token, data)
+          console.log('Успех fetch UserReload', data)
+        }
+        else if (response.status == 404) {
+          console.log('Внимание', 'Пользователь не найден uid=' + data.uid);
+          this.setState({ loadError: true })
+        }
+      }
+    } catch (error) {
+      console.log('Внимание', 'Ошибка UserReload' + ' Post fetch: ' + error);
+      if (error == 'TypeError: Network request failed') {
+        Alert.alert('Внимание', 'Сервер не доступен: ' + error, [{ text: 'OK' }]);
+
+        this.setState({ loadError: true })
+      }
+      else if (error.status == 404) {
+        console.log('Внимание', 'Пользователь не найден: ' + error, [{ text: 'OK' }]);
+      }
+      else {
+        Alert.alert('Внимание', 'Ошибка сервера: ' + error, [{ text: 'OK' }]);
+      }
+      this.setState({ loadError: true })
+      return
+    }
   }
 }
 

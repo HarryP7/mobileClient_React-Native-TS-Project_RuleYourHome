@@ -192,7 +192,7 @@ const globalStyles = StyleSheet.create({
   },
   images: {
     width: w,
-    height: w * 0.7,
+    height: w * 0.8,
     borderRadius: 10,
   },
   noImages: {
@@ -304,7 +304,7 @@ const globalStyles = StyleSheet.create({
   inputStyle: {
     fontSize: 16,
     paddingVertical: 5,
-    paddingHorizontal: 10,
+    paddingHorizontal: 5,
   },
   cardUsersStyle:{ 
     marginHorizontal: 7, 

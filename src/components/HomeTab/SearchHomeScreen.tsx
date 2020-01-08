@@ -108,7 +108,7 @@ class SearchHomeScreen extends React.PureComponent<any, State> {
           !loadError &&
           <ActivityIndicator style={indicator} size={50} color={ColorApp} />
         }
-        <View style={{margin: 30}}><Text></Text></View>
+        <View style={{margin: 50}}><Text></Text></View>
       </ScrollView>
     </View>
     );

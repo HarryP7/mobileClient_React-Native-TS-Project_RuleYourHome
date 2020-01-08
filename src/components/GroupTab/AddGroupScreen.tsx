@@ -16,6 +16,8 @@ import { backArrow } from '../../allSvg'
 import { useGlobal, store } from '../../store'
 import { globalStyles } from '../globalStyles';
 import { Card, Input } from 'react-native-elements';
+import { GroupPRO } from '../../routes';
+import { Group } from '../../interfaces';
 //import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 //import {Fab} from '@material-ui/core';
 //import Save from '@material-ui/icons/Save';
@@ -45,8 +47,11 @@ class AddGroupScreen extends Component<any, State, Props> {
 
   }
 
-  render() {
+  componentDidMount = () => {    
     console.log('Props AddGroupScreen', this.props)
+  }
+
+  render() {
     const { submit, title, status, badEnter, errorText, fieldColor } = this.state
     const { navigation } = this.props
     const { container, textInput, textInput2, input,
@@ -54,10 +59,8 @@ class AddGroupScreen extends Component<any, State, Props> {
     const { im, label, label2, indicator, cardStyle, inputMultiline, 
       contStyle, error, inputStyle } = globalStyles
     let dataStatus = [{
-      value: GroupStatus.Public,
-    }, {
-      value: GroupStatus.Pravite,
-    },];
+      value: GroupStatus.Public, }, {
+      value: GroupStatus.Pravite, },];
     return (<View>
       <Header title='Добавить группу'
         leftIcon={backArrow}
@@ -68,10 +71,8 @@ class AddGroupScreen extends Component<any, State, Props> {
       <View>
         <Image source={BackgroundImage} style={im}></Image></View>
       <ScrollView>
-        <View>
-        {submit && <ActivityIndicator style={indicator} size={70} color={ColorApp} />}
-        </View>
         <Card containerStyle={cardStyle} >
+        {submit && <ActivityIndicator style={indicator} size={70} color={ColorApp} />}
           <View style={fixToText}>
             <View style={textInput}>
               <View style={{ flexDirection: 'row' }}>
@@ -208,6 +209,14 @@ class AddGroupScreen extends Component<any, State, Props> {
       this.setState({ badEnter, errorText, title, good: false });
       
     }
+    if (!title) {
+      badEnter.title = true;
+      errorText.title = 'Поле не заполнено!'
+    }
+    if (!status) {
+      badEnter.status = true;
+      errorText.status = 'Поле не заполнено!'
+    }
     if (!title || !status) {
       Alert.alert('Внимание', 'Не все поля заполнены!',
         [{ text: 'OK' }],
@@ -215,7 +224,7 @@ class AddGroupScreen extends Component<any, State, Props> {
       );
       return;
     }
-    console.log("params" , "Fk_Home: " +navigation.state.params)
+    //console.log("params" , "Fk_Home: " +navigation.state.params)
     this.setState({ good: true, submit: true })
     obj = {
       Supervisor: store.state.userLogin.uid,
@@ -239,13 +248,14 @@ class AddGroupScreen extends Component<any, State, Props> {
         if (response.status == 200 || response.status == 201) {
           console.log('Успех ' + log + ' Post статус: ' + response.status + ' ok: ' + response.ok);
           console.log(response);
-          navigation.goBack();
+          $this.setClearState();
+          return response.json();
         }
         if (response.status == 500)
           console.log('Server Error', "Status: " + response.status + ' ' + response.json())
       })
-      .then(function () {
-
+      .then(function(data: Group) {          
+        navigation.navigate(GroupPRO, (data));
       })
       .catch(error => {
         Alert.alert('Внимание', 'Ошибка ' + log + ' Post fetch: ' + error,

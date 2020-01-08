@@ -56,6 +56,33 @@ export interface Group {
   editedAt: Date,
   removed: boolean
 }
+
+export interface Advert {
+  uid: string,
+  title: string,
+  text: string,
+  category: string,
+  voting: Voting[]
+}
+export interface Voted {
+  fk_User: string,
+  fk_Voting: string
+}
+export interface Voting {
+  uid: string,
+  title: string,
+  options: Answer[],
+  isMulti: boolean,
+  yourOption: string,
+  voteds: Voted[],  
+  totalVotes: number
+}
+export interface Answer {
+  uid: string,
+  option: string,
+  count: number
+}
+
 export interface AuthData {
   token: string,
   userLogin: User,
@@ -100,9 +127,9 @@ export interface adrHomeText {
   street: string,
   homeN: string,
   appartments: string,
-  floors: string, 
+  floors: string,
   porches: string,
-  year: string, 
+  year: string,
   status: string
 };
 export interface adrHomeBool {
@@ -111,9 +138,9 @@ export interface adrHomeBool {
   street: boolean,
   homeN: boolean,
   appartments: boolean,
-  floors: boolean, 
+  floors: boolean,
   porches: boolean,
-  year: boolean, 
+  year: boolean,
   status: boolean
 };
 
@@ -123,8 +150,23 @@ export interface HomeData {
   newTantains: User[],
 }
 
+export interface AdvBool {
+  title: boolean,
+  text: boolean,
+  category: boolean,
+  voting: VotingBool[]
+}
+export interface VotingBool {
+  question: boolean,
+  answer: AnswerBool[],
+}
+export interface AnswerBool {
+  answer: boolean,
+}
+
+
 export const initialUser: User = {
-  uid: '',  fullName: '',
+  uid: '', fullName: '',
   avatar: {
     uid: '',
     url: 'https://docplus.kg/img/noavatar.png',
@@ -140,11 +182,11 @@ export const initialUser: User = {
 
 export const InitialImage = { uid: '', url: '', removed: false, createdAt: '' }
 export const InitialHome: Home = {
-      uid: '', city: '', street: '', homeNumber: '', fk_Manager: '', fk_Image: '',
-      fk_Status: 0, appartaments: 0, floors: 0, porches: 0, yearCommissioning: '',
-      imageUrl: InitialImage, createdAt: new Date, editedAt: new Date, removed: false, tenants: [],
-      localGroups: [], manager: initialUser
-    }
+  uid: '', city: '', street: '', homeNumber: '', fk_Manager: '', fk_Image: '',
+  fk_Status: 0, appartaments: 0, floors: 0, porches: 0, yearCommissioning: '',
+  imageUrl: InitialImage, createdAt: new Date, editedAt: new Date, removed: false, tenants: [],
+  localGroups: [], manager: initialUser
+}
 export const initArrBool: arrBool = {
   login: false,
   email: false,
@@ -177,4 +219,68 @@ export const initAdrTxt: adrHomeText = {
 export const initAdrBool: adrHomeBool = {
   supervisor: false, city: false, street: false, homeN: false, appartments: false,
   floors: false, porches: false, year: false, status: false
+};
+
+
+export const initAdvAnswerBool: AnswerBool = {
+  answer: false,
+};
+export const initAdvVotingBool: VotingBool = {
+  question: false,
+  answer: [initAdvAnswerBool],
+};
+export const initAdvBool: AdvBool = {
+  title: false,
+  text: false,
+  category: false,
+  voting: [initAdvVotingBool],
+};
+
+
+export const initAdvAnswer: Answer = {
+  uid: '',
+  option: '',
+  count: 0
+};
+export const initVoted: Voted = {  
+  fk_User: '',
+  fk_Voting: ''
+}
+export const initAdvVoting: Voting = {
+  uid: '',
+  title: '',
+  options: [initAdvAnswer],
+  isMulti: false,
+  yourOption: '',
+  voteds: [initVoted],  
+  totalVotes: 0
+};
+export const initAdvText: Advert = {
+  uid: '',
+  text: '',
+  title: '',
+  category: '',
+  voting: [initAdvVoting],
+};
+
+export const advAnswer: Answer = {
+  uid: '', 
+  option: '',
+  count: 0
+};
+export const advVoting: Voting = {
+  uid: '', 
+  title: '',
+  options: [initAdvAnswer],
+  isMulti: false,
+  yourOption: '',
+  voteds: [initVoted],  
+  totalVotes: 0
+};
+export const advert: Advert = {
+  uid: '', 
+  text: '',
+  title: '',
+  category: '',
+  voting: [initAdvVoting],
 };

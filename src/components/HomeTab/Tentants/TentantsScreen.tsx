@@ -41,7 +41,10 @@ class TentantsScreen extends PureComponent<any, State, Props> {
     var $this = this
     const { userLogin, token } = store.state;
     var { approvedTentants, newTenants, uid } = this.props.navigation.state.params
-    if (!uid) return
+    if (!uid) {
+      Alert.alert('Внимание', 'uid: ' + uid, [{ text: 'OK' }]);
+      return
+      }
     this.setState({ approvedTentants, newTenants, loadError: true })
     console.log('componentDidMount approvedTentants: ', approvedTentants)
     console.log('componentDidMount newTenants: ', newTenants)
@@ -116,15 +119,16 @@ class TentantsScreen extends PureComponent<any, State, Props> {
         <Header title='Жители дома'
           leftIcon={backArrow}
           onPressLeft={() => {
-            if (userLogin.fk_Role == Role.admin){
-              navigation.navigate(NAVIGATIONAdmin, reload);
-            }
-            else if (userLogin.fk_Role == Role.moderator){
-              navigation.navigate(NAVIGATIONAdmin, reload);
-            }
-            else if (userLogin.fk_Role == Role.user){
-              navigation.navigate(NAVIGATIONUser, reload);
-            };
+            // if (userLogin.fk_Role == Role.admin){
+            //   navigation.navigate(NAVIGATIONAdmin, reload);
+            // }
+            // else if (userLogin.fk_Role == Role.moderator){
+            //   navigation.navigate(NAVIGATIONAdmin, reload);
+            // }
+            // else if (userLogin.fk_Role == Role.user){
+            //   navigation.navigate(NAVIGATIONUser, reload);
+            // };
+            navigation.goBack()
           }
           } //navigation.navigate(HOMEScreen, true)
           rightIcon={search}

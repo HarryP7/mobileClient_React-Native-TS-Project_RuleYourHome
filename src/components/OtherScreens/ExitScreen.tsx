@@ -14,7 +14,7 @@ import { BackgroundImage } from '../../constants';
 class ExitScreen extends PureComponent<any> {
 
   render() {
-    const { indicator, button2, buttonContainer, buttonTitle, im, h2 } = globalStyles
+    const {  buttonContainer, buttonTitle, im, h2, positionCard } = globalStyles
     const { navigation } = this.props
     return ( <View>
       <Header title={'Выход'}
@@ -27,7 +27,7 @@ class ExitScreen extends PureComponent<any> {
         <View>
       <Image source={BackgroundImage} style={im}></Image>
       </View>
-      <View style={indicator}>
+      <View style={positionCard}>
         <Card containerStyle={{ paddingBottom: 20, borderRadius: 10 }} >
           <Image source={require('../../../icon/doorOut.png')}
             style={{ alignSelf: 'center' }} />

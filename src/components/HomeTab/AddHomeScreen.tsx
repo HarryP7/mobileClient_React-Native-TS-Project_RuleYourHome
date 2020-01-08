@@ -50,9 +50,12 @@ class AddHomeScreen extends Component<any, State, Props> {
     year: year, status: HomeStatus.Exploited, good: true, submit: false, user_options: [],
     badEnter: initAdrBool, errorText: initAdrTxt, loadUser: false
   } as State
+  
+  componentDidMount = () => {    
+    console.log('Props AddHomeScreen', this.props)
+  }
 
   render() {
-    console.log('Props AddHomeScreen', this.props)
     const { submit, supervisor, city, street, homeN, appartments, floors, porches, year,
       good, status, badEnter, errorText, user_options, loadUser } = this.state
     const { navigation } = this.props
@@ -300,7 +303,7 @@ class AddHomeScreen extends Component<any, State, Props> {
   }
   private onChoiceSupervisor(uid: string ) {
     var { badEnter, errorText, user_options } = this.state
-    console.log("dropdown", "value: "+uid)
+   // console.log("dropdown", "value: "+uid)
     if (uid == ' ') { return }
     if (!uid) {
       badEnter.supervisor = true;
@@ -608,7 +611,7 @@ class AddHomeScreen extends Component<any, State, Props> {
             $this.setState({ submit: false })
           }
           else {
-            Alert.alert('Внимание', 'Ошибка входа: ' + error, [{ text: 'OK' }]);
+            Alert.alert('Внимание', 'Ошибка: ' + error, [{ text: 'OK' }]);
             $this.setState({ submit: false })
           }
           return

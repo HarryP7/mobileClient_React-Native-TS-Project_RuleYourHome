@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator, Button, RefreshControl
+  StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator, Button, RefreshControl, Alert
 } from 'react-native';
 import { Header, globalStyles } from '..';
 import { backArrow } from '../../allSvg'
@@ -48,8 +48,21 @@ class HomeProfile extends Component<any, State, Props> {
           this.setState({ loadError: true })
         }
       }
-    } catch (e) {
-      throw e
+    } catch (error) {
+      console.log('Внимание', 'Ошибка ' + logAction + ' Post fetch: ' + error);
+      if (error == 'TypeError: Network request failed') {
+        Alert.alert('Внимание', 'Сервер не доступен: ' + error, [{ text: 'OK' }]);
+
+        this.setState({ loadError: true })
+      }
+      else if (error.status == 404) {
+        console.log('Внимание', 'Дом не найден: ' + error, [{ text: 'OK' }]);
+      }
+      else {
+        Alert.alert('Внимание', 'Ошибка сервера: ' + error, [{ text: 'OK' }]);
+      }
+      this.setState({ loadError: true })
+      return
     }
   }
   render() {
@@ -92,7 +105,7 @@ class HomeProfile extends Component<any, State, Props> {
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => (approvedTentants.length || newTenants.length) &&
-                    navigation.navigate(TENTENScreen, { approvedTentants, newTenants })
+                    navigation.navigate(TENTENScreen, { approvedTentants, newTenants, uid })
                   } >
                   <View style={sectionContainer1}>
                     <Text style={sectionTitle1}>Жители   {approvedTentants.length}</Text>

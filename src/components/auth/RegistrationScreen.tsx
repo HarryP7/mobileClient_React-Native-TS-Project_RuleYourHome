@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import {
   StyleSheet, ScrollView, View, Text, TouchableOpacity, TextInput, Alert,
-  ActivityIndicator, Picker, Image
+  ActivityIndicator, Picker, Image, RefreshControl
 } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { user, homeLoc, lock, lockRep, shield } from '../../allSvg'
 import { Header, globalStyles } from '..';
 import { h, w, ColorApp, serverUrl, BackgroundImage } from '../../constants'
 import { backArrow } from '../../allSvg'
-import { User, arrText, arrBool } from '../../interfaces'
+import { User, arrText, arrBool, initArrBool, initArrTxt, initArrColor } from '../../interfaces'
 import { actions } from '../../store'
 import { ADDRESSScreen } from '../../routes';
 import { Icon, Card } from 'react-native-elements'
@@ -19,43 +19,19 @@ interface AuthData {
   token: string,
   userLogin: User,
 }
-var arrTxt: arrText = {
-  login: '',
-  email: '',
-  name: '',
-  surname: '',
-  password: '',
-  repeatPassword: ''
-};
-var arr: arrBool = {
-  login: false,
-  email: false,
-  name: false,
-  surname: false,
-  password: false,
-  repeatPassword: false
-};
-var arrColor: arrText = {
-  login: ColorApp,
-  email: ColorApp,
-  name: ColorApp,
-  surname: ColorApp,
-  password: ColorApp,
-  repeatPassword: ColorApp
-};
 
 class RegistrationScreen extends Component<any, State, Props> {
   state = {
     login: '', email: '', name: '', surname: '',
     password: '', repeatPassword: '', color: ColorApp,
-    good: true, passGood: false, submit: false, disBtn: true,
-    badEnter: arr, errorText: arrTxt, colorIcon: arrColor,
+    good: true, passGood: false, submit: false, disBtn: true, refreshing: false,
+    badEnter: initArrBool, errorText: initArrTxt, colorIcon: initArrColor
   }
 
   render() {
     console.log('Props RegistrationScreen', this.props)
     const { login, email, name, surname, password, color, repeatPassword,
-      badEnter, errorText, colorIcon, passGood, submit, good, disBtn } = this.state
+      badEnter, errorText, colorIcon, passGood, submit, good, disBtn, refreshing } = this.state
     const { navigation } = this.props
     const { fixToText, icon, textInput, input, button, buttonContainer, buttonTitle, indicator,
       link, error, paddingBottom } = locStyles
@@ -76,7 +52,10 @@ class RegistrationScreen extends Component<any, State, Props> {
 
         <View >
           <Image source={BackgroundImage} style={im}></Image></View>
-        <ScrollView>
+        <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={this.setClearState.bind(this)} />
+        }>
           <Card containerStyle={cardStyle} >
             {submit && <ActivityIndicator style={indicator} size={70} color={ColorApp} />}
             <View>
@@ -98,10 +77,10 @@ class RegistrationScreen extends Component<any, State, Props> {
               <View style={fixToText}>
                 <Icon name="email" size={40} style={icon}
                   containerStyle={{ marginLeft: -2, marginRight: 8 }}
-                  color={ColorApp}></Icon>
+                  color={colorIcon.email}></Icon>
                 <View style={textInput}>
                   <TextInput
-                    style={input}
+                    style={[input, { borderColor: colorIcon.email }]}
                     onChangeText={this.onChangeEmail.bind(this)}
                     placeholder='Email'
                     autoCompleteType='email'
@@ -146,7 +125,7 @@ class RegistrationScreen extends Component<any, State, Props> {
                 <SvgXml xml={lock} style={icon} fill={colorIcon.password} />
                 <View style={textInput}>
                   <TextInput
-                    style={input}
+                    style={[input, { borderColor: colorIcon.password }]}
                     onChangeText={this.onChangePassword.bind(this)}
                     placeholder='Пароль'
                     autoCompleteType='password'
@@ -164,7 +143,7 @@ class RegistrationScreen extends Component<any, State, Props> {
                   fill={colorIcon.repeatPassword} />
                 <View style={textInput}>
                   <TextInput
-                    style={input}
+                    style={[input, { borderColor: colorIcon.repeatPassword }]}
                     onChangeText={this.onChangeRepeatPassword.bind(this)}
                     placeholder='Повторите пароль'
                     autoCompleteType={'password'}
@@ -210,8 +189,7 @@ class RegistrationScreen extends Component<any, State, Props> {
   }
 
   private onChangeLogin(login: string) {
-    var badEnter = this.state.badEnter
-    var errorText = this.state.errorText
+    var {badEnter, errorText, colorIcon} = this.state
     if (login == ' ') { return }
     if (!login) {
       badEnter.login = true;
@@ -226,12 +204,12 @@ class RegistrationScreen extends Component<any, State, Props> {
     }
   }
   private onCheckLogin(login: string) {
-    var badEnter = this.state.badEnter
-    var errorText = this.state.errorText
+    var {badEnter, errorText, colorIcon} = this.state
     if (login.trim().length < 4 || login.trim().length > 20) {
       badEnter.login = true;
       errorText.login = 'Логин должен быть длиной от 4 до 20 символов'
-      this.setState({ badEnter, errorText, login, good: false, disBtn: true });
+      colorIcon.login = "red"
+      this.setState({ badEnter, errorText, login,colorIcon, good: false, disBtn: true });
       return;
     }
     else {
@@ -240,33 +218,35 @@ class RegistrationScreen extends Component<any, State, Props> {
     }
   }
   private onChangeEmail(email: string) {
-    var badEnter = this.state.badEnter
-    var errorText = this.state.errorText
+    var {badEnter, errorText, colorIcon} = this.state
     if (email == ' ') { return }
     if (!email) {
       badEnter.email = true;
       errorText.email = 'Поле не заполнено'
-      this.setState({ badEnter, errorText, email, good: false, disBtn: true });
+      colorIcon.email = 'red'
+      this.setState({ badEnter, errorText, colorIcon, email, good: false, disBtn: true });
       return;
     }
     else {
+      colorIcon.email = ColorApp
       badEnter.email = false;
       this.setState({ email, badEnter });
       this.checkFields()
     }
   }
   private onCheckEmail(email: string) {
-    var badEnter = this.state.badEnter
-    var errorText = this.state.errorText
+    var {badEnter, errorText, colorIcon} = this.state
     var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
     if (reg.test(email.trim()) == false) {
       badEnter.email = true;
       errorText.email = 'Введите корректный e-mail'
+      colorIcon.email = 'red'
       this.setState({ badEnter, errorText, email, good: false, disBtn: true });
       return;
     }
     else {
       badEnter.email = false;
+      colorIcon.email = 'green'
       this.setState({ email: email.trim(), badEnter });
       this.checkFields()
     }
@@ -312,7 +292,7 @@ class RegistrationScreen extends Component<any, State, Props> {
     }
     else {
       badEnter.surname = false;
-      this.setState({ surname});
+      this.setState({ surname });
       this.checkFields()
     }
   }
@@ -349,7 +329,10 @@ class RegistrationScreen extends Component<any, State, Props> {
         this.setState({ badEnter, errorText, colorIcon, passGood: false, good: false, disBtn: true });
       }
     }
-    this.setState({ password: password.trim() });
+    else {
+      colorIcon.password = ColorApp
+    }
+    this.setState({ password: password.trim(), colorIcon });
     this.checkFields()
   }
   private onCheckPass(pass: string) {
@@ -376,15 +359,16 @@ class RegistrationScreen extends Component<any, State, Props> {
       colorIcon.repeatPassword = 'green'
       this.setState({ badEnter, colorIcon, passGood: true });
     }
-    else if (pass.trim().length == repeatPassword.trim().length) {
+    else if (pass.trim().length <= repeatPassword.trim().length) {
       badEnter.repeatPassword = true;
       errorText.repeatPassword = 'Пароли не совпадают'
       colorIcon.repeatPassword = 'red'
       this.setState({ badEnter, errorText, colorIcon, passGood: false, good: false, disBtn: true });
     }
     else {
+      colorIcon.repeatPassword = ColorApp
       badEnter.repeatPassword = false;
-      this.setState({ badEnter });
+      this.setState({ badEnter, colorIcon });
       this.checkFields()
     }
     this.setState({ repeatPassword: repeatPassword.trim() });
@@ -450,7 +434,7 @@ class RegistrationScreen extends Component<any, State, Props> {
         [{ text: 'OK' }],
         { cancelable: false },
       );
-      this.setState({disBtn: true});
+      this.setState({ disBtn: true });
       return;
     }
 
@@ -486,9 +470,8 @@ class RegistrationScreen extends Component<any, State, Props> {
       Password: password,
       Role: 2
     }
-    url = serverUrl+'auth/signup/';
+    url = serverUrl + 'auth/signup/';
     log = 'Регистрации'
-    debugger
 
     this.setState({ submit: true, disBtn: true })
     fetch(url, {
@@ -497,7 +480,7 @@ class RegistrationScreen extends Component<any, State, Props> {
         'Accept': "application/json",
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(obj), 
+      body: JSON.stringify(obj),
     })
       .then(function (response) {
         if (response.status == 200 || response.status == 201) {
@@ -561,10 +544,10 @@ class RegistrationScreen extends Component<any, State, Props> {
       repeatPassword: ColorApp
     };
     this.setState({
-      login: '', name: '', surname: '',
+      login: '', email: '', name: '', surname: '',
       password: '', repeatPassword: '', color: ColorApp,
-      good: true, passGood: false, submit: false,
-      badEnter: arr, colorIcon: arrColor,
+      good: true, passGood: false, submit: false, disBtn: true,
+      badEnter: arr, errorText: initArrTxt, colorIcon: arrCol
     })
   }
 }

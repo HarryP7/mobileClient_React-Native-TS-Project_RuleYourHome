@@ -1,72 +1,71 @@
 import React, { Component } from 'react';
 import {
   StyleSheet, ScrollView, View, Text, TouchableOpacity,
-  TextInput, Alert, Switch, StatusBar
+  TextInput, Alert, Switch, StatusBar, Image, SafeAreaView, ActivityIndicator
 } from 'react-native';
 import { Card, Input, CheckBox, Icon } from 'react-native-elements'
 import { SvgXml } from 'react-native-svg';
 import { save, add } from '../../allSvg'
 import { Header } from '..';//, styles 
 import { Dropdown } from 'react-native-material-dropdown';
-import { h, w, ColorApp, serverUrl } from '../../constants'
+import { h, w, ColorApp, serverUrl, BackgroundImage } from '../../constants'
 import { Category } from '../../enum/Enums'
 import { backArrow } from '../../allSvg'
-import SafeAreaView from 'react-native-safe-area-view';
 import { globalStyles } from '..';
-//import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-//import {Fab} from '@material-ui/core';
-//import Save from '@material-ui/icons/Save';
+import { store } from '../../store';
+import { Avatar, Button, Title, Paragraph,  } from 'react-native-paper';
+import { Voting, AdvBool, Advert, Answer, initAdvBool, initAdvText } from '../../interfaces';
 
 interface Props { }
-interface State { }
-export interface AdvTxt {
+
+interface State {
   title: string,
   text: string,
   category: string,
-  question: string,
-  answer: string,
+  voting: Voting[],
+  good: boolean,
+  submit: boolean,
+  badEnter: AdvBool,
+  errorText: Advert,
+  addVoting: boolean
 }
-export interface AdvBool {
-  title: boolean,
-  text: boolean,
-  category: boolean,
-  question: boolean,
-  answer: boolean,
-}
-var arrText: AdvTxt = {
-  text: '',
+const initAdvAnswer: Answer = {
+  uid: '',  
+  option: '',
+  count: 0
+};
+const initAdvVoting: Voting = {
+  uid: '',  
   title: '',
-  category: '',
-  question: '',
-  answer: '',
+  options: [initAdvAnswer],
+  isMulti: false,
+  yourOption: '',
+  voteds:[],  
+  totalVotes: 0
 };
-var arr: AdvBool = {
-  title: false,
-  text: false,
-  category: false,
-  question: false,
-  answer: false,
-};
+var initVoting: Voting[] = [];
+initVoting.push(initAdvVoting)
 
+var initState = {
+  text: '', title: '', category: 'Выберите категорию..', voting: initVoting.slice(),
+  good: true, submit: false, badEnter: initAdvBool, errorText: initAdvText, addVoting: true,
+}
 
 class AddAdvertScreen extends Component<any, State, Props> {
-  state = {
-    text: '', title: '', category: '', question: '',
-    answer: '', status: '', good: true, passGood: false, submit: false,
-    badEnter: arr, errorText: arrText, checked: false, isMulti: false
+  state = initState as State
 
+  componentDidMount = () => {
+    console.log('Props AddAdvertScreen', this.props)
   }
 
   render() {
-    console.log('Props AddAdvertScreen', this.props)
-    const { text, title, badEnter, errorText, answer,
-      good, status, checked } = this.state
+    const { text, title, category, voting, badEnter, errorText, good, addVoting, submit } = this.state
     const { navigation } = this.props
     const { container, fixToText, label, label2, label4, addPosition, textInput, textInput2,
-      iconButton,inputMultiline, button, buttonContainer, sectionTitle, styleSwitch, 
-      error } = styles
-    const { inputStyle,} = globalStyles
-    let dataStatus = [{
+      iconButton, inputMultiline, button, buttonContainer, error,sectionTitle, styleSwitch, iconButton2
+    } = styles
+    const { inputStyle, imScroll, cardUsersStyle,  dropdownStyle, indicator } = globalStyles
+    let dataCategory = [{
       value: Category.Repairs }, {
       value: Category.EngineeringWorks }, {
       value: Category.Overhaul }, {
@@ -82,9 +81,11 @@ class AddAdvertScreen extends Component<any, State, Props> {
           this.setClearState();
           navigation.goBack();
         }} />
+      <View>
+        <Image source={BackgroundImage} style={imScroll}></Image></View>
       <ScrollView>
         <SafeAreaView>
-          <View style={container}>
+          <Card containerStyle={cardUsersStyle} >          
             <View style={fixToText}>
               <View style={textInput}>
                 <View style={{ flexDirection: 'row' }}>
@@ -98,8 +99,9 @@ class AddAdvertScreen extends Component<any, State, Props> {
                   multiline={true}
                   numberOfLines={1}
                   value={title}
-                  errorMessage={badEnter.title ? 'Поле не заполнено!' : ''}
+                  errorMessage={badEnter.title ? errorText.title : ''}
                   errorStyle={error}
+                  disabled={submit}
                 />
               </View>
             </View>
@@ -118,6 +120,8 @@ class AddAdvertScreen extends Component<any, State, Props> {
                   value={text}
                   textAlignVertical='top'
                   errorMessage={badEnter.text ? 'Поле не заполнено!' : ''}
+                  errorStyle={error}
+                  disabled={submit}
                 />
               </View>
             </View>
@@ -128,43 +132,46 @@ class AddAdvertScreen extends Component<any, State, Props> {
                   <Text style={label2}> Категория <Text style={{ color: 'red' }}>*</Text></Text>
                 </View>
                 <Dropdown
-                  data={dataStatus}
-                  onChangeText={this.onChangeStatus.bind(this)}
-                  value={status}
-                  pickerStyle={inputMultiline}
+                  data={dataCategory}
+                  onChangeText={this.onChangeCategory.bind(this)}
+                  value={category}
+                  dropdownPosition={0}
+                  pickerStyle={[dropdownStyle, inputMultiline]}                  
+                  disabled={submit}
                 />
                 {badEnter.category && <Text style={error}>Поле не заполнено!</Text>}
-                {/* placeholder='Выберите статус..' */}
               </View>
             </View>
-          </View>
-          <View >
-            <TouchableOpacity onPress={() => this.setState({ checked: !checked })}
+          </Card>
+          <Card containerStyle={[cardUsersStyle, { marginTop: 5 }]} >
+            <TouchableOpacity onPress={() => this.setState({ addVoting: !addVoting })}
               style={addPosition}>
               <Switch
                 style={styleSwitch}
-                value={checked}
-                onValueChange={() => this.setState({ checked: !checked })}
+                value={addVoting}
+                onValueChange={() => this.setState({ addVoting: !addVoting })}
                 thumbColor='green'
-              ></Switch>
-              <Text style={label4}>Добавить голосование</Text>
+                disabled={submit}
+              />
+              <Text style={label4}> Добавить голосование</Text>
             </TouchableOpacity>
-          </View>
+          </Card>
           {/* <CheckBox title='Добавить голосование'
             checked={checked}
             onPress={() => this.setState({ checked: !checked })}
             checkedColor='green'
             center
           ></CheckBox> */}
-          {checked && this.addVotingPress()}
+          {addVoting && this.addVotingPress()}
 
           <View style={{ alignItems: 'flex-end' }}>
             <View style={button}>
-              <TouchableOpacity onPress={this.onSubmit.bind(this)} >
+              <TouchableOpacity onPress={this.onSubmit.bind(this)}               
+              disabled={submit}>
                 <View style={buttonContainer}>
                   <SvgXml
                     xml={save}
-                    style={iconButton} fill='#fff' />
+                    style={iconButton2} fill='#fff' />
                   <Text style={sectionTitle}>Сохранить</Text>
                 </View>
               </TouchableOpacity>
@@ -179,140 +186,233 @@ class AddAdvertScreen extends Component<any, State, Props> {
   }
 
   private addVotingPress() {
-    const { text, title, category, question, answer,
-      good, status, checked, isMulti } = this.state
+    const { voting, submit } = this.state
     const { navigation } = this.props
-    const { container, fixToText, label, label4, textInput, containerStyle,
-      iconButton, inputMultiline, advertContainer, addPosition } = styles
-    const {inputStyle,} = globalStyles
+    const { container, fixToText, label, label4,label5, textInput, containerStyle, iconButton1,
+      iconButton, inputMultiline, votingContainer, addPosition, top } = styles
+    const { inputStyle, cardUsersStyle, indicator, label3 } = globalStyles
     return <View>
-      <View style={advertContainer}>
-        <View style={fixToText}>
-          <View style={textInput}>
-            <View style={{ flexDirection: 'row' }}>
-              <Text style={label}> Вопрос <Text style={{ color: 'red' }}>*</Text></Text>
+      {voting.map((item: Voting, idV: number) => {
+        return <View style={votingContainer}>
+        {submit && <ActivityIndicator key={idV} style={indicator} size={50} color={ColorApp} />}
+          <View style={fixToText}>
+            <View style={textInput}>
+              <View style={{ flexDirection: 'row' }}>
+                <Text style={label}> Вопрос <Text style={{ color: 'red' }}>*</Text></Text>
+              </View>
+              <Input
+                key={idV}
+                inputContainerStyle={inputMultiline}
+                inputStyle={inputStyle}
+                onChangeText={this.onChangeQuestion.bind(this, idV)}
+                placeholder='Введите вопрос..'
+                multiline={true}
+                numberOfLines={1}
+                value={item.title}
+                disabled={submit}
+              />
             </View>
-            <Input
-              inputContainerStyle={inputMultiline}
-              inputStyle={inputStyle}
-              onChangeText={this.onChangeTitle.bind(this)}
-              placeholder='Введите вопрос..'
-              multiline={true}
-              numberOfLines={1}
-              value={title}
-            />
           </View>
-        </View>
-        <View style={fixToText}>
-          <View style={textInput}>
-            <View style={{ flexDirection: 'row' }}>
-              <Text style={label}> Вариант ответа <Text style={{ color: 'red' }}>*</Text></Text>
+          {item.options.map((el: Answer, idAns: number) => {
+            return <View style={fixToText}>
+              <View style={textInput}>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={label5}> Вариант ответа <Text style={{ color: 'red' }}>*</Text></Text>
+                </View>
+                <Input
+                  key={idAns}
+                  inputContainerStyle={inputMultiline}
+                  inputStyle={inputStyle}
+                  onChangeText={this.onChangeAnswer.bind(this, idV, idAns)}
+                  placeholder='Введите текст..'
+                  multiline={true}
+                  numberOfLines={1}
+                  value={el.option}
+                  disabled={submit}
+                />
+              </View>
             </View>
-            <Input
-              inputContainerStyle={inputMultiline}
-              inputStyle={inputStyle}
-              onChangeText={this.onChangeText.bind(this)}
-              placeholder='Введите текст..'
-              multiline={true}
-              numberOfLines={1}
-              value={text}
-            />
-          </View>
-        </View>
+          })
+          }
 
+          <TouchableOpacity style={[addPosition, top]}
+            onPress={this.addMoreAnswerPress.bind(this, idV)} 
+            disabled={submit}>
+            <SvgXml
+              xml={add}
+              style={iconButton1} fill='green' />
+            <Text >   Добавить еще один вариант ответа</Text>
+          </TouchableOpacity>
+          <CheckBox title='Многовариантное голосование'
+            checked={item.isMulti}
+            onPress={() => {
+              voting[idV].isMulti = !item.isMulti
+              this.setState({ voting })
+            }}
+            checkedColor='green'
+            containerStyle={containerStyle}
+          />
+        </View>
+      })
+      }
+
+      {/* <Card containerStyle={cardUsersStyle} >
         <TouchableOpacity style={addPosition}
-          onPress={this.onSubmit.bind(this)} >
+          onPress={this.addMoreVotingPress.bind(this)} 
+          disabled={submit} >
           <SvgXml
             xml={add}
             style={iconButton} fill='green' />
-          <Text >   Добавить еще один вариант ответа</Text>
+          <Text style={label4}>   Добавить еще одно голосование</Text>
         </TouchableOpacity>
-        <CheckBox title='Многовариантное голосование'
-          checked={isMulti}
-          onPress={() => this.setState({ isMulti: !isMulti })}
-          checkedColor='green'
-          containerStyle={containerStyle}
-        ></CheckBox>
-      </View>
-      <TouchableOpacity style={addPosition}
-        onPress={this.onSubmit.bind(this)} >
-        <SvgXml
-          xml={add}
-          style={iconButton} fill='green' />
-        <Text style={label4}>   Добавить еще одно голосование</Text>
-      </TouchableOpacity>
+      </Card> */}
     </View>
   }
 
+  private addMoreVotingPress() {
+    var { voting, badEnter, errorText } = this.state
+    var addAdvAnswer: Answer = {
+      uid: '', 
+      option: '',
+      count: 0
+    };
+    var addAdvVoting: Voting = {
+      uid: '', 
+      title: '',
+      options: [addAdvAnswer],
+      isMulti: false,
+      yourOption: '',
+      voteds:[],  
+      totalVotes: 0
+    };
+    voting.push(addAdvVoting)
+    this.setState({ voting })
+  }
+  private addMoreAnswerPress(idV: number) {
+    var { voting } = this.state
+    var addAdvAnswer: Answer = {
+      uid: '', 
+      option: '',
+      count: 0
+    };
+    voting[idV].options.push(addAdvAnswer)
+    this.setState({ voting })
+  }
   private onChangeTitle(title: string) {
-    var badEnter = this.state.badEnter
-    badEnter.title = false;
+    var { badEnter, errorText } = this.state
+    if (title.length > 200) {
+      badEnter.title = true;
+      errorText.title = 'Ограничение ввода, не более 200 символов'
+    }
+    else {
+      badEnter.title = false;
+    }
     this.setState({ title, badEnter });
   }
   private onChangeText(text: string) {
-    var badEnter = this.state.badEnter
+    var { badEnter, errorText } = this.state
     badEnter.text = false;
     this.setState({ text, badEnter });
   }
-  private onChangeStatus(status: string) {
-    this.setState({ status });
+  private onChangeCategory(category: string) {
+    var badEnter = this.state.badEnter
+    badEnter.category = false;
+    this.setState({ category, badEnter });
+  }
+  private onChangeQuestion(idV: number, title: string) {
+    var { badEnter, voting } = this.state
+    //badEnter.voting[idV].title = false;
+    voting[idV].title = title
+    this.setState({ voting, badEnter });
+  }
+  private onChangeAnswer(idV: number, idAns: number, option: string) {
+    var { badEnter, voting } = this.state
+    //badEnter.voting[idV].options[idAns].option = false;
+    voting[idV].options[idAns].option = option
+    this.setState({ voting, badEnter });
   }
 
 
   private onSubmit() {
-    //     e.preventDefault();
-    const { text, title, category, question, answer, good, status, badEnter, errorText, } = this.state
+    const { text, title, category, voting, addVoting, badEnter, errorText, } = this.state
     const { navigation } = this.props
     var $this = this;
     var obj, url, log: string;
-    //if (signup) {
-    if (!text) {
-      badEnter.text = true;
-      errorText.text = 'Поле не заполнено!'
-      this.setState({ badEnter, errorText, good: false });
-    }
-    if (!title) {
+    if (!title.trim()) {
       badEnter.title = true;
       errorText.title = 'Поле не заполнено!'
-      this.setState({ badEnter, errorText, good: false });
+      this.setState({ title: title.trim(), badEnter, errorText, good: false });
     }
-    if (!category) {
+    if (!text.trim()) {
+      badEnter.text = true;
+      errorText.text = 'Поле не заполнено!'
+      this.setState({ text: text.trim(), badEnter, errorText, good: false });
+    }
+    if (category == 'Выберите категорию..') {
       badEnter.category = true;
       errorText.category = 'Поле не заполнено!'
       this.setState({ badEnter, errorText, good: false });
     }
-    if (!text || !title || !category ||
-      !question || !answer || !status) {
+    if (!text.trim() || !title.trim() || category == 'Выберите категорию..') {
       Alert.alert('Внимание', 'Не все поля заполнены!',
         [{ text: 'OK' }],
         { cancelable: false },
       );
       return;
     }
-
-    // }
-    //else 
-    this.setState({ good: true })
+    //console.log(navigation.state.params)
+    var good = true
+    if (addVoting) {
+      voting.forEach(el => {
+        //console.log('el.title: ' + el.title)
+        !el.title ? good = false : good = good
+        if (el.title.length > 200) {
+          Alert.alert('Внимание', 'Ограничение ввода вопроса, не более 200 символов!',
+            [{ text: 'OK' }],
+            { cancelable: false });
+        }
+        el.options.forEach(e => {
+          //console.log('e.options: ' + e.options)
+          !e.option ? good = false : good = good
+          if (e.option.length > 50) {
+            Alert.alert('Внимание', 'Ограничение ввода варианта ответа, не более 50 символов!',
+              [{ text: 'OK' }],
+              { cancelable: false });
+          }
+        })
+      })
+      if (!good) {
+        Alert.alert('Внимание', 'Не все поля в голосовании заполнены!',
+          [{ text: 'OK' }],
+          { cancelable: false },
+        );
+        return;
+      }
+    }
+    const { userLogin, token } = store.state
+    this.setState({ submit: true })
     obj = {
-      Admin: "0000e0000-t0t-00t0-t000-00000000000",
+      Author: userLogin.uid,
       Title: title,
       Text: text,
-      Category: status == Category.Repairs ? 1 :
-        status == Category.EngineeringWorks ? 2 :
-          status == Category.Overhaul ? 3 :
-            status == Category.EnergySaving ? 4 :
-              status == Category.Owners ? 5 :
-                status == Category.CommunityInfrastructure ? 6 : 7,
-      LocalGroup: navigation.state.params[0].fk_LocalGroup
+      Category: category == Category.Repairs ? 1 :
+        category == Category.EngineeringWorks ? 2 :
+          category == Category.Overhaul ? 3 :
+            category == Category.EnergySaving ? 4 :
+              category == Category.Owners ? 5 :
+                category == Category.CommunityInfrastructure ? 6 : 7,
+      LocalGroup: navigation.state.params,
+      Voting: voting
     }
-    url = serverUrl+'adverts/create/';
+    url = serverUrl + 'adverts/create/';
     log = 'Добавить обьявление'
 
     fetch(url, {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
       headers: {
         'Accept': "application/json",
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify(obj), //JSON.stringify(
     })
@@ -320,9 +420,7 @@ class AddAdvertScreen extends Component<any, State, Props> {
         if (response.status == 200 || response.status == 201) {
           console.log('Успех ' + log + ' Post статус: ' + response.status + ' ok: ' + response.ok);
           console.log(response);
-          // if (signup)
-          //   $this.setClearState();
-          // else
+          $this.setClearState();
           navigation.goBack();
         }
         if (response.status == 500)
@@ -332,16 +430,23 @@ class AddAdvertScreen extends Component<any, State, Props> {
 
       })
       .catch(error => {
-        Alert.alert('Внимание', 'Ошибка ' + log + ' Post fetch: ' + error,
-          [{ text: 'OK' }]);
+        if (error == 'TypeError: Network request failed') {
+          console.log('Внимание', 'Сервер не доступен: ' + log + ' Post fetch: ' + error);
+          Alert.alert('Внимание', 'Сервер не доступен: ' + error, [{ text: 'OK' }]);
+          $this.setState({ submit: false })
+        }
+        else {          
+        console.log('Внимание', 'Ошибка ' + log + ' Post fetch: ' + error);
+          Alert.alert('Внимание', 'Ошибка: ' + error, [{ text: 'OK' }]);
+          $this.setState({ submit: false })
+        }
+        return
       });
   }
   private setClearState() {
     this.setState({
-      text: '', title: '', category: '', question: '',
-      answer: '', status: '', colorT: '#000', colorPass: '#000',
-      good: false, signup: false
-    })
+      text: '', title: '', category: 'Выберите категорию..', voting: initVoting.slice(),
+      good: true, submit: false, badEnter: initAdvBool, errorText: initAdvText, addVoting: true,} as State)
   }
 }
 
@@ -385,7 +490,7 @@ const styles = StyleSheet.create({
     paddingBottom: 200,
   },
   fixToText: {
-    marginVertical: 10,
+    marginTop: 10,
     flexDirection: 'row',
     justifyContent: 'center',
   },
@@ -395,8 +500,9 @@ const styles = StyleSheet.create({
     marginRight: 20
   },
   label: {
-    marginTop: -10,
+    marginTop: -5,
     marginBottom: 5,
+    marginLeft: 5,
     fontSize: 18,
     fontWeight: 'bold',
   },
@@ -404,7 +510,6 @@ const styles = StyleSheet.create({
     marginBottom: -25,
     fontSize: 18,
     fontWeight: 'bold',
-    marginLeft: -7
   },
   label3: {
     marginTop: -10,
@@ -415,9 +520,24 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     fontSize: 17,
   },
-  iconButton: {
+  label5: {
+    marginLeft: 5,
+    marginVertical: 5,
+    fontSize: 17,
+  },
+  iconButton2: {
     width: 20,
     height: 20,
+    marginLeft: 20,
+  },
+  iconButton1: {
+    width: 30,
+    height: 30,
+    marginLeft: 20,
+  },
+  iconButton: {
+    width: 40,
+    height: 40,
     marginLeft: 20,
   },
   buttonContainer: {
@@ -432,19 +552,24 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     color: '#fff',
   },
-  advertContainer: {
+  votingContainer: {
     borderColor: 'gray',
     backgroundColor: '#FFD0AE',
     borderWidth: 1,
     borderRadius: 10,
-    margin: 10,
-    paddingVertical: 5
+    marginHorizontal: 10,
+    marginTop: 5,
+    paddingVertical: 5,
+
   },
   addPosition: {
     flexDirection: 'row',
     //marginBottom: 20,
     marginRight: 20,
     alignItems: 'center',
+  },
+  top: {
+    marginTop: 10
   },
   containerStyle: {
     backgroundColor: '#FFD0AE',
@@ -455,10 +580,8 @@ const styles = StyleSheet.create({
     height: 30
   },
   error: {
-    marginTop: 5,
     color: 'red',
-    fontSize: 12,
-    marginBottom: -10
+    fontSize: 14,
   },
 })
 export { AddAdvertScreen };

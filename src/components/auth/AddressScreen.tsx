@@ -61,7 +61,8 @@ class AddressScreen extends PureComponent<any, State, Props> {
     const { navigation } = this.props
     const { fixToText, icon, textInput, input, button, buttonContainer, buttonTitle, notFoundStyle, } = locStyles
     const { im, indicator, label, label2, label3, cardStyle, inputMultiline, dropdownStyle, contStyle, error,
-    } = globalStyles
+    } = globalStyles    
+    var uid;
     console.log('good', good)
     return (
       <View>
@@ -164,25 +165,25 @@ class AddressScreen extends PureComponent<any, State, Props> {
                       <CheckBox //title='Выбрать дом'
                         checked={checked[id]}
                         onPress={() => {
-                          var { badEnter } = this.state
                           badEnter.home = false;
-                          var check = checked;
-                          check[id] = !check[id];
-                          var uid;
-                          !check[id] ? uid = '' : uid = item.uid;
+                          checked[id] = !checked[id];
+                          !checked[id] ? uid = '' : uid = item.uid;
                           var address = 'г. ' + item.city + ', ' + item.street + ', д. ' + item.homeNumber
-                          this.setState({ address, checked: check, fk_home: uid, badEnter })
+                          this.setState({ address, checked, fk_home: uid, badEnter })
                         }}
                         checkedColor='green'
                         right
                         containerStyle={{ marginTop: -50, marginLeft: -50, height: 40 }}
-                      ></CheckBox>
+                      />
                     </View>
                   })}
                 </View>
               ) :
                 <View style={{ alignItems: 'center' }} >
+                  <Card containerStyle={cardStyle}>
                   <Text style={notFoundStyle}> По заданным параметрам ничего не найдено! </Text>
+                    {badEnter.home && <Text style={[error, { marginHorizontal: 20, marginBottom: 5 }]}>{errorText.home}</Text>}
+                    </Card>
                   <Image source={require('../../../icon/notFound.png')} />
                 </View>
             ) :
@@ -254,13 +255,13 @@ class AddressScreen extends PureComponent<any, State, Props> {
   }
 
   private checkFields() {
-    const { appartment, city, street, homeN, badEnter } = this.state
-    if ((appartment || city || street || homeN) && !badEnter.appartment && !badEnter.city
-      && !badEnter.street && !badEnter.homeN && !badEnter.home) {
+    // const { appartment, city, street, homeN, badEnter } = this.state
+    // if ((appartment || city || street || homeN) && !badEnter.appartment && !badEnter.city
+    //   && !badEnter.street && !badEnter.homeN && !badEnter.home) {
       this.setState({ disBtn: false })
-    }
-    else
-    this.setState({ disBtn: true })
+    // }
+    // else
+    // this.setState({ disBtn: true })
   }
 
   private onChangeCity(city: string) {
@@ -284,13 +285,13 @@ class AddressScreen extends PureComponent<any, State, Props> {
   private onChangeStreet(street: string) {
     var { badEnter, errorText, colorIcon } = this.state
     if (street == ' ') { return }
-    if (!street) {
-      badEnter.street = true;
-      colorIcon.street = 'red'
-      errorText.street = 'Поле не заполнено!'
-      this.setState({ badEnter, errorText, street, good: false });
-      return;
-    }
+    // if (!street) {
+    //   badEnter.street = true;
+    //   colorIcon.street = 'red'
+    //   errorText.street = 'Поле не заполнено!'
+    //   this.setState({ badEnter, errorText, street, good: false });
+    //   return;
+    // }
     else {
       badEnter.street = false;
       colorIcon.street = 'green'
@@ -302,13 +303,13 @@ class AddressScreen extends PureComponent<any, State, Props> {
   private onChangeHomeN(homeN: string) {
     var { badEnter, errorText, colorIcon } = this.state
     if (homeN == ' ') { return }
-    if (!homeN) {
-      badEnter.homeN = true;
-      colorIcon.homeN = 'red'
-      errorText.homeN = 'Поле не заполнено!'
-      this.setState({ badEnter, errorText, homeN, good: false });
-      return;
-    }
+    // if (!homeN) {
+    //   badEnter.homeN = true;
+    //   colorIcon.homeN = 'red'
+    //   errorText.homeN = 'Поле не заполнено!'
+    //   this.setState({ badEnter, errorText, homeN, good: false });
+    //   return;
+    // }
     else {
       badEnter.homeN = false;
       colorIcon.homeN = 'green'

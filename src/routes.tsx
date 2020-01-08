@@ -12,11 +12,13 @@ export const AddHOME = 'AddHOME'
 export const HOMEProfile = 'HOMEProfile'
 export const HOMEScreen = 'HOMEScreen'
 export const TENTENScreen = 'TENTENScreen'
-export const AddGROUP = 'AddGROUP'
-export const AddADVERT = 'AddADVERT'
 //Tab 1.1
 export const GroupLIST = 'GroupLIST'
 export const GroupPRO = 'GroupPRO'
+export const AddGROUP = 'AddGROUP'
+//Advert
+export const AddADVERT = 'AddADVERT'
+export const ADVERTPro = 'ADVERTPro'
 //Tab2
 export const SEARCHHomeScreen = 'SEARCHHomeScreen'
 
