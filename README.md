@@ -39,7 +39,7 @@
     * Проверьте, что в «переменных среды» установился в переменную Path путь: C:\Users\USERNAME\AppData\Local\Programs\Microsoft VS Code\bin
 6. Клонирование проекта из Git или создание нового проекта:
     * Клонируйте проект по ссылке: 
-        `$ git clone https://github.com/HarryP7/mobile-client_React-Native_AwesomeTS-Project_RuleYourHome.git`
+        `$ git clone https://github.com/HarryP7/mobileClient_React-Native-TS-Project_RuleYourHome.git`
         * в консоле введите путь приложения, и клавишу Enter; 
         * после чего введите команду:  `$ npm i `	
 7. Подготовка устройства Android: 
