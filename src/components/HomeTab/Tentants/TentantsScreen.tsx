@@ -102,7 +102,7 @@ class TentantsScreen extends PureComponent<any, State, Props> {
       refreshing, loadError, reload } = this.state
     const { h3, container, indicator, im, cardUsersStyle } = globalStyles
     const { navigation } = this.props
-    var { uid } = this.props.navigation.state.params
+    var { uid, fk_Manager } = this.props.navigation.state.params
     console.log('Rander Props: ', this.props)
     console.log('Rander uid: ', uid)
     console.log('Rander approvedTentants: ', approvedTentants)
@@ -119,15 +119,6 @@ class TentantsScreen extends PureComponent<any, State, Props> {
         <Header title='Жители дома'
           leftIcon={backArrow}
           onPressLeft={() => {
-            // if (userLogin.fk_Role == Role.admin){
-            //   navigation.navigate(NAVIGATIONAdmin, reload);
-            // }
-            // else if (userLogin.fk_Role == Role.moderator){
-            //   navigation.navigate(NAVIGATIONAdmin, reload);
-            // }
-            // else if (userLogin.fk_Role == Role.user){
-            //   navigation.navigate(NAVIGATIONUser, reload);
-            // };
             navigation.goBack()
           }
           } //navigation.navigate(HOMEScreen, true)
@@ -144,7 +135,7 @@ class TentantsScreen extends PureComponent<any, State, Props> {
         }
       >
 
-        {newTenants.length ?
+        {(userLogin.fk_Role != Role.user || userLogin.uid == fk_Manager) && newTenants.length ?
           <Card containerStyle={cardUsersStyle}>
             <View >
               <Text style={h3}>Новые жители: </Text>

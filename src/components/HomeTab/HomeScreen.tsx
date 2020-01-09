@@ -241,7 +241,7 @@ class HomeScreen extends Component<any, State, Props> {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => (approvedTentants.length || newTenants.length) &&
-              navigation.navigate(TENTENScreen, { approvedTentants, newTenants, uid })
+              navigation.navigate(TENTENScreen, { approvedTentants, newTenants, uid, fk_Manager })
             } >
             <View style={sectionContainer1}>
               <Text style={sectionTitle1}>Жители   {approvedTentants.length}</Text>

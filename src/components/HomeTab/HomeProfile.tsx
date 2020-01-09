@@ -32,7 +32,7 @@ class HomeProfile extends Component<any, State, Props> {
     try {
       const { userLogin, token } = store.state;
       var home: Home = this.props.navigation.state.params
-      if (token && userLogin.fk_Role != Role.user) {
+      if (token && (userLogin.fk_Role != Role.user || userLogin.uid == home.fk_Manager)) {
         const response = await fetch(serverUrl + 'home?Fk_Home=' + home.uid,
           { headers: { 'Authorization': `Bearer ${token}` } })
         const data: HomeData = await response.json()
@@ -70,9 +70,9 @@ class HomeProfile extends Component<any, State, Props> {
     const { navigation } = this.props
     var propsData = this.props.navigation.state.params
     const { uid, imageUrl, city, street, homeNumber, appartaments, floors, porches, fk_Status,
-      yearCommissioning, fk_Manager, } = propsData
+      yearCommissioning, fk_Manager, manager } = propsData
     const { data, load, approvedTentants, newTenants, refreshing } = this.state
-    const { localGroups, manager } = data
+    const { localGroups } = data
     const { images, h1, sub, link, indicator } = globalStyles
     const { status, h3, sectionContainer, sectionTitle, sectionContainer1, sectionTitle1,
       homeStatusGood, homeStatusBad } = locStyles
@@ -94,7 +94,7 @@ class HomeProfile extends Component<any, State, Props> {
           <Text style={[status, fk_Status == 1 ? homeStatusGood : homeStatusBad]}>
             {fk_Status == 1 ? HomeStatus.Exploited : HomeStatus.Emergency}</Text>
 
-          {(token && userLogin.fk_Role != Role.user) ? (
+          {(token && (userLogin.fk_Role != Role.user || userLogin.uid == fk_Manager)) ? (
             load ? (<View>
               <View style={sub}>
                 <TouchableOpacity onPress={() =>
@@ -105,7 +105,7 @@ class HomeProfile extends Component<any, State, Props> {
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => (approvedTentants.length || newTenants.length) &&
-                    navigation.navigate(TENTENScreen, { approvedTentants, newTenants, uid })
+                    navigation.navigate(TENTENScreen, { approvedTentants, newTenants, uid, fk_Manager })
                   } >
                   <View style={sectionContainer1}>
                     <Text style={sectionTitle1}>Жители   {approvedTentants.length}</Text>
