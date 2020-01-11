@@ -6,7 +6,7 @@ import {
 import { SvgXml } from 'react-native-svg';
 import { user, homeLoc, lock, lockRep, shield } from '../../allSvg'
 import { Header, globalStyles } from '..';
-import { h, w, ColorApp, serverUrl, BackgroundImage } from '../../constants'
+import { h, w, ColorApp, serverUrl, BackgroundImage, Background } from '../../constants'
 import { backArrow } from '../../allSvg'
 import { User, arrText, arrBool, initArrBool, initArrTxt, initArrColor } from '../../interfaces'
 import { actions } from '../../store'
@@ -28,18 +28,16 @@ class RegistrationScreen extends Component<any, State, Props> {
     badEnter: initArrBool, errorText: initArrTxt, colorIcon: initArrColor
   }
 
-  render() {
+  componentDidMount = () => {    
     console.log('Props RegistrationScreen', this.props)
+  }
+  render() {
     const { login, email, name, surname, password, color, repeatPassword,
       badEnter, errorText, colorIcon, passGood, submit, good, disBtn, refreshing } = this.state
     const { navigation } = this.props
     const { fixToText, icon, textInput, input, button, buttonContainer, buttonTitle, indicator,
       link, error, paddingBottom } = locStyles
     const { im, cardStyle } = globalStyles
-    console.log('login: ' + login + ' city: ' + name + ' surname: ' + surname)
-    console.log('badEnter.login: ' + badEnter.login + ' badEnter.name: ' + badEnter.name +
-      ' badEnter.surname: ' + badEnter.surname + ' badEnter.password: ' + badEnter.password)
-    console.log('good', good)
     return (
       <View style={{ height: h }}>
         <Header title={'Регистрация'}
@@ -51,11 +49,11 @@ class RegistrationScreen extends Component<any, State, Props> {
         />
 
         <View >
-          <Image source={BackgroundImage} style={im}></Image></View>
+          {Background}</View>
         <ScrollView
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={this.setClearState.bind(this)} />
-        }>
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={this.setClearState.bind(this)} />
+          }>
           <Card containerStyle={cardStyle} >
             {submit && <ActivityIndicator style={indicator} size={70} color={ColorApp} />}
             <View>
@@ -189,7 +187,7 @@ class RegistrationScreen extends Component<any, State, Props> {
   }
 
   private onChangeLogin(login: string) {
-    var {badEnter, errorText, colorIcon} = this.state
+    var { badEnter, errorText, colorIcon } = this.state
     if (login == ' ') { return }
     if (!login) {
       badEnter.login = true;
@@ -204,12 +202,12 @@ class RegistrationScreen extends Component<any, State, Props> {
     }
   }
   private onCheckLogin(login: string) {
-    var {badEnter, errorText, colorIcon} = this.state
+    var { badEnter, errorText, colorIcon } = this.state
     if (login.trim().length < 4 || login.trim().length > 20) {
       badEnter.login = true;
       errorText.login = 'Логин должен быть длиной от 4 до 20 символов'
       colorIcon.login = "red"
-      this.setState({ badEnter, errorText, login,colorIcon, good: false, disBtn: true });
+      this.setState({ badEnter, errorText, login, colorIcon, good: false, disBtn: true });
       return;
     }
     else {
@@ -218,7 +216,7 @@ class RegistrationScreen extends Component<any, State, Props> {
     }
   }
   private onChangeEmail(email: string) {
-    var {badEnter, errorText, colorIcon} = this.state
+    var { badEnter, errorText, colorIcon } = this.state
     if (email == ' ') { return }
     if (!email) {
       badEnter.email = true;
@@ -235,7 +233,7 @@ class RegistrationScreen extends Component<any, State, Props> {
     }
   }
   private onCheckEmail(email: string) {
-    var {badEnter, errorText, colorIcon} = this.state
+    var { badEnter, errorText, colorIcon } = this.state
     var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
     if (reg.test(email.trim()) == false) {
       badEnter.email = true;
@@ -473,6 +471,11 @@ class RegistrationScreen extends Component<any, State, Props> {
     url = serverUrl + 'auth/signup/';
     log = 'Регистрации'
 
+    console.log('login: ' + login + ' city: ' + name + ' surname: ' + surname)
+    console.log('badEnter.login: ' + badEnter.login + ' badEnter.name: ' + badEnter.name +
+      ' badEnter.surname: ' + badEnter.surname + ' badEnter.password: ' + badEnter.password)
+    console.log('good', good)
+
     this.setState({ submit: true, disBtn: true })
     fetch(url, {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -506,13 +509,16 @@ class RegistrationScreen extends Component<any, State, Props> {
             [{ text: 'OK' }]);
         }
         $this.setState({ submit: false, disBtn: false });
-        return
+        return response.status
       })
       .then(function (data: AuthData) {
-        $this.setClearState();
-        actions.Login(data.token, data.userLogin)
-        const back = false;
-        navigation.navigate(ADDRESSScreen, (back));
+        console.log('data: ', data);
+        if (data.token) {
+          $this.setClearState();
+          actions.Login(data.token, data.userLogin)
+          const back = false;
+          navigation.navigate(ADDRESSScreen, (back));
+        }
       })
       .catch(error => {
         console.log('Внимание', 'Ошибка ' + log + ' Post fetch: ' + error);

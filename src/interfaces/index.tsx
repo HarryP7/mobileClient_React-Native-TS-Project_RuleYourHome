@@ -103,6 +103,14 @@ export interface arrBool {
   password: boolean,
   repeatPassword: boolean
 };
+export interface authText {
+  login: string,
+  password: string,
+};
+export interface authBool {
+  login: boolean,
+  password: boolean,
+};
 export interface adrText {
   city: string,
   street: string,
@@ -210,6 +218,19 @@ export const initArrColor: arrText = {
   surname: ColorApp,
   password: ColorApp,
   repeatPassword: ColorApp
+};
+
+export const initAuthBool: authBool = {
+  login: false,
+  password: false,
+};
+export const initAuthTxt: authText = {
+  login: '',
+  password: '',
+};
+export const initAuthColor: authText = {
+  login: ColorApp,
+  password: ColorApp,
 };
 
 export const initAdrTxt: adrHomeText = {

@@ -4,7 +4,7 @@ import {
 import { Header, SearchHeader, HomeCard,  globalStyles } from '..';
 import {  menu, search,backArrow, rightBack } from '../../allSvg'
 import {  HOMEProfile } from '../../routes';
-import { ColorApp, serverUrl, BackgroundImage } from '../../constants';
+import { ColorApp, serverUrl, BackgroundImage, Background } from '../../constants';
 import {  ListItem, Button, Icon } from 'react-native-elements'
 import { Home } from '../../interfaces'
 
@@ -91,7 +91,7 @@ class SearchHomeScreen extends React.PureComponent<any, State> {
         />        
       }      
       <View>
-      <Image source={BackgroundImage} style={im}></Image>
+      {Background}
       </View>
       <ScrollView
       refreshControl={

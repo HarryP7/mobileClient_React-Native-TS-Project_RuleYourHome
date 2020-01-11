@@ -10,7 +10,7 @@ import { SvgXml } from 'react-native-svg';
 import { save } from '../../allSvg'
 import { Header } from '..';//, styles 
 import { Dropdown, DropDownMargins } from 'react-native-material-dropdown';
-import { h, w, ColorApp, serverUrl, BackgroundImage } from '../../constants'
+import { h, w, ColorApp, serverUrl, BackgroundImage, Background } from '../../constants'
 import { GroupStatus } from '../../enum/Enums'
 import { backArrow } from '../../allSvg'
 import { useGlobal, store } from '../../store'
@@ -69,7 +69,7 @@ class AddGroupScreen extends Component<any, State, Props> {
           navigation.goBack();
         }} />
       <View>
-        <Image source={BackgroundImage} style={im}></Image></View>
+        {Background}</View>
       <ScrollView>
         <Card containerStyle={cardStyle} >
         {submit && <ActivityIndicator style={indicator} size={70} color={ColorApp} />}

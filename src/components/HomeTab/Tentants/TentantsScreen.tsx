@@ -5,7 +5,7 @@ import {
 import { Header, SearchHeader, HomeCard, globalStyles, TentantCard, TentantNewCard } from '../..';
 import { menu, search, backArrow, rightBack } from '../../../allSvg'
 import { HOMEProfile, PROFILE, HOMEScreen, NAVIGATIONAdmin, NAVIGATIONUser } from '../../../routes';
-import { ColorApp, serverUrl, BackgroundImage } from '../../../constants';
+import { ColorApp, serverUrl, BackgroundImage, Background } from '../../../constants';
 import { ListItem, Button, Icon, Card, Divider } from 'react-native-elements'
 import { Home, User } from '../../../interfaces'
 import { store } from '../../../store';
@@ -127,8 +127,7 @@ class TentantsScreen extends PureComponent<any, State, Props> {
         />
       }
       <View>
-        <Image source={BackgroundImage} style={im}></Image>
-      </View>
+        {Background}</View>
       <ScrollView
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={this.onRefresh.bind(this)} />

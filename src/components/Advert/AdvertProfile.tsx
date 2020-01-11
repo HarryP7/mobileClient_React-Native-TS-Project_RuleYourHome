@@ -5,7 +5,7 @@ import {
 import { Header, globalStyles } from '..';
 import { backArrow } from '../../allSvg'
 import { HomeStatus, Role } from '../../enum/Enums';
-import { h, w, ColorApp, NoFoto, serverUrl, BackgroundImage, months } from '../../constants'
+import { h, w, ColorApp, NoFoto, serverUrl, BackgroundImage, months, Background } from '../../constants'
 import { Badge, Divider, Card, Input, CheckBox } from 'react-native-elements';
 import { store } from '../../store';
 import { advert, Voting, Answer, Advert, Voted } from '../../interfaces';
@@ -112,7 +112,7 @@ class AdvertProfile extends Component<any, State, Props> {
                 leftIcon={backArrow}
                 onPressLeft={() => navigation.goBack()} />
             <View>
-                <Image source={BackgroundImage} style={im}></Image>
+                {Background}
                 <ScrollView
                     refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={this.onRefresh.bind(this)} />
@@ -277,17 +277,22 @@ class AdvertProfile extends Component<any, State, Props> {
                     }
                 }
                 else {
+                    console. log('uidChecked: ',uidChecked)
                     uidChecked.forEach(item => {
                         var url = serverUrl + 'adverts/vote?Fk_Option=' + item
                         fetch(url, {
                             method: 'PUT',
                             headers: {
+                                'Accept': "application/json",
+                                'Content-Type': 'application/json',
                                 'Authorization': `Bearer ${token}`
                             },
                             body: JSON.stringify(obj)
                         })
                             .then(function (response) {
                                 if (response.status == 200) {
+                                    $this.setState({ voted: true })
+                                    $this.componentDidMount();
                                     console.log('Успех fetch ' + logAction, response.status)
                                     //return response.json()
                                 }

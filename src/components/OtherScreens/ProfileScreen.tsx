@@ -9,7 +9,7 @@ import { Header, globalStyles } from '..';
 import { backArrow } from '../../allSvg'
 import { useGlobal, store, actions } from '../../store'
 import { User, initialUser } from '../../interfaces'
-import { h, w, ColorApp, serverUrl, BackgroundImage } from '../../constants'
+import { h, w, ColorApp, serverUrl, BackgroundImage, Background } from '../../constants'
 import { Gender } from '../../enum/Enums';
 import { AddGROUP, AUTH, REGISTRATION, GroupLIST } from '../../routes';
 import { Card } from 'react-native-elements'
@@ -86,7 +86,7 @@ class ProfileScreen extends React.Component<any, State> {
             load ? (
               this.ProfileData()
             ) : <View>
-                <Image source={BackgroundImage} style={im}></Image>
+                {Background}
                 {!loadError && <ActivityIndicator style={indicator} size={50} color={ColorApp} />}
               </View>
           ) : this.Login()
@@ -99,7 +99,7 @@ class ProfileScreen extends React.Component<any, State> {
     const { navigation } = this.props
     const { noImages, im, button2, buttonContainer, buttonTitle, link } = globalStyles
     return <View>
-      <Image source={BackgroundImage} style={im}></Image>
+      {Background}
       <Card containerStyle={{ paddingBottom: 20, borderRadius: 10 }} >
         <Image source={require('../../../icon/user1.png')}
           style={noImages} />

@@ -4,7 +4,7 @@ import {
 import { Header, SearchHeader, GroupCard,  globalStyles } from '..';
 import {  backArrow, search, rightBack } from '../../allSvg'
 import { GroupPRO } from '../../routes';
-import { ColorApp, serverUrl, BackgroundImage } from '../../constants';
+import { ColorApp, serverUrl, BackgroundImage, Background } from '../../constants';
 import { useGlobal, store } from '../../store'
 import { Group } from '../../interfaces'
 
@@ -66,7 +66,7 @@ class GroupListScreen extends React.PureComponent<any, State> {
         />
       }      
       <View>
-      <Image source={BackgroundImage} style={im}></Image></View>
+      {Background}</View>
       <ScrollView >
         {load ?
           <View style={container}>

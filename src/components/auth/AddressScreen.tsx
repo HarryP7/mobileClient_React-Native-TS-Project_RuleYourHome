@@ -6,7 +6,7 @@ import {
 import { SvgXml } from 'react-native-svg';
 import { user, home, homeLoc, write, notFound } from '../../allSvg'
 import { Header, globalStyles, HomeCard } from '..';
-import { h, w, ColorApp, serverUrl, BackgroundImage } from '../../constants'
+import { h, w, ColorApp, serverUrl, BackgroundImage, Background } from '../../constants'
 import { backArrow } from '../../allSvg'
 import { User, adrText, adrBool } from '../../interfaces'
 import { actions, store } from '../../store'
@@ -74,7 +74,7 @@ class AddressScreen extends PureComponent<any, State, Props> {
           }}
         />
         <View>
-          <Image source={BackgroundImage} style={im}></Image>
+          {Background}
         </View>
         <ScrollView >
           <Card containerStyle={cardStyle} >

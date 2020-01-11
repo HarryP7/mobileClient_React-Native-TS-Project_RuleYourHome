@@ -6,7 +6,7 @@ import {
 import { Header, globalStyles } from '..';
 import { menu } from '../../allSvg'
 import { HomeStatus, Role } from '../../enum/Enums';
-import { h, w, ColorApp, NoFoto, serverUrl, BackgroundImage } from '../../constants'
+import { h, w, ColorApp, NoFoto, serverUrl, BackgroundImage, Background } from '../../constants'
 import { AddGROUP, AUTH, REGISTRATION, GroupLIST, ADDRESSScreen, TENTENScreen, PROFILE } from '../../routes';
 import { Home, User, InitialHome, HomeData } from '../../interfaces'
 import { useGlobal, store, actions } from '../../store'
@@ -106,7 +106,7 @@ class HomeScreen extends Component<any, State, Props> {
                   refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={this.onRefresh.bind(this)} />
                   } >
-                  <Image source={BackgroundImage} style={im}></Image>
+                  {Background}
                   {!loadError && <ActivityIndicator style={indicator} size={50} color={ColorApp} />}
                 </ScrollView>
               </View>
@@ -125,7 +125,7 @@ class HomeScreen extends Component<any, State, Props> {
     const { refreshing } = this.state
     const { navigation } = this.props
     return (<View>
-      <Image source={BackgroundImage} style={im}></Image>
+      {Background}
       <SafeAreaView>
         <ScrollView
           contentContainerStyle={scrollView}
@@ -159,7 +159,7 @@ class HomeScreen extends Component<any, State, Props> {
     const { indicator, im, scrollView, h2, positionCard } = globalStyles
     const { refreshing } = this.state
     return (<View>
-      <Image source={BackgroundImage} style={im}></Image>
+      {Background}
       <SafeAreaView>
         <ScrollView
           contentContainerStyle={scrollView}
@@ -185,7 +185,7 @@ class HomeScreen extends Component<any, State, Props> {
     const { navigation } = this.props
     const back = true;
     return <View>
-      <Image source={BackgroundImage} style={im}></Image>
+      {Background}
       <SafeAreaView>
         <ScrollView
           refreshControl={

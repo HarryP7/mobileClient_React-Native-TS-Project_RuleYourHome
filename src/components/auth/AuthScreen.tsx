@@ -6,9 +6,9 @@ import {
 import { SvgXml } from 'react-native-svg';
 import { user, homeLoc, lock, lockRep, shield } from '../../allSvg'
 import { Header, globalStyles } from '..';
-import { h, w, ColorApp, serverUrl, BackgroundImage } from '../../constants'
+import { h, w, ColorApp, serverUrl, BackgroundImage, Background } from '../../constants'
 import { backArrow } from '../../allSvg'
-import { User,  initArrColor, arrText, AuthData, arrBool } from '../../interfaces'
+import { User, initArrColor, arrText, AuthData, arrBool, initAuthBool, initAuthTxt, initAuthColor, authBool, authText } from '../../interfaces'
 import { actions, store } from '../../store'
 import { NAVIGATIONAdmin, NAVIGATIONUser } from '../../routes';
 import { Card, Input } from 'react-native-elements'
@@ -17,33 +17,17 @@ import { Role } from '../../enum/Enums';
 
 interface Props { }
 interface State { }
-const initArrBool: arrBool = {
-  login: false,
-  email: false,
-  name: false,
-  surname: false,
-  password: false,
-  repeatPassword: false
-};
-const initArrTxt: arrText = {
-  login: '',
-  email: '',
-  name: '',
-  surname: '',
-  password: '',
-  repeatPassword: ''
-};
 
 class AuthScreen extends PureComponent<any, State, Props> {
   state = {
     login: '', password: '', good: true, submit: false, disBtn: true, refreshing: false,
-    badEnter: initArrBool, errorText: initArrTxt, colorIcon: initArrColor, 
+    badEnter: initAuthBool, errorText: initAuthTxt, colorIcon: initAuthColor,
   }
 
   componentDidMount = async () => {
     console.log('Props AuthScreen', this.props)
     var user: User = this.props.navigation.state.params
-    if (user) this.setState({ login: user.login, colorIcon: initArrColor })
+    if (user) this.setState({ login: user.login })
   }
 
   render() {
@@ -61,78 +45,78 @@ class AuthScreen extends PureComponent<any, State, Props> {
             navigation.goBack();
           }}
         />
-        <View><Image source={BackgroundImage} style={im}></Image></View>
+        <View>{Background}</View>
 
         <ScrollView
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={this.setClearState.bind(this)} />
-        }>
-        <Card containerStyle={cardStyle} >
-          {submit && <ActivityIndicator style={indicator} size={70} color={ColorApp} />}
-          <View style={fixToText}>
-            <SvgXml xml={user} style={icon} fill={colorIcon.login} />
-            <View style={textInput}>
-              <TextInput
-                style={[input, {borderColor: colorIcon.login}]}
-                onChangeText={this.onChangeLogin.bind(this)}
-                placeholder='Логин'
-                autoCompleteType='name'
-                value={login}
-                //onEndEditing={() => this.onCheckLogin(login)}
-                editable={!submit}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={this.setClearState.bind(this)} />
+          }>
+          <Card containerStyle={cardStyle} >
+            {submit && <ActivityIndicator style={indicator} size={70} color={ColorApp} />}
+            <View style={fixToText}>
+              <SvgXml xml={user} style={icon} fill={colorIcon.login} />
+              <View style={textInput}>
+                <TextInput
+                  style={[input, { borderColor: colorIcon.login }]}
+                  onChangeText={this.onChangeLogin.bind(this)}
+                  placeholder='Логин'
+                  autoCompleteType='name'
+                  value={login}
+                  //onEndEditing={() => this.onCheckLogin(login)}
+                  editable={!submit}
                 // errorMessage={badEnter.login ? errorText.login : ''}
-              />
-              {badEnter.login && <Text style={error}>{errorText.login}</Text>}
-            </View>
-          </View>
-
-          <View style={[fixToText, {marginTop: 20,}]}>
-            <SvgXml xml={lock} style={icon} fill={colorIcon.password} />
-            <View style={textInput}>
-              <TextInput
-                style={[input, {borderColor: colorIcon.password}]}
-                onChangeText={this.onChangePassword.bind(this)}
-                placeholder='Пароль'
-                autoCompleteType='password'
-                textContentType='password'
-                secureTextEntry={true}
-                value={password}
-                //onEndEditing={() => this.onCheckPass(password)}
-                editable={!submit}
-                //errorMessage={badEnter.password ? errorText.password : ''}
-              />
-              {/* {badEnter.password ? <Text style={error}>{errorText.password}</Text> : <View></View>} */}
-            </View>
-          </View>
-        </Card>
-
-        <View style={{ alignItems: "center" }}>
-          <View style={button}>
-            <TouchableOpacity
-              onPress={this.onSubmit.bind(this)}
-              disabled={disBtn}>
-              <View style={buttonContainer}>
-                <Text style={buttonTitle}>Войти</Text>
+                />
+                {badEnter.login && <Text style={error}>{errorText.login}</Text>}
               </View>
-            </TouchableOpacity>
+            </View>
+
+            <View style={[fixToText, { marginTop: 20, }]}>
+              <SvgXml xml={lock} style={icon} fill={colorIcon.password} />
+              <View style={textInput}>
+                <TextInput
+                  style={[input, { borderColor: colorIcon.password }]}
+                  onChangeText={this.onChangePassword.bind(this)}
+                  placeholder='Пароль'
+                  autoCompleteType='password'
+                  textContentType='password'
+                  secureTextEntry={true}
+                  value={password}
+                  //onEndEditing={() => this.onCheckPass(password)}
+                  editable={!submit}
+                //errorMessage={badEnter.password ? errorText.password : ''}
+                />
+                {/* {badEnter.password ? <Text style={error}>{errorText.password}</Text> : <View></View>} */}
+              </View>
+            </View>
+          </Card>
+
+          <View style={{ alignItems: "center" }}>
+            <View style={button}>
+              <TouchableOpacity
+                onPress={this.onSubmit.bind(this)}
+                disabled={disBtn}>
+                <View style={buttonContainer}>
+                  <Text style={buttonTitle}>Войти</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-        
+
         </ScrollView>
-          {/* <TouchableOpacity
+        {/* <TouchableOpacity
             onPress={this.onPress.bind(this)}
             disabled={submit} >
             <Text style={link}>{'Забыли пароль?'}</Text>
           </TouchableOpacity> */}
-          
+
       </View>
     );
   }
   private checkFields() {
-    const {login, password, badEnter} = this.state
-    if(login && password && !badEnter.login && !badEnter.password ){
+    const { login, password, badEnter } = this.state
+    if (login && password && !badEnter.login && !badEnter.password) {
       this.setState({ disBtn: false })
-    }    
+    }
   }
 
   private onChangeLogin(login: string) {
@@ -169,12 +153,15 @@ class AuthScreen extends PureComponent<any, State, Props> {
     if (password.trim().length >= 8) {
       badEnter.password = false
       colorIcon.password = 'green'
-      this.setState({ password, colorIcon, badPass: false });
+      this.setState({ password: password.trim(), colorIcon, badPass: false });
       this.checkFields();
       return
-    }    
-    colorIcon.password = ColorApp
-    this.setState({ password, colorIcon });
+    }
+    else {
+      colorIcon.password = ColorApp
+      this.setState({ password: password.trim(), colorIcon });
+      this.checkFields();
+    }
   }
   private onCheckPass(pass: string) {
     var badEnter = this.state.badEnter
@@ -230,7 +217,7 @@ class AuthScreen extends PureComponent<any, State, Props> {
     }
     else
       this.setState({ good: true });
-      
+
     console.log('login: ' + login)
     console.log('badEnter.login: ' + badEnter.login + ' badEnter.password: ' + badEnter.password)
     console.log('good', good)
@@ -238,7 +225,7 @@ class AuthScreen extends PureComponent<any, State, Props> {
       Login: login,
       Password: password,
     }
-    url = serverUrl+'auth/signin';
+    url = serverUrl + 'auth/signin';
     log = 'Входа'
 
     this.setState({ submit: true, disBtn: true })
@@ -280,13 +267,13 @@ class AuthScreen extends PureComponent<any, State, Props> {
           if (!store.state.token) {
             actions.Login(data.token, data.userLogin)
           }
-          if (data.userLogin.fk_Role == Role.admin){
+          if (data.userLogin.fk_Role == Role.admin) {
             navigation.navigate(NAVIGATIONAdmin);
           }
-          if (data.userLogin.fk_Role == Role.moderator){
+          if (data.userLogin.fk_Role == Role.moderator) {
             navigation.navigate(NAVIGATIONAdmin);
           }
-          else if (data.userLogin.fk_Role == Role.user){
+          else if (data.userLogin.fk_Role == Role.user) {
             navigation.navigate(NAVIGATIONUser);
           }
         }
@@ -304,27 +291,19 @@ class AuthScreen extends PureComponent<any, State, Props> {
       });
 
   }
-  private setClearState() { 
-    var arr: arrBool = {
+  private setClearState() {
+    var arr: authBool = {
       login: false,
-      email: false,
-      name: false,
-      surname: false,
       password: false,
-      repeatPassword: false
     };
-    var arrCol: arrText = {
+    var arrCol: authText = {
       login: ColorApp,
-      email: ColorApp,
-      name: ColorApp,
-      surname: ColorApp,
       password: ColorApp,
-      repeatPassword: ColorApp
-    };   
+    };
     this.setState({
       login: '', password: '', color: ColorApp,
       good: true, passGood: false, submit: false,
-      badEnter: arr, errorText: initArrTxt, colorIcon: arrCol,
+      badEnter: arr, colorIcon: arrCol,
     })
   }
 }
