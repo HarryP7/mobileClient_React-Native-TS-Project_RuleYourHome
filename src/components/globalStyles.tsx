@@ -1,14 +1,12 @@
 
-import {
-  StyleSheet
-} from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { h, w, ColorApp } from '../constants'
+import { h, w, appColor } from '../constants'
 
 const globalStyles = StyleSheet.create({
   headDrawer: { 
     height: 210, 
-    backgroundColor: '#BE8F6C' 
+    backgroundColor: appColor//'#BE8F6C' 
   },
   scrollView: {
     flex: 0,
@@ -31,7 +29,7 @@ const globalStyles = StyleSheet.create({
   },
   cardStyle: {
     paddingBottom: 30,
-    marginHorizontal: 5,
+    marginHorizontal: 10,
     borderRadius: 10
   },
   engine: {
@@ -63,7 +61,7 @@ const globalStyles = StyleSheet.create({
     shadowOpacity: 0.4
   },
   sectionTitle: {
-    fontSize: 24,
+    fontSize: 26,
     color: '#fff',
     textAlign: 'center',
     fontFamily: 'AwenirNext-DemiBold'
@@ -81,15 +79,14 @@ const globalStyles = StyleSheet.create({
     width: 150,
     height: 150,
     alignSelf: 'center',
-    bottom: 70,
+    bottom: 100,
   },
   paddingBottom: {
-    width: 200,
     position: 'absolute',
     bottom: 50,
   },
   buttonContainer: {
-    backgroundColor: ColorApp,
+    backgroundColor: appColor,
     height: 40,
     alignItems: 'center',
     justifyContent: 'center',
@@ -100,9 +97,12 @@ const globalStyles = StyleSheet.create({
     fontSize: 18,
     color: '#fff',
   },
+  buttonContentSp: {
+    width: w*0.95,
+    height: 45,
+  },
   buttonContainerSp: {
     backgroundColor: '#009999',
-    height: 40,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 7,
@@ -120,7 +120,7 @@ const globalStyles = StyleSheet.create({
     width: 130,
     height: 130,
     borderRadius: 60,
-    marginLeft: 20,
+    marginLeft: 45,
     marginTop: 20,
     paddingBottom: 30,
   },
@@ -164,7 +164,7 @@ const globalStyles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   indicator: {
-    marginTop: 50,
+    marginTop: h*0.4,
     position: 'absolute',
     alignSelf: 'center',
   },
@@ -191,8 +191,9 @@ const globalStyles = StyleSheet.create({
     marginLeft: 20
   },
   images: {
-    width: w,
-    height: w * 0.8,
+    width: w * 0.9,
+    height: w * 0.7,
+    alignSelf: 'center',
     borderRadius: 10,
   },
   noImages: {
@@ -203,7 +204,7 @@ const globalStyles = StyleSheet.create({
   },
   h1: {
     paddingHorizontal: 15,
-    fontSize: 24,
+    fontSize: 20,
     width: w,
     fontWeight: 'bold',
   },
@@ -214,7 +215,7 @@ const globalStyles = StyleSheet.create({
   },
   h3: {
     paddingLeft: 15,
-    marginVertical: 5,
+    marginVertical: 2,
     fontSize: 18,
   },
   icon2: {
@@ -246,7 +247,7 @@ const globalStyles = StyleSheet.create({
   },
   link: {
     paddingVertical: 15,
-    color: ColorApp,
+    color: appColor,
     textAlign: 'center',
     fontSize: 18,
   },
@@ -263,10 +264,9 @@ const globalStyles = StyleSheet.create({
     fontWeight: 'bold',
   },
   label2: {
-    fontSize: 18,
-    //color: 'white',
+    fontSize: 16,
     fontWeight: 'bold',
-    //marginLeft: -7
+    color: 'grey'
   },
   label3: {
     backgroundColor: 'white', 
@@ -277,8 +277,8 @@ const globalStyles = StyleSheet.create({
   },
   label: {
     marginTop: -10,
-    marginBottom: 5,
-    fontSize: 18,
+    fontSize: 16,
+    color: 'grey',
     fontWeight: 'bold',
   },  
   inputMultiline: {
@@ -303,8 +303,16 @@ const globalStyles = StyleSheet.create({
   },  
   inputStyle: {
     fontSize: 16,
-    paddingVertical: 5,
+    paddingVertical: 0,
+  },
+  inputPaperWhite: {
+    backgroundColor: '#fff',
+  },
+  inputPaper: {
+    borderRadius: 10,
     paddingHorizontal: 5,
+    height: 40,
+    backgroundColor: 'white'
   },
   cardUsersStyle:{ 
     marginHorizontal: 7, 
