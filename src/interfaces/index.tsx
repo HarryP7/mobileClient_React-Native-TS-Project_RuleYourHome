@@ -1,4 +1,4 @@
-import { ColorApp } from "../constants";
+import { appColor, disColor } from "../constants";
 
 export interface User {
   uid: string,
@@ -91,9 +91,18 @@ export interface arrText {
   login: string,
   email: string,
   name: string,
-  surname: string,
+  password: string,
+  infoPassword: string,
+  repeatPassword: string
+};
+export interface arrColor {
+  login: string,
+  email: string,
+  name: string,
+  iconPassword: string,
   password: string,
   repeatPassword: string
+  button: string
 };
 export interface arrBool {
   login: boolean,
@@ -106,6 +115,16 @@ export interface arrBool {
 export interface authText {
   login: string,
   password: string,
+};
+export interface authColor {
+  login: string,
+  password: string,
+  button: string
+};
+export interface addressColor {
+  homeN: string,
+  appartment: string,
+  button: string
 };
 export interface authBool {
   login: boolean,
@@ -203,22 +222,21 @@ export const initArrBool: arrBool = {
   password: false,
   repeatPassword: false
 };
-export const initArrTxt: arrText = {
-  login: '',
-  email: '',
-  name: '',
-  surname: '',
-  password: '',
-  repeatPassword: ''
-};
-export const initArrColor: arrText = {
-  login: ColorApp,
-  email: ColorApp,
-  name: ColorApp,
-  surname: ColorApp,
-  password: ColorApp,
-  repeatPassword: ColorApp
-};
+// export const initArrTxt: arrText = {
+//   login: '',
+//   email: '',
+//   name: '',
+//   password: '',
+//   in
+//   repeatPassword: ''
+// };
+// export const initArrColor: arrText = {
+//   login: appColor,
+//   email: appColor,
+//   name: appColor,
+//   password: appColor,
+//   repeatPassword: appColor
+// };
 
 export const initAuthBool: authBool = {
   login: false,
@@ -227,10 +245,6 @@ export const initAuthBool: authBool = {
 export const initAuthTxt: authText = {
   login: '',
   password: '',
-};
-export const initAuthColor: authText = {
-  login: ColorApp,
-  password: ColorApp,
 };
 
 export const initAdrTxt: adrHomeText = {
