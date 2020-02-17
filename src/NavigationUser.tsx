@@ -12,7 +12,7 @@ import {
 import HomeScreen from './components/HomeTab/HomeScreen'
 import { SvgXml } from 'react-native-svg';
 import { backArrow, login, home, searchHome, notif, } from './allSvg'
-import { ColorApp } from './constants';
+import { appColor } from './constants';
 import { useGlobal, store } from './store'
 import { PROFILE } from './routes';
 
@@ -44,7 +44,7 @@ const BottomTab = createBottomTabNavigator({
       },
     }),
     tabBarOptions: {
-      activeTintColor: ColorApp,
+      activeTintColor: appColor,
       inactiveTintColor: 'gray',
     },
   }
@@ -104,7 +104,7 @@ const MainDrawer = createDrawerNavigator({
   },
 }, {
   //initialRouteName: 'Tab',
-  drawerBackgroundColor: ColorApp,
+  drawerBackgroundColor: appColor,
   //drawerPosition: 'right',
   drawerType: 'slide',
   drawerWidth: 220,

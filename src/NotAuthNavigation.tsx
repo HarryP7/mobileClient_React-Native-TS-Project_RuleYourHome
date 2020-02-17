@@ -12,7 +12,7 @@ import {
 import HomeScreen from './components/HomeTab/HomeScreen'
 import { SvgXml } from 'react-native-svg';
 import { backArrow, login, home, searchHome, notif, menu, search, write } from './allSvg'
-import { ColorApp } from './constants';
+import { appColor } from './constants';
 import { Icon } from 'react-native-elements';
 import { AUTH, REGISTRATION } from './routes';
 
@@ -39,7 +39,7 @@ const BottomTab = createBottomTabNavigator({
       },
     }),
     tabBarOptions: {
-      activeTintColor: ColorApp,
+      activeTintColor: appColor,
       inactiveTintColor: 'gray',
     },
   }
@@ -91,36 +91,13 @@ export const MainDrawer = createDrawerNavigator({
   Tab: {
     screen: BottomTabStack,
     navigationOptions: {
-      drawerLabel: ' ',
-      // drawerIcon: () =>
-      //   <SvgXml xml={backArrow} width="20" height="20" style={back} />
+      drawerLabel: 'Поиск дома',
+      drawerIcon: ({tintColor}) =>
+        <SvgXml xml={searchHome} width="20" height="20" style={imageIcon} fill={tintColor}/>
     }
   },
-  // Profile: {
-  //   screen: ProfileScreen,
-  //   navigationOptions: {
-  //     drawerLabel: ' ',
-  //     drawerIcon: () => <Image
-  //       source={require('../icon/user1.png')}
-  //       style={imageIcon} />
-  //   }
-  // },
-  // Auth: {
-  //   screen: AuthScreen,
-  //   navigationOptions: {
-  //     drawerLabel: 'Вход',
-  //     drawerIcon: () => <SvgXml xml={login} style={icon} />
-  //   },
-  // },
-  // Registretion: {
-  //   screen: RegistrationScreen,
-  //   navigationOptions: {
-  //     drawerLabel: 'Регистрация',
-  //     drawerIcon: () => <SvgXml xml={write} style={icon} />//<Icon name="library-books" size={25}></Icon> //library-books, data-usage
-  //   },
-  // },
 }, {
-  drawerBackgroundColor: ColorApp,
+  //drawerBackgroundColor: appColor,
   drawerType: 'slide',
   drawerWidth: 220,
   swipeDistanceThreshold: 100,
