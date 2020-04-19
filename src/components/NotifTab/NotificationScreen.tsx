@@ -15,10 +15,11 @@ class NotificationScreen extends React.Component<any, Props> {
     const { im, label2 } = globalStyles
     return (<View>
       <Header title='Уведомления'
-        leftIcon={menu}
-        onPressLeft={() => {
-          navigation.openDrawer()
-        }} icon={menu} />
+        // leftIcon={'menu'}
+        // onPressLeft={() => {
+        //   navigation.openDrawer()
+        // }} icon={'menu'} 
+        />
       <View>
         {Background}
       </View >

@@ -4,7 +4,7 @@ import {
 import { Header, SearchHeader, HomeCard,  globalStyles } from '..';
 import {  menu, search,backArrow, rightBack } from '../../allSvg'
 import {  HOMEProfile } from '../../routes';
-import { ColorApp, serverUrl, BackgroundImage, Background } from '../../constants';
+import { appColor, serverUrl, BackgroundImage, Background, h, w } from '../../constants';
 import {  ListItem, Button, Icon } from 'react-native-elements'
 import { Home } from '../../interfaces'
 
@@ -35,7 +35,7 @@ class SearchHomeScreen extends React.PureComponent<any, State> {
     } catch (error) {
       console.log('Внимание', 'Ошибка ' + logAction + ' Post fetch: ' + error);
       if (error == 'TypeError: Network request failed') {
-        Alert.alert('Внимание', 'Сервер не доступен: ' + error, [{ text: 'OK' }]);
+        Alert.alert('Внимание', 'Сервер не доступен, попробуйте позже', [{ text: 'OK' }]);
         
       this.setState({ loadError: true })
       }
@@ -51,7 +51,7 @@ class SearchHomeScreen extends React.PureComponent<any, State> {
     var txt: Home[] = this.state.dataOld;
     if(text){
       var filtered = txt.filter((el) =>
-      ('г. '+el.city+', ул. '+el.street+', д.'+ el.homeNumber).toLowerCase().indexOf(text.toLowerCase()) > -1
+      ('г. '+el.city+', '+el.street+', д.'+ el.homeNumber).toLowerCase().indexOf(text.toLowerCase()) > -1
         );     
       this.setState({ data: filtered, text });
       }
@@ -73,23 +73,16 @@ class SearchHomeScreen extends React.PureComponent<any, State> {
     console.log('Rander Props: ',this.props)
     console.log('Rander Data: ',data)
     return (<View>
-      {visibleSearch ?
+      
        <SearchHeader           
-         rightIcon={rightBack}
+          // leftIcon={'menu'}
+          // onPressLeft={() => {
+          //   navigation.openDrawer()
+          // }}
          onChangeText={this.onSearchHome.bind(this)}
          value={this.state.text}
-         onPressRight={() => this.setState({visibleSearch: false, data: this.state.dataOld})}
-         onBlur={() => this.setState({visibleSearch: false})}
-       />  : 
-        <Header title='Поиск дома'
-          leftIcon={menu}
-          onPressLeft={() => {
-            navigation.openDrawer()
-          }}
-          rightIcon={search}
-          onPressRight={() => this.setState({visibleSearch: true})}
-        />        
-      }      
+         subjectSearch='адрес'
+       />    
       <View>
       {Background}
       </View>
@@ -105,10 +98,21 @@ class SearchHomeScreen extends React.PureComponent<any, State> {
                 onPress={() => navigation.navigate(HOMEProfile, (item))} />//
             })}
           </View> :
-          !loadError &&
-          <ActivityIndicator style={indicator} size={50} color={ColorApp} />
+          <View>
+          {Background}
+          {!loadError && <ActivityIndicator style={indicator} size={50} color={appColor} />}
+          <ScrollView
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={this.onRefresh.bind(this)} />
+            }
+          >
+            <View style={{ marginBottom: h }}>
+              <Text> </Text>
+            </View>
+          </ScrollView>
+        </View>
         }
-        <View style={{margin: 50}}><Text></Text></View>
+        <View style={{margin: 30}}><Text></Text></View>
       </ScrollView>
     </View>
     );

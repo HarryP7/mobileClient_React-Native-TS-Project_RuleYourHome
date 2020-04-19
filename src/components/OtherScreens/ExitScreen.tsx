@@ -18,9 +18,8 @@ class ExitScreen extends PureComponent<any> {
     const { navigation } = this.props
     return ( <View>
       <Header title={'Выход'}
-        leftIcon={backArrow}
+        leftIcon={'arrow-left'}
         onPressLeft={() => {
-          //this.setClearState()
           navigation.goBack();
         }}
       />

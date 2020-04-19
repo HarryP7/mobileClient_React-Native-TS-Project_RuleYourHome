@@ -8,7 +8,7 @@ import { SvgXml } from 'react-native-svg';
 import { save, add } from '../../allSvg'
 import { Header } from '..';//, styles 
 import { Dropdown } from 'react-native-material-dropdown';
-import { h, w, ColorApp, serverUrl, BackgroundImage } from '../../constants'
+import { h, w, appColor, serverUrl, BackgroundImage } from '../../constants'
 import { Category } from '../../enum/Enums'
 import { backArrow } from '../../allSvg'
 import { globalStyles } from '..';
@@ -34,10 +34,12 @@ const initAdvAnswer: Answer = {
   option: '',
   count: 0
 };
+const initArrAdvAns: Answer[] = [];
+initArrAdvAns.push(initAdvAnswer)
 const initAdvVoting: Voting = {
   uid: '',  
   title: '',
-  options: [initAdvAnswer],
+  options: initArrAdvAns,
   isMulti: false,
   yourOption: '',
   voteds:[],  
@@ -74,9 +76,8 @@ class AddAdvertScreen extends Component<any, State, Props> {
       value: Category.CommunityInfrastructure }, {
       value: Category.Attention },];
     return (<View>
-      <StatusBar backgroundColor={ColorApp} barStyle="light-content" />
       <Header title='Добавление объявления'
-        leftIcon={backArrow}
+        leftIcon={'arrow-left'}
         onPressLeft={() => {
           this.setClearState();
           navigation.goBack();
@@ -194,7 +195,7 @@ class AddAdvertScreen extends Component<any, State, Props> {
     return <View>
       {voting.map((item: Voting, idV: number) => {
         return <View style={votingContainer}>
-        {submit && <ActivityIndicator key={idV} style={indicator} size={50} color={ColorApp} />}
+        {submit && <ActivityIndicator key={idV} style={indicator} size={50} color={appColor} />}
           <View style={fixToText}>
             <View style={textInput}>
               <View style={{ flexDirection: 'row' }}>
@@ -432,7 +433,7 @@ class AddAdvertScreen extends Component<any, State, Props> {
       .catch(error => {
         if (error == 'TypeError: Network request failed') {
           console.log('Внимание', 'Сервер не доступен: ' + log + ' Post fetch: ' + error);
-          Alert.alert('Внимание', 'Сервер не доступен: ' + error, [{ text: 'OK' }]);
+          Alert.alert('Внимание', 'Сервер не доступен, попробуйте позже', [{ text: 'OK' }]);
           $this.setState({ submit: false })
         }
         else {          

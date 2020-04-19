@@ -1,27 +1,31 @@
-import React, { PureComponent, useState, useEffect } from 'react';
+import React, { PureComponent } from 'react';
 import {
-  StyleSheet, ScrollView, View, Text, TouchableOpacity, TextInput, Alert,
-  ActivityIndicator, Image, RefreshControl
+  StyleSheet, ScrollView, View, Text, TouchableOpacity, Alert,
+  ActivityIndicator,
 } from 'react-native';
-import { SvgXml } from 'react-native-svg';
-import { user, homeLoc, lock, lockRep, shield } from '../../allSvg'
 import { Header, globalStyles } from '..';
-import { h, w, ColorApp, serverUrl, BackgroundImage, Background } from '../../constants'
+import { h, w, appColor, serverUrl, Background, disColor } from '../../constants'
 import { backArrow } from '../../allSvg'
-import { User, initArrColor, arrText, AuthData, arrBool, initAuthBool, initAuthTxt, initAuthColor, authBool, authText } from '../../interfaces'
+import { User, AuthData, initAuthBool, initAuthTxt, authBool, authText, authColor } from '../../interfaces'
 import { actions, store } from '../../store'
-import { NAVIGATIONAdmin, NAVIGATIONUser } from '../../routes';
-import { Card, Input } from 'react-native-elements'
+import { NAVIGATIONAdmin, NAVIGATIONUser, REGISTRATION } from '../../routes';
+import { Card, Input, Icon } from 'react-native-elements'
 import { Role } from '../../enum/Enums';
+import { TextInput, Modal, Portal, Button, Provider } from 'react-native-paper';
 
 
 interface Props { }
 interface State { }
-
+const initAuthColor: authColor = {
+  login: appColor,
+  password: '#bbb',
+  button: disColor
+};
 class AuthScreen extends PureComponent<any, State, Props> {
   state = {
     login: '', password: '', good: true, submit: false, disBtn: true, refreshing: false,
-    badEnter: initAuthBool, errorText: initAuthTxt, colorIcon: initAuthColor,
+    badEnter: initAuthBool, errorText: initAuthTxt, colorField: initAuthColor, visibility: false
+  
   }
 
   componentDidMount = async () => {
@@ -31,76 +35,85 @@ class AuthScreen extends PureComponent<any, State, Props> {
   }
 
   render() {
-    const { login, password, badEnter, errorText, colorIcon, submit,
-      good, disBtn, refreshing } = this.state
+    const { login, password, colorField, submit, disBtn,  visibility } = this.state
     const { navigation } = this.props
-    const { fixToText, icon, textInput, input, button, buttonContainer, buttonTitle } = locStyles
-    const { im, cardStyle, indicator, error } = globalStyles
+    const { fixToText, textInput, input, button, buttonContainer, buttonTitle } = locStyles
+    const { cardStyle, indicator, buttonContentSp, inputStyle, link, inputPaperWhite } = globalStyles
     return (
       <View style={{ height: h }}>
         <Header title={'Вход'}
-          leftIcon={backArrow}
+          leftIcon={'arrow-left'}
           onPressLeft={() => {
-            //this.setClearState()
             navigation.goBack();
           }}
         />
         <View>{Background}</View>
 
-        <ScrollView
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={this.setClearState.bind(this)} />
-          }>
+        <ScrollView >
           <Card containerStyle={cardStyle} >
-            {submit && <ActivityIndicator style={indicator} size={70} color={ColorApp} />}
             <View style={fixToText}>
-              <SvgXml xml={user} style={icon} fill={colorIcon.login} />
-              <View style={textInput}>
+              <View style={{width: w * 0.75}}>
                 <TextInput
-                  style={[input, { borderColor: colorIcon.login }]}
+                  style={[inputPaperWhite,inputStyle]}
                   onChangeText={this.onChangeLogin.bind(this)}
-                  placeholder='Логин'
+                  placeholder='Введите..'
+                  label='Логин'
                   autoCompleteType='name'
                   value={login}
-                  //onEndEditing={() => this.onCheckLogin(login)}
-                  editable={!submit}
-                // errorMessage={badEnter.login ? errorText.login : ''}
+                  disabled={submit}
+                  theme={{ colors: { primary: colorField.login } }}
                 />
-                {badEnter.login && <Text style={error}>{errorText.login}</Text>}
+                {/* {badEnter.login && <Text style={error}>{errorText.login}</Text>} */}
               </View>
             </View>
 
             <View style={[fixToText, { marginTop: 20, }]}>
-              <SvgXml xml={lock} style={icon} fill={colorIcon.password} />
               <View style={textInput}>
-                <TextInput
-                  style={[input, { borderColor: colorIcon.password }]}
+                <Input
+                  inputContainerStyle={[input, { borderColor: colorField.password }]}
+                  inputStyle={inputStyle}
                   onChangeText={this.onChangePassword.bind(this)}
+                  onTouchStart={this.activePass.bind(this)}
                   placeholder='Пароль'
+                  placeholderTextColor='#777'
                   autoCompleteType='password'
                   textContentType='password'
-                  secureTextEntry={true}
+                  onEndEditing={this.onEndPass.bind(this)}
+                  keyboardType={visibility?'visible-password':'twitter'}
+                  secureTextEntry={!visibility}
                   value={password}
+                  disabled={submit}
                   //onEndEditing={() => this.onCheckPass(password)}
-                  editable={!submit}
-                //errorMessage={badEnter.password ? errorText.password : ''}
+                  //errorMessage={badEnter.password ? errorText.password : ''}
+                  rightIcon={visibility ? <Icon name='visibility' onPress={this.onVisibilityPassword.bind(this)} />
+                    : <Icon name='visibility-off' onPress={this.onVisibilityPassword.bind(this)} color='grey' />}
                 />
                 {/* {badEnter.password ? <Text style={error}>{errorText.password}</Text> : <View></View>} */}
               </View>
             </View>
-          </Card>
 
           <View style={{ alignItems: "center" }}>
             <View style={button}>
-              <TouchableOpacity
+              <Button
+                mode="contained"
+                uppercase={false}
                 onPress={this.onSubmit.bind(this)}
-                disabled={disBtn}>
-                <View style={buttonContainer}>
-                  <Text style={buttonTitle}>Войти</Text>
-                </View>
-              </TouchableOpacity>
+                disabled={disBtn}
+                contentStyle={buttonContentSp}
+                style={[buttonContainer, { backgroundColor: colorField.button }]}
+                labelStyle={buttonTitle}>
+                Войти
+              </Button>
             </View>
           </View>
+
+          <Text style={[link, { color: 'grey' }]}>{'У вас еще нет аккаунта?'}</Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate(REGISTRATION)}
+            disabled={submit} >
+            <Text style={[link, { marginTop: -20 }]}>{'Зарегистрируйтесь'}</Text>
+          </TouchableOpacity>
+          </Card>
 
         </ScrollView>
         {/* <TouchableOpacity
@@ -108,77 +121,75 @@ class AuthScreen extends PureComponent<any, State, Props> {
             disabled={submit} >
             <Text style={link}>{'Забыли пароль?'}</Text>
           </TouchableOpacity> */}
+        {submit && <Provider>
+          <Portal>
+            <Modal visible={submit} >
+              <ActivityIndicator style={indicator} size={70} color={appColor} />
+            </Modal>
+          </Portal>
+        </Provider>}
 
       </View>
     );
   }
-  private checkFields() {
-    const { login, password, badEnter } = this.state
-    if (login && password && !badEnter.login && !badEnter.password) {
-      this.setState({ disBtn: false })
+  private checkFields(good: boolean) {
+    const { login, password, badEnter, colorField } = this.state
+    if (good && login && password && !badEnter.login && !badEnter.password) {
+      colorField.button = appColor;
+      this.setState({ disBtn: false, colorField })
+    }
+    else {
+      colorField.button = disColor;
+      this.setState({ disBtn: true, colorField })
     }
   }
 
   private onChangeLogin(login: string) {
-    var { badEnter, errorText, colorIcon } = this.state
+    var { badEnter, errorText, colorField } = this.state
     if (login == ' ') { return }
     if (!login) {
       badEnter.login = true;
-      colorIcon.login = 'red'
-      errorText.login = 'Поле не заполнено!'
-      this.setState({ badEnter, errorText, login, good: false });
+      colorField.login = 'red'
+      this.setState({ badEnter, errorText, login });
       return;
     }
     else {
       badEnter.login = false;
-      colorIcon.login = ColorApp
+      colorField.login = appColor
       this.setState({ login });
-      this.checkFields();
     }
-  }
-  private onCheckLogin(login: string) {
-    var { badEnter, errorText, colorIcon } = this.state
-    if (login.trim().length < 4 || login.trim().length > 20) {
-      badEnter.login = true;
-      colorIcon.login = 'red'
-      errorText.login = 'Логин должен быть длиной от 4 до 20 символов!'
-      this.setState({ badEnter, errorText, login, good: false });
-      return;
-    }
+    this.checkFields(true);
   }
 
   private onChangePassword(password: string) {
-    var { badEnter, errorText, colorIcon } = this.state
     if (password == ' ') { return }
     if (password.trim().length >= 8) {
-      badEnter.password = false
-      colorIcon.password = 'green'
-      this.setState({ password: password.trim(), colorIcon, badPass: false });
-      this.checkFields();
+      this.setState({ password: password.trim() });
+      this.checkFields(true);
       return
     }
     else {
-      colorIcon.password = ColorApp
-      this.setState({ password: password.trim(), colorIcon });
-      this.checkFields();
+      this.setState({ password: password.trim() });
+      this.checkFields(false);
     }
   }
-  private onCheckPass(pass: string) {
-    var badEnter = this.state.badEnter
-    var errorText = this.state.errorText
-    var colorIcon = this.state.colorIcon
-    if (pass.trim().length < 8) {
-      badEnter.password = true;
-      errorText.password = 'Пароль должен иметь длину не менее 8 знаков!'
-      colorIcon.password = 'red'
-      this.setState({ badEnter, errorText, colorIcon, pass, good: false });
-      return;
-    }
+  private activePass() {
+    var { colorField } = this.state
+    colorField.password = appColor
+    this.setState({ colorField });
+  }
+  private onEndPass() {
+    var { colorField } = this.state
+    colorField.password = disColor
+    this.setState({ colorField });
+  }
+  private onVisibilityPassword() {
+    var { visibility } = this.state
+    this.setState({ visibility: !visibility })
   }
 
   private onSubmit() {
-    const { login, password, badEnter, errorText,
-      colorIcon, good } = this.state
+    const { login, password, badEnter, errorText, colorField, good } = this.state
     const { navigation } = this.props
     var $this = this;
     var obj, url, log: string;
@@ -186,20 +197,18 @@ class AuthScreen extends PureComponent<any, State, Props> {
     if (!login) {
       badEnter.login = true;
       errorText.login = 'Поле не заполнено!'
-      colorIcon.login = 'red'
-      this.setState({ badEnter, errorText, colorIcon, good: false });
+      this.setState({ badEnter, errorText, colorField, good: false });
     }
     if (!password) {
       badEnter.password = true;
       errorText.password = 'Поле не заполнено!'
-      colorIcon.password = 'red'
-      this.setState({ badEnter, errorText, colorIcon, good: false });
+      this.setState({ badEnter, errorText, colorField, good: false });
     }
     // if (password.trim().length < 8) {
     //   badEnter.password = true;
     //   errorText.password = 'Пароль должен иметь длину не менее 8 знаков!'
-    //   colorIcon.password = 'red'
-    //   this.setState({ badEnter, errorText, colorIcon, good: false });
+    //   colorField.password = 'red'
+    //   this.setState({ badEnter, errorText, colorField, good: false });
     // }
 
     if (!login || !password) {
@@ -281,7 +290,7 @@ class AuthScreen extends PureComponent<any, State, Props> {
       .catch(error => {
         console.log('Внимание', 'Ошибка ' + log + ' Post fetch: ' + error);
         if (error == 'TypeError: Network request failed') {
-          Alert.alert('Внимание', 'Сервер не доступен: ' + error, [{ text: 'OK' }]);
+          Alert.alert('Внимание', 'Сервер не доступен, попробуйте позже', [{ text: 'OK' }]);
         }
         else {
           Alert.alert('Внимание', 'Ошибка входа: ' + error, [{ text: 'OK' }]);
@@ -297,13 +306,13 @@ class AuthScreen extends PureComponent<any, State, Props> {
       password: false,
     };
     var arrCol: authText = {
-      login: ColorApp,
-      password: ColorApp,
+      login: appColor,
+      password: appColor,
     };
     this.setState({
-      login: '', password: '', color: ColorApp,
+      login: '', password: '', color: appColor,
       good: true, passGood: false, submit: false,
-      badEnter: arr, colorIcon: arrCol,
+      badEnter: arr, colorField: arrCol,
     })
   }
 }
@@ -318,10 +327,8 @@ const locStyles = StyleSheet.create({
     width: w * 0.8,
   },
   input: {
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 10,
+    borderBottomWidth: 1,
+    padding: 5,
     height: 40,
   },
   flex: {
@@ -336,10 +343,10 @@ const locStyles = StyleSheet.create({
   },
   button: {
     marginTop: 20,
-    width: 250,
+    width: w * 0.75,
   },
   buttonContainer: {
-    backgroundColor: ColorApp,
+    backgroundColor: appColor,
     height: 40,
     alignItems: 'center',
     justifyContent: 'center',

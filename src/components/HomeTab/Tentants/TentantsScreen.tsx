@@ -1,17 +1,17 @@
-import React, {PureComponent} from 'react';
+import React, { PureComponent } from 'react';
 import {
   View, Text, ScrollView, ActivityIndicator, Image, Alert, RefreshControl
 } from 'react-native';
 import { Header, SearchHeader, HomeCard, globalStyles, TentantCard, TentantNewCard } from '../..';
 import { menu, search, backArrow, rightBack } from '../../../allSvg'
 import { HOMEProfile, PROFILE, HOMEScreen, NAVIGATIONAdmin, NAVIGATIONUser } from '../../../routes';
-import { ColorApp, serverUrl, BackgroundImage, Background } from '../../../constants';
+import { appColor, serverUrl, BackgroundImage, Background } from '../../../constants';
 import { ListItem, Button, Icon, Card, Divider } from 'react-native-elements'
 import { Home, User } from '../../../interfaces'
 import { store } from '../../../store';
 import { Role } from '../../../enum/Enums';
 
-interface TentantData{  
+interface TentantData {
   tantains: User[],
   newTantains: User[],
 }
@@ -44,14 +44,14 @@ class TentantsScreen extends PureComponent<any, State, Props> {
     if (!uid) {
       Alert.alert('Внимание', 'uid: ' + uid, [{ text: 'OK' }]);
       return
-      }
+    }
     this.setState({ approvedTentants, newTenants, loadError: true })
     console.log('componentDidMount approvedTentants: ', approvedTentants)
     console.log('componentDidMount newTenants: ', newTenants)
     var logAction = 'Tenants';
     try {
       const response = await fetch(serverUrl + 'profile/tentants?Fk_Home=' + uid,
-      { headers: { 'Authorization': `Bearer ${token}` } })
+        { headers: { 'Authorization': `Bearer ${token}` } })
       if (response.status == 200) {
         const data: TentantData = await response.json()
         $this.setState({
@@ -63,7 +63,7 @@ class TentantsScreen extends PureComponent<any, State, Props> {
     } catch (error) {
       console.log('Внимание', 'Ошибка ' + logAction + ' Post fetch: ' + error);
       if (error == 'TypeError: Network request failed') {
-        Alert.alert('Внимание', 'Сервер не доступен: ' + error, [{ text: 'OK' }]);
+        Alert.alert('Внимание', 'Сервер не доступен, попробуйте позже', [{ text: 'OK' }]);
         $this.setState({ loadError: false })
       }
       else {
@@ -98,7 +98,7 @@ class TentantsScreen extends PureComponent<any, State, Props> {
 
   render() {
     const { userLogin, token } = store.state;
-    const { approvedTentants, newTenants, allTentants, load, visibleSearch, 
+    const { approvedTentants, newTenants, allTentants, load, visibleSearch,
       refreshing, loadError, reload } = this.state
     const { h3, container, indicator, im, cardUsersStyle } = globalStyles
     const { navigation } = this.props
@@ -110,19 +110,20 @@ class TentantsScreen extends PureComponent<any, State, Props> {
     return (<View>
       {visibleSearch ?
         <SearchHeader
-          rightIcon={rightBack}
+          rightIcon={'arrow-up'}
           onChangeText={this.onSearchTentants.bind(this)}
           value={this.state.text}
-          onPressRight={() => this.setState({ visibleSearch: false, approvedTentants: allTentants })}
+          onPressRight={() => this.setState({ visibleSearch: false, approvedTentants: allTentants, text:'' })}
           onBlur={() => this.setState({ visibleSearch: false })}
+          subjectSearch='имя'
         /> :
         <Header title='Жители дома'
-          leftIcon={backArrow}
+          leftIcon={'arrow-left'}
           onPressLeft={() => {
             navigation.goBack()
           }
-          } //navigation.navigate(HOMEScreen, true)
-          rightIcon={search}
+          }
+          rightIcon={'search'}
           onPressRight={() => this.setState({ visibleSearch: true })}
         />
       }
@@ -150,12 +151,12 @@ class TentantsScreen extends PureComponent<any, State, Props> {
         }
 
         {approvedTentants.length ?
-          <Card containerStyle={cardUsersStyle}>            
+          <Card containerStyle={cardUsersStyle}>
             <View >
               {approvedTentants.map((item: User) => {
                 return <TentantCard data={item} key={item.uid}
-                  onPress={() => navigation.navigate(PROFILE, item.uid)} 
-                  loadError={loadError}/>
+                  onPress={() => navigation.navigate(PROFILE, item.uid)}
+                  loadError={loadError} />
               })
               }
             </View>
@@ -175,7 +176,7 @@ class TentantsScreen extends PureComponent<any, State, Props> {
               
           : <View></View>
         } */}
-        <View style={{ margin: 30 }}><Text></Text></View>
+        <View style={{ margin: 40 }}><Text></Text></View>
       </ScrollView>
     </View>
     );

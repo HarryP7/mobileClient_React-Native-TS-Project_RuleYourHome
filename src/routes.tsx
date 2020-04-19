@@ -7,6 +7,7 @@ export const AUTH = 'AUTH'
 export const REGISTRATION = 'REGISTRATION'
 export const ADDRESSScreen = 'ADDRESSScreen'
 export const AddHOME = 'AddHOME'
+export const LOGOUT = 'LOGOUT'
 
 //Tab 1
 export const HOMEProfile = 'HOMEProfile'

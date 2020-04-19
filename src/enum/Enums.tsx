@@ -25,7 +25,7 @@ export enum GroupStatus{
 
 export enum Gender 
 {
-    undefined = 'Не задан',
+    undefined = 'Не указан',
     male = 'мужской',
     female = 'женский'
 }

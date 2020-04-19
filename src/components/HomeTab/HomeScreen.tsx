@@ -6,7 +6,7 @@ import {
 import { Header, globalStyles } from '..';
 import { menu } from '../../allSvg'
 import { HomeStatus, Role } from '../../enum/Enums';
-import { h, w, ColorApp, NoFoto, serverUrl, BackgroundImage, Background } from '../../constants'
+import { h, w, appColor, NoFoto, serverUrl, BackgroundImage, Background } from '../../constants'
 import { AddGROUP, AUTH, REGISTRATION, GroupLIST, ADDRESSScreen, TENTENScreen, PROFILE } from '../../routes';
 import { Home, User, InitialHome, HomeData } from '../../interfaces'
 import { useGlobal, store, actions } from '../../store'
@@ -64,7 +64,7 @@ class HomeScreen extends Component<any, State, Props> {
     } catch (error) {
       console.log('Внимание', 'Ошибка ' + logAction + ' Post fetch: ' + error);
       if (error == 'TypeError: Network request failed') {
-        Alert.alert('Внимание', 'Сервер не доступен: ' + error, [{ text: 'OK' }]);
+        Alert.alert('Внимание', 'Сервер не доступен, попробуйте позже', [{ text: 'OK' }]);
 
         this.setState({ loadError: true })
       }
@@ -92,10 +92,11 @@ class HomeScreen extends Component<any, State, Props> {
     console.log('userLogin.fk_Home: ' + userLogin.fk_Home + ' userLogin.isApprovedHome: ' + userLogin.isApprovedHome)
     return (<View>
       <Header title='Дом'
-        leftIcon={menu}
-        onPressLeft={() => {
-          navigation.openDrawer()
-        }} />
+        // leftIcon={'menu'}
+        // onPressLeft={() => {
+        //   navigation.openDrawer()
+        // }}
+      />
       {token ? (
         userLogin.fk_Home ? (
           userLogin.isApprovedHome ? (
@@ -107,7 +108,7 @@ class HomeScreen extends Component<any, State, Props> {
                     <RefreshControl refreshing={refreshing} onRefresh={this.onRefresh.bind(this)} />
                   } >
                   {Background}
-                  {!loadError && <ActivityIndicator style={indicator} size={50} color={ColorApp} />}
+                  {!loadError && <ActivityIndicator style={indicator} size={50} color={appColor} />}
                 </ScrollView>
               </View>
           )
@@ -217,7 +218,7 @@ class HomeScreen extends Component<any, State, Props> {
     const { navigation } = this.props
     const { images, h1, h3, sub, link, } = globalStyles
     const { status, sectionContainer, sectionTitle, homeStatusGood, homeStatusBad,
-      sectionContainer1, sectionTitle1, } = locStyles
+      sectionContainer1, sectionTitle1, numberStyle } = locStyles
     const { data, refreshing, approvedTentants, newTenants } = this.state
     const { uid, imageUrl, city, street, homeNumber, appartaments, floors, porches, fk_Status,
       yearCommissioning, localGroups, fk_Manager, manager } = data
@@ -236,7 +237,8 @@ class HomeScreen extends Component<any, State, Props> {
           <TouchableOpacity onPress={() =>
             localGroups.length ? navigation.navigate(GroupLIST, uid) : navigation.navigate(AddGROUP, (uid))} >
             <View style={sectionContainer1}>
-              <Text style={sectionTitle1}>Группы    {localGroups.length}</Text>
+              <Text style={sectionTitle1}>Группы</Text>
+              <Text style={[sectionTitle1, numberStyle]}>{localGroups.length}</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity
@@ -244,7 +246,8 @@ class HomeScreen extends Component<any, State, Props> {
               navigation.navigate(TENTENScreen, { approvedTentants, newTenants, uid, fk_Manager })
             } >
             <View style={sectionContainer1}>
-              <Text style={sectionTitle1}>Жители   {approvedTentants.length}</Text>
+              <Text style={sectionTitle1}>Жители</Text>
+              <Text style={[sectionTitle1, numberStyle]}>{approvedTentants.length}</Text>
             </View>
             {((userLogin.fk_Role != Role.user || userLogin.uid == fk_Manager) && newTenants.length) ?
               <Badge
@@ -258,13 +261,14 @@ class HomeScreen extends Component<any, State, Props> {
           </TouchableOpacity>
         </View>
 
-        {(userLogin.fk_Role != Role.user || userLogin.uid == fk_Manager)  &&
+        {(userLogin.fk_Role != Role.user || userLogin.uid == fk_Manager) &&
           <TouchableOpacity onPress={() => navigation.navigate(AddGROUP, (uid))} >
             <View style={sectionContainer}>
               <Text style={sectionTitle}>Добавить группу</Text>
             </View>
           </TouchableOpacity>
         }
+        <Divider style={{ margin: 5 }}></Divider>
 
         <View style={sub}>
           <Text style={h3}>Управляющий дома: </Text>
@@ -273,10 +277,10 @@ class HomeScreen extends Component<any, State, Props> {
             <Text style={link}> {manager.fullName}</Text>
           </TouchableOpacity>
         </View>
-        <Text style={h3}>Кол-во квартир: {appartaments} </Text>
-        <Text style={h3}>Кол-во этажей: {floors} </Text>
-        <Text style={h3}>Кол-во подъездов: {porches} </Text>
-        <Text style={h3}>Год ввода в эксплуатацию: {yearCommissioning} </Text>
+        <Text style={h3}><Text style={{ color: 'grey' }}>Этажей:</Text> {floors} </Text>
+        <Text style={h3}><Text style={{ color: 'grey' }}>Квартир:</Text> {appartaments} </Text>
+        <Text style={h3}><Text style={{ color: 'grey' }}>Подъездов:</Text> {porches} </Text>
+        <Text style={h3}><Text style={{ color: 'grey' }}>Введен в эксплуатацию:</Text> {yearCommissioning} г.</Text>
         <View style={{ margin: 55 }}><Text> </Text></View>
       </ScrollView>
     </SafeAreaView>
@@ -315,7 +319,7 @@ class HomeScreen extends Component<any, State, Props> {
     } catch (error) {
       console.log('Внимание', 'Ошибка UserReload' + ' Post fetch: ' + error);
       if (error == 'TypeError: Network request failed') {
-        Alert.alert('Внимание', 'Сервер не доступен: ' + error, [{ text: 'OK' }]);
+        Alert.alert('Внимание', 'Сервер не доступен, попробуйте позже', [{ text: 'OK' }]);
 
         this.setState({ loadError: true })
       }
@@ -361,7 +365,7 @@ const locStyles = StyleSheet.create({
   },
   sectionContainer1: {
     height: 50,
-    borderColor: '#000',
+    borderColor: 'grey',
     borderWidth: 1,
     borderRadius: 7,
     marginTop: 15,
@@ -370,7 +374,11 @@ const locStyles = StyleSheet.create({
   },
   sectionTitle1: {
     fontSize: 18,
-    textAlign: 'center'
+    textAlign: 'center',
+    color: 'grey'
+  },
+  numberStyle: {
+    color: 'black',
   },
   containerUp: {
     flex: 0,

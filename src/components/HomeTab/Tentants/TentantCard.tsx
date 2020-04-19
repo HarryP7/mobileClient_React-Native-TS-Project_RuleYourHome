@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Image, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native'
-import { h, w, NoFoto, NoAvatar, ColorApp } from '../../../constants'
+import { h, w, NoFoto, NoAvatar, appColor } from '../../../constants'
 import { HomeStatus } from '../../../enum/Enums'
 import { Divider, Icon } from 'react-native-elements'
 import { globalStyles } from '../../../components/globalStyles'
@@ -11,7 +11,7 @@ const TentantCard = ({ data, onPress, loadError }: any) => {
     const { myGroups, address, phone, fk_Gender, fullName, avatar, uid } = data
     return (<View>
         {loadError &&
-        <ActivityIndicator style={indicator} size={50} color={ColorApp} />}
+        <ActivityIndicator style={indicator} size={50} color={appColor} />}
         <TouchableOpacity onPress={onPress}>
             <View style={container}>
                 <Image source={avatar ? { uri: avatar.url } : require('../../../../icon/user1.png')}

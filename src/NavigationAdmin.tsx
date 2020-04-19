@@ -12,10 +12,11 @@ import {
 } from './components';
 import HomeScreen from './components/HomeTab/HomeScreen' 
 import { SvgXml } from 'react-native-svg';
-import { backArrow, login, addHome, home, searchHome, notif, menu, search } from './allSvg'
-import { appColor } from './constants';
+import { backArrow, login, addHome, home, searchHome, notif, user, } from './allSvg'
+import { appColor, NoAvatar, w } from './constants';
 import { useGlobal, store } from './store'
 import { PROFILE } from './routes';
+import { Avatar } from 'react-native-paper';
 
 const { headDrawer, icon, back, imageIcon, imageCont, link, buttonTitle, button4 } = globalStyles
 const { userLogin, token } = store.state;
@@ -33,6 +34,10 @@ const BottomTab = createBottomTabNavigator({
     screen: NotificationScreen,
     navigationOptions: { tabBarLabel: 'Уведомления' },
   },
+  Profile: {
+    screen: ProfileScreen,
+    navigationOptions: { tabBarLabel: 'Профиль' },
+  },
 },
   {
     defaultNavigationOptions: ({ navigation }) => ({
@@ -40,7 +45,8 @@ const BottomTab = createBottomTabNavigator({
         var { routeName } = navigation.state;
         return <SvgXml xml={
           routeName === 'Home' ? home : routeName === 'SearchHome' ?
-          searchHome : routeName === 'Notification' ? notif : ''}
+          searchHome : routeName === 'Notification' ? notif : 
+          routeName === 'Profile' ? user :''}
           style={icon} fill={tintColor} />
       },
     }),
@@ -56,6 +62,7 @@ const BottomTabStack = createStackNavigator({
 },
   { headerMode: 'none', }
 );
+const {avatar} = userLogin;
 
 const CustomDrowerComponent = (props: any) => (
   <SafeAreaView >
@@ -68,10 +75,14 @@ const CustomDrowerComponent = (props: any) => (
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => props.navigation.navigate(PROFILE)}
-          style={imageCont}>
-          <Image
-            source={userLogin.avatar ? { uri: userLogin.avatar.url } : require('../icon/user1.png')}
-            style={imageIcon} />
+          style={imageCont}>            
+        <Avatar.Image 
+          size={w * 0.4} 
+          source={{ uri: avatar ? avatar.url : NoAvatar }} 
+          style={{ backgroundColor: 'white' }} />
+          {/* <Image
+            source={{ uri: userLogin.avatar ? userLogin.avatar.url : NoAvatar}}
+            style={imageIcon} /> */}
         </TouchableOpacity>
 
         <View style={button4}>
@@ -113,7 +124,7 @@ const MainDrawer = createDrawerNavigator({
 }, {
   //initialRouteName: 'Tab',
   drawerBackgroundColor: appColor,
-  //drawerPosition: 'right',
+  drawerPosition: 'right',
   drawerType: 'slide',
   drawerWidth: 220,
   swipeDistanceThreshold: 100,

@@ -7,7 +7,7 @@ import { SvgXml } from 'react-native-svg';
 import { save } from '../../allSvg'
 import { Header, globalStyles } from '..';//, styles 
 import { Dropdown, DropDownData } from 'react-native-material-dropdown';
-import { h, w, ColorApp, serverUrl, BackgroundImage } from '../../constants'
+import { h, w, appColor, serverUrl, BackgroundImage } from '../../constants'
 import { HomeStatus, Role } from '../../enum/Enums'
 import { backArrow } from '../../allSvg'
 import { TextInput } from 'react-native-gesture-handler';
@@ -68,7 +68,7 @@ class AddHomeScreen extends Component<any, State, Props> {
       value: HomeStatus.Emergency  },];
     return (<View>
       <Header title='Добавить дом'
-        leftIcon={backArrow}
+        leftIcon={'arrow-left'}
         onPressLeft={() => {
           this.setClearState();
           navigation.goBack();
@@ -77,7 +77,7 @@ class AddHomeScreen extends Component<any, State, Props> {
         <Image source={BackgroundImage} style={imScroll}></Image>
 
         <Card containerStyle={cardStyle} >
-        {submit && <ActivityIndicator style={[indicator,{marginTop: h/2}]} size={50} color={ColorApp} />}
+        {submit && <ActivityIndicator style={[indicator,{marginTop: h/2}]} size={50} color={appColor} />}
           <View>
             <View style={fixToText}>
               <View style={textInput}>
@@ -98,7 +98,7 @@ class AddHomeScreen extends Component<any, State, Props> {
                   dropdownPosition={0}
                   disabled={submit}
                 />
-                {loadUser && <ActivityIndicator style={indicator} size={70} color={ColorApp} />}
+                {loadUser && <ActivityIndicator style={indicator} size={70} color={appColor} />}
                 {badEnter.supervisor && <Text style={error}>{errorText.supervisor}</Text>}
               </View>
             </View>
@@ -607,7 +607,7 @@ class AddHomeScreen extends Component<any, State, Props> {
           console.log('Внимание', 'Ошибка ' + log + ' Post fetch: ' + error);
           if (error == 'TypeError: Network request failed') {
             console.log('Внимание', 'Сервер не доступен: ' + log + ' Post fetch: ' + error);
-            Alert.alert('Внимание', 'Сервер не доступен: ' + error, [{ text: 'OK' }]);
+            Alert.alert('Внимание', 'Сервер не доступен, попробуйте позже', [{ text: 'OK' }]);
             $this.setState({ submit: false })
           }
           else {

@@ -1,10 +1,11 @@
 import * as React from 'react';
 import {
-  View,Text, ScrollView, ActivityIndicator,Image } from 'react-native';
-import { Header, SearchHeader, GroupCard,  globalStyles } from '..';
-import {  backArrow, search, rightBack } from '../../allSvg'
+  View, Text, ScrollView, ActivityIndicator, Image
+} from 'react-native';
+import { Header, SearchHeader, GroupCard, globalStyles } from '..';
+import { backArrow, search, rightBack } from '../../allSvg'
 import { GroupPRO } from '../../routes';
-import { ColorApp, serverUrl, BackgroundImage, Background } from '../../constants';
+import { appColor, serverUrl, BackgroundImage, Background } from '../../constants';
 import { useGlobal, store } from '../../store'
 import { Group } from '../../interfaces'
 
@@ -18,13 +19,13 @@ interface State {
 
 class GroupListScreen extends React.PureComponent<any, State> {
   state = { data: [], dataOld: [], load: false, visibleSearch: false, text: '' } as State
-  
+
   componentDidMount = async () => {
     try {
       const { userLogin, token } = store.state;
-      var Fk_Home = this.props.navigation.state.params 
-      const response = await fetch(serverUrl+'groups/home?Fk_Home='+Fk_Home,
-      { headers: {  'Authorization': `Bearer ${token}` }})
+      var Fk_Home = this.props.navigation.state.params
+      const response = await fetch(serverUrl + 'groups/home?Fk_Home=' + Fk_Home,
+        { headers: { 'Authorization': `Bearer ${token}` } })
       const data = await response.json()
       console.log("Успех HomeGroups fetch: ", data)
       this.setState({ data, load: true, dataOld: data })
@@ -35,12 +36,12 @@ class GroupListScreen extends React.PureComponent<any, State> {
 
   onSearchGroup = (text: string) => {
     var txt: Group[] = this.state.dataOld;
-    if(text){
+    if (text) {
       var filtered = txt.filter((el) =>
-        el.title.toLowerCase().indexOf(text.toLowerCase()) > -1);     
+        el.title.toLowerCase().indexOf(text.toLowerCase()) > -1);
       this.setState({ data: filtered, text });
-      }
-      else this.setState({ data: this.state.dataOld, text });
+    }
+    else this.setState({ data: this.state.dataOld, text });
   }
 
   render() {
@@ -51,22 +52,23 @@ class GroupListScreen extends React.PureComponent<any, State> {
     console.log("data: ", data)
     return (<View>
       {visibleSearch ?
-        <SearchHeader           
-          rightIcon={rightBack}
+        <SearchHeader
+          rightIcon={'arrow-up'}
           onChangeText={this.onSearchGroup}
           value={this.state.text}
-          onPressRight={() => this.setState({visibleSearch: false, data: this.state.dataOld})}
-          onBlur={() => this.setState({visibleSearch: false})}
-        /> : 
-        <Header title='Группы'          
-          leftIcon={backArrow}
+          onPressRight={() => this.setState({ visibleSearch: false, data: this.state.dataOld, text:'' })}
+          onBlur={() => this.setState({ visibleSearch: false })}
+          subjectSearch='группу'
+        /> :
+        <Header title='Группы'
+          leftIcon={'arrow-left'}
           onPressLeft={() => navigation.goBack()}
-          rightIcon={search}
-          onPressRight={() => this.setState({visibleSearch: true})}
+          rightIcon={'search'}
+          onPressRight={() => this.setState({ visibleSearch: true })}
         />
-      }      
+      }
       <View>
-      {Background}</View>
+        {Background}</View>
       <ScrollView >
         {load ?
           <View style={container}>
@@ -75,13 +77,13 @@ class GroupListScreen extends React.PureComponent<any, State> {
                 onPress={() => navigation.navigate(GroupPRO, (item))} />//
             })}
           </View> :
-          <ActivityIndicator style={indicator} size={50} color={ColorApp} />
+          <ActivityIndicator style={indicator} size={50} color={appColor} />
         }
-        <View style={{margin: 50}}><Text></Text></View>
+        <View style={{ margin: 50 }}><Text></Text></View>
       </ScrollView>
     </View>
     );
   }
 }
 
-export {GroupListScreen} 
+export { GroupListScreen } 

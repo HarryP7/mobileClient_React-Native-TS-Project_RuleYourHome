@@ -6,15 +6,15 @@ import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { createDrawerNavigator, DrawerItems } from 'react-navigation-drawer';
-import {
-  SearchHomeScreen, NotificationScreen, ProfileScreen, globalStyles, ExitScreen
+import { SearchHomeScreen, NotificationScreen, ProfileScreen, globalStyles, ExitScreen
 } from './components';
 import HomeScreen from './components/HomeTab/HomeScreen'
 import { SvgXml } from 'react-native-svg';
-import { backArrow, login, home, searchHome, notif, } from './allSvg'
-import { appColor } from './constants';
+import { backArrow, login, home, searchHome, notif, user, } from './allSvg'
+import { appColor, NoAvatar, w } from './constants';
 import { useGlobal, store } from './store'
 import { PROFILE } from './routes';
+import { Avatar } from 'react-native-paper';
 
 const { headDrawer, icon, back, imageCont, imageIcon, button4, link, buttonTitle } = globalStyles
 const { userLogin, token } = store.state;
@@ -32,6 +32,10 @@ const BottomTab = createBottomTabNavigator({
     screen: NotificationScreen,
     navigationOptions: { tabBarLabel: 'Уведомления' },
   },
+  Profile: {
+    screen: ProfileScreen,
+    navigationOptions: { tabBarLabel: 'Профиль' },
+  },
 },
   {
     defaultNavigationOptions: ({ navigation }) => ({
@@ -39,7 +43,8 @@ const BottomTab = createBottomTabNavigator({
         var { routeName } = navigation.state;
         return <SvgXml xml={
           routeName === 'Home' ? home : routeName === 'SearchHome' ?
-            searchHome : routeName === 'Notification' ? notif : ''}
+            searchHome : routeName === 'Notification' ? notif : 
+            routeName === 'Profile' ? user :''}
           style={icon} fill={tintColor} />
       },
     }),
@@ -56,6 +61,7 @@ const BottomTabStack = createStackNavigator({
   { headerMode: 'none', }
 );
 
+const {avatar} = userLogin;
 const CustomDrowerComponent = (props: any) => (
   <SafeAreaView >
     <ScrollView>
@@ -67,10 +73,11 @@ const CustomDrowerComponent = (props: any) => (
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => props.navigation.navigate(PROFILE)}
-          style={imageCont}>
-          <Image
-            source={userLogin.avatar ? { uri: userLogin.avatar.url } : require('../icon/user1.png')}
-            style={imageIcon} />
+          style={imageCont}>     
+          <Avatar.Image 
+            size={w * 0.35} 
+            source={{ uri: avatar ? avatar.url : NoAvatar }} 
+            style={{ backgroundColor: 'white' }} />
         </TouchableOpacity>
 
         <View style={button4}>
@@ -105,7 +112,7 @@ const MainDrawer = createDrawerNavigator({
 }, {
   //initialRouteName: 'Tab',
   drawerBackgroundColor: appColor,
-  //drawerPosition: 'right',
+  drawerPosition: 'right',
   drawerType: 'slide',
   drawerWidth: 220,
   swipeDistanceThreshold: 100,

@@ -1,7 +1,6 @@
 import React from 'react';
 import {
-  View, Text, TouchableOpacity, Image, Button,
-} from 'react-native';
+  View, Text, TouchableOpacity, Image } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import NotAuthNavigation from '../..';
@@ -11,13 +10,14 @@ import { globalStyles } from '..'
 import { useGlobal, store } from '../../store'
 import { Role } from '../../enum/Enums';
 import { NotAuthNAVIGATION, NAVIGATIONAdmin, NAVIGATIONUser } from '../../routes';
+import { Button  } from 'react-native-paper';
 
 interface Props { }
 
 class SplashScreen extends React.Component<any, Props> {
   render() {
     const { bodySp, sectionContainer, sectionTitle, sectionDescription, paddingBottom,
-      buttonContainerSp, buttonTitleSp } = globalStyles
+      buttonContainerSp, buttonTitleSp, buttonContentSp, image } = globalStyles
     const { navigation } = this.props
     return (
       <View style={bodySp}>
@@ -30,15 +30,14 @@ class SplashScreen extends React.Component<any, Props> {
               </Text>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
           <View style={paddingBottom}>
-            <Image source={require('../../../icon/bigHome.png')} style={globalStyles.image} />
-          </View>
-          <View style={paddingBottom}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('App')}>
-              <View style={buttonContainerSp}>
-                <Text style={buttonTitleSp}>Продолжить</Text>
-              </View>
-            </TouchableOpacity>
+            <Image source={require('../../../icon/bigHome.png')} style={image} />
+          <Button 
+              mode="contained"
+              uppercase={false}
+              onPress={() => navigation.navigate('App')}
+              contentStyle={buttonContentSp}
+              style={buttonContainerSp}
+              labelStyle={buttonTitleSp}>Продолжить </Button >
           </View>
         </View>
       </View>

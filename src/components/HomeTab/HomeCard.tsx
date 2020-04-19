@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     },
     h1: {
         fontSize: 20,
-        width: w * 0.67,
+        width: w * 0.65,
     },
     homeStatusGood: {
         color: '#13CE66'

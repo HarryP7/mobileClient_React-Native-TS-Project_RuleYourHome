@@ -120,7 +120,7 @@ const globalStyles = StyleSheet.create({
     width: 130,
     height: 130,
     borderRadius: 60,
-    marginLeft: 45,
+    marginLeft: 40,
     marginTop: 20,
     paddingBottom: 30,
   },

@@ -46,7 +46,7 @@ var initArrColor: arrColor = {
   button: disColor
 };
 
-class RegistrationScreen extends Component<any, State, Props> {
+class EditPassScreen extends Component<any, State, Props> {
   state = {
     login: '', email: '', name: '', password: '', repeatPassword: '', width: 1,
     visibility: false, visibilityRep: false,
@@ -55,7 +55,7 @@ class RegistrationScreen extends Component<any, State, Props> {
   }
 
   componentDidMount = () => {
-    console.log('Props RegistrationScreen', this.props)
+    console.log('Props EditPassScreen', this.props)
   }
   render() {
     const { login, email, name, password, repeatPassword, visibility,
@@ -653,4 +653,4 @@ const locStyles = StyleSheet.create({
   },
 })
 
-export { RegistrationScreen };
+export { EditPassScreen };

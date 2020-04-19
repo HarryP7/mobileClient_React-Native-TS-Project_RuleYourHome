@@ -10,7 +10,7 @@ import { SvgXml } from 'react-native-svg';
 import { save } from '../../allSvg'
 import { Header } from '..';//, styles 
 import { Dropdown, DropDownMargins } from 'react-native-material-dropdown';
-import { h, w, ColorApp, serverUrl, BackgroundImage, Background } from '../../constants'
+import { h, w, appColor, serverUrl, BackgroundImage, Background } from '../../constants'
 import { GroupStatus } from '../../enum/Enums'
 import { backArrow } from '../../allSvg'
 import { useGlobal, store } from '../../store'
@@ -18,9 +18,6 @@ import { globalStyles } from '../globalStyles';
 import { Card, Input } from 'react-native-elements';
 import { GroupPRO } from '../../routes';
 import { Group } from '../../interfaces';
-//import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-//import {Fab} from '@material-ui/core';
-//import Save from '@material-ui/icons/Save';
 
 interface Props { }
 interface State { }
@@ -63,7 +60,7 @@ class AddGroupScreen extends Component<any, State, Props> {
       value: GroupStatus.Pravite, },];
     return (<View>
       <Header title='Добавить группу'
-        leftIcon={backArrow}
+        leftIcon={'arrow-left'}
         onPressLeft={() => {
           this.setClearState();
           navigation.goBack();
@@ -72,7 +69,7 @@ class AddGroupScreen extends Component<any, State, Props> {
         {Background}</View>
       <ScrollView>
         <Card containerStyle={cardStyle} >
-        {submit && <ActivityIndicator style={indicator} size={70} color={ColorApp} />}
+        {submit && <ActivityIndicator style={indicator} size={70} color={appColor} />}
           <View style={fixToText}>
             <View style={textInput}>
               <View style={{ flexDirection: 'row' }}>

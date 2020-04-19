@@ -5,7 +5,7 @@ import {
 import { Header, globalStyles } from '..';
 import { backArrow } from '../../allSvg'
 import { HomeStatus, Role } from '../../enum/Enums';
-import { h, w, ColorApp, NoFoto, serverUrl } from '../../constants'
+import { h, w, appColor, NoFoto, serverUrl } from '../../constants'
 import { GroupLIST, TENTENScreen, PROFILE, AddGROUP } from '../../routes';
 import { Badge, Divider } from 'react-native-elements';
 import { store } from '../../store';
@@ -51,7 +51,7 @@ class HomeProfile extends Component<any, State, Props> {
     } catch (error) {
       console.log('Внимание', 'Ошибка ' + logAction + ' Post fetch: ' + error);
       if (error == 'TypeError: Network request failed') {
-        Alert.alert('Внимание', 'Сервер не доступен: ' + error, [{ text: 'OK' }]);
+        Alert.alert('Внимание', 'Сервер не доступен, попробуйте позже', [{ text: 'OK' }]);
 
         this.setState({ loadError: true })
       }
@@ -74,13 +74,13 @@ class HomeProfile extends Component<any, State, Props> {
     const { data, load, approvedTentants, newTenants, refreshing } = this.state
     const { localGroups } = data
     const { images, h1, sub, link, indicator } = globalStyles
-    const { status, h3, sectionContainer, sectionTitle, sectionContainer1, sectionTitle1,
+    const { status, h3, sectionContainer, sectionTitle, sectionContainer1, sectionTitle1, numberStyle,
       homeStatusGood, homeStatusBad } = locStyles
     console.log('props: ', this.props)
     console.log(' props.params: ', this.props.navigation.state.params)
     return (<View>
       <Header title='Дом'
-        leftIcon={backArrow}
+        leftIcon={'arrow-left'}
         onPressLeft={() => navigation.goBack()} />
 
       <View>
@@ -90,7 +90,7 @@ class HomeProfile extends Component<any, State, Props> {
           }
         >
           <Image source={{ uri: imageUrl ? imageUrl.url : NoFoto }} style={images} />
-          <Text style={h1}>г. {city}, ул. {street}, д. {homeNumber}</Text>
+          <Text style={h1}>г. {city}, {street}, д. {homeNumber}</Text>
           <Text style={[status, fk_Status == 1 ? homeStatusGood : homeStatusBad]}>
             {fk_Status == 1 ? HomeStatus.Exploited : HomeStatus.Emergency}</Text>
 
@@ -100,7 +100,8 @@ class HomeProfile extends Component<any, State, Props> {
                 <TouchableOpacity onPress={() =>
                   localGroups.length ? navigation.navigate(GroupLIST, uid) : navigation.navigate(AddGROUP, (uid))} >
                   <View style={sectionContainer1}>
-                    <Text style={sectionTitle1}>Группы    {localGroups.length}</Text>
+                    <Text style={sectionTitle1}>Группы</Text>
+                    <Text style={[sectionTitle1, numberStyle]}>{localGroups.length}</Text>
                   </View>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -108,7 +109,8 @@ class HomeProfile extends Component<any, State, Props> {
                     navigation.navigate(TENTENScreen, { approvedTentants, newTenants, uid, fk_Manager })
                   } >
                   <View style={sectionContainer1}>
-                    <Text style={sectionTitle1}>Жители   {approvedTentants.length}</Text>
+                    <Text style={sectionTitle1}>Жители</Text>
+                    <Text style={[sectionTitle1, numberStyle]}>{approvedTentants.length}</Text>
                   </View>
                   {(userLogin.fk_Role != Role.user || userLogin.uid == fk_Manager) ?
                     newTenants.length ?
@@ -130,7 +132,7 @@ class HomeProfile extends Component<any, State, Props> {
                 </View>
               </TouchableOpacity>
             </View>
-            ) : <ActivityIndicator style={[indicator, { marginTop: h / 2 }]} size={50} color={ColorApp} />
+            ) : <ActivityIndicator style={[indicator, { marginTop: h / 2 }]} size={50} color={appColor} />
           ) : <View></View>
           }
 
@@ -145,10 +147,10 @@ class HomeProfile extends Component<any, State, Props> {
             </View>
             : <View></View>
           }
-          <Text style={h3}>Кол-во квартир: {appartaments} </Text>
-          <Text style={h3}>Кол-во этажей: {floors} </Text>
-          <Text style={h3}>Кол-во подъездов: {porches} </Text>
-          <Text style={h3}>Год ввода в эксплуатацию: {yearCommissioning} </Text>
+          <Text style={h3}><Text style={{color: 'grey'}}>Кол-во квартир:</Text> {appartaments} </Text>
+          <Text style={h3}><Text style={{color: 'grey'}}>Кол-во этажей:</Text> {floors} </Text>
+          <Text style={h3}><Text style={{color: 'grey'}}>Кол-во подъездов:</Text> {porches} </Text>
+          <Text style={h3}><Text style={{color: 'grey'}}>Введен в эксплуатацию:</Text> {yearCommissioning} г.</Text>
           <View style={{ margin: 55 }}><Text> </Text></View>
         </ScrollView>
       </View>
@@ -194,7 +196,7 @@ const locStyles = StyleSheet.create({
   },
   sectionContainer1: {
     height: 50,
-    borderColor: '#000',
+    borderColor: 'grey',
     borderWidth: 1,
     borderRadius: 7,
     marginTop: 15,
@@ -203,7 +205,11 @@ const locStyles = StyleSheet.create({
   },
   sectionTitle1: {
     fontSize: 18,
-    textAlign: 'center'
+    textAlign: 'center',
+    color: 'grey'
+  },
+  numberStyle: {
+    color: 'black',
   },
   h2: {
     padding: 15,
@@ -212,7 +218,7 @@ const locStyles = StyleSheet.create({
   },
   h3: {
     paddingLeft: 15,
-    marginVertical: 5,
+    marginVertical: 2,
     fontSize: 18,
   },
 })

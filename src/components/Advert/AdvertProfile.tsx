@@ -5,7 +5,7 @@ import {
 import { Header, globalStyles } from '..';
 import { backArrow } from '../../allSvg'
 import { HomeStatus, Role } from '../../enum/Enums';
-import { h, w, ColorApp, NoFoto, serverUrl, BackgroundImage, months, Background } from '../../constants'
+import { h, w, appColor, NoFoto, serverUrl, BackgroundImage, months, Background } from '../../constants'
 import { Badge, Divider, Card, Input, CheckBox } from 'react-native-elements';
 import { store } from '../../store';
 import { advert, Voting, Answer, Advert, Voted } from '../../interfaces';
@@ -85,7 +85,7 @@ class AdvertProfile extends Component<any, State, Props> {
         } catch (error) {
             console.log('Внимание', 'Ошибка ' + logAction + ' Post fetch: ' + error);
             if (error == 'TypeError: Network request failed') {
-                Alert.alert('Внимание', 'Сервер не доступен: ' + error, [{ text: 'OK' }]);
+                Alert.alert('Внимание', 'Сервер не доступен, попробуйте позже', [{ text: 'OK' }]);
 
                 this.setState({ loadError: true })
             }
@@ -109,7 +109,7 @@ class AdvertProfile extends Component<any, State, Props> {
         //console.log('votings: ', votings)
         return (<View>
             <Header title='Объявление'
-                leftIcon={backArrow}
+                leftIcon={'arrow-left'}
                 onPressLeft={() => navigation.goBack()} />
             <View>
                 {Background}
@@ -227,7 +227,7 @@ class AdvertProfile extends Component<any, State, Props> {
                 }
                     </View>
                 })
-                : !loadError && <ActivityIndicator style={indicator} size={50} color={ColorApp} />
+                : !loadError && <ActivityIndicator style={indicator} size={50} color={appColor} />
             }
         </View>
     }
@@ -313,7 +313,7 @@ class AdvertProfile extends Component<any, State, Props> {
         } catch (error) {
             console.log('Внимание', 'Ошибка ' + logAction + ' Post fetch: ' + error);
             if (error == 'TypeError: Network request failed') {
-                Alert.alert('Внимание', 'Сервер не доступен: ' + error, [{ text: 'OK' }]);
+                Alert.alert('Внимание', 'Сервер не доступен, попробуйте позже', [{ text: 'OK' }]);
 
                 this.setState({ loadError: true })
             }
