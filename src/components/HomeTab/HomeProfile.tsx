@@ -6,7 +6,7 @@ import { Header, globalStyles } from '..';
 import { backArrow } from '../../allSvg'
 import { HomeStatus, Role } from '../../enum/Enums';
 import { h, w, appColor, NoFoto, serverUrl } from '../../constants'
-import { GroupLIST, TENTENScreen, PROFILE, AddGROUP } from '../../routes';
+import { GroupLIST, TENTENScreen, PROFILE, AddGROUP } from '../../Navigations/routes';
 import { Badge, Divider } from 'react-native-elements';
 import { store } from '../../store';
 import { Home, InitialHome, User, HomeData } from '../../interfaces';
@@ -31,7 +31,7 @@ class HomeProfile extends Component<any, State, Props> {
     var logAction = 'Профиль дома';
     try {
       const { userLogin, token } = store.state;
-      var home: Home = this.props.navigation.state.params
+      var home: Home = this.props.route.params
       if (token && (userLogin.fk_Role != Role.user || userLogin.uid == home.fk_Manager)) {
         const response = await fetch(serverUrl + 'home?Fk_Home=' + home.uid,
           { headers: { 'Authorization': `Bearer ${token}` } })
@@ -68,20 +68,20 @@ class HomeProfile extends Component<any, State, Props> {
   render() {
     const { userLogin, token } = store.state;
     const { navigation } = this.props
-    var propsData = this.props.navigation.state.params
+    var propsData = this.props.route.params
     const { uid, imageUrl, city, street, homeNumber, appartaments, floors, porches, fk_Status,
       yearCommissioning, fk_Manager, manager } = propsData
     const { data, load, approvedTentants, newTenants, refreshing } = this.state
     const { localGroups } = data
-    const { images, h1, sub, link, indicator } = globalStyles
+    const { images, h1, sub, link, indicator, buttonContainer, buttonTitle } = globalStyles
     const { status, h3, sectionContainer, sectionTitle, sectionContainer1, sectionTitle1, numberStyle,
       homeStatusGood, homeStatusBad } = locStyles
     console.log('props: ', this.props)
-    console.log(' props.params: ', this.props.navigation.state.params)
+    //console.log(' props.params: ', this.props.route.params) 
     return (<View>
       <Header title='Дом'
         leftIcon={'arrow-left'}
-        onPressLeft={() => navigation.goBack()} />
+        onPressLeft={() => navigation.pop()} />
 
       <View>
         <ScrollView
@@ -147,10 +147,18 @@ class HomeProfile extends Component<any, State, Props> {
             </View>
             : <View></View>
           }
-          <Text style={h3}><Text style={{color: 'grey'}}>Кол-во квартир:</Text> {appartaments} </Text>
-          <Text style={h3}><Text style={{color: 'grey'}}>Кол-во этажей:</Text> {floors} </Text>
-          <Text style={h3}><Text style={{color: 'grey'}}>Кол-во подъездов:</Text> {porches} </Text>
-          <Text style={h3}><Text style={{color: 'grey'}}>Введен в эксплуатацию:</Text> {yearCommissioning} г.</Text>
+          <Text style={h3}><Text style={{ color: 'grey' }}>Кол-во квартир:</Text> {appartaments} </Text>
+          <Text style={h3}><Text style={{ color: 'grey' }}>Кол-во этажей:</Text> {floors} </Text>
+          <Text style={h3}><Text style={{ color: 'grey' }}>Кол-во подъездов:</Text> {porches} </Text>
+          <Text style={h3}><Text style={{ color: 'grey' }}>Введен в эксплуатацию:</Text> {yearCommissioning} г.</Text>
+          {!token &&
+            <TouchableOpacity
+              onPress={() => navigation.navigate('REGISTRATION', propsData)}>
+                <View style={[buttonContainer, {margin: 20}]}>
+                  <Text style={buttonTitle}>Зарегистрировться в этом доме</Text>
+                  </View>
+            </TouchableOpacity>
+          }
           <View style={{ margin: 55 }}><Text> </Text></View>
         </ScrollView>
       </View>

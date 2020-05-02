@@ -4,8 +4,8 @@ import {
 } from 'react-native';
 import { Header, SearchHeader, GroupCard, globalStyles } from '..';
 import { backArrow, search, rightBack } from '../../allSvg'
-import { GroupPRO } from '../../routes';
-import { appColor, serverUrl, BackgroundImage, Background } from '../../constants';
+import { GroupPRO } from '../../Navigations/routes';
+import { appColor, serverUrl, Background } from '../../constants';
 import { useGlobal, store } from '../../store'
 import { Group } from '../../interfaces'
 
@@ -23,7 +23,7 @@ class GroupListScreen extends React.PureComponent<any, State> {
   componentDidMount = async () => {
     try {
       const { userLogin, token } = store.state;
-      var Fk_Home = this.props.navigation.state.params
+      var Fk_Home = this.props.route.params
       const response = await fetch(serverUrl + 'groups/home?Fk_Home=' + Fk_Home,
         { headers: { 'Authorization': `Bearer ${token}` } })
       const data = await response.json()

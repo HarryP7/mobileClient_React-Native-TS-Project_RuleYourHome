@@ -3,16 +3,17 @@
  * https://github.com/facebook/react-native
  *
  * @format
- * @flow
+ * @flow strict-local
  */
 
-import React from 'react';
-import SplashScreen from './src/components/OtherScreens/SplashScreen'
 
+import * as React from 'react';
+import SplashScreen from './src/components/OtherScreens/SplashScreen';
 
-const App = () => {  
+export default function App() {
   return (
-      <SplashScreen/>
-  )
+        <SplashScreen />
+  );
 }
-export default App
+
+

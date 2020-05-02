@@ -4,10 +4,10 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { h, w, appColor } from '../constants'
 
 const globalStyles = StyleSheet.create({
-  headDrawer: { 
-    height: 210, 
-    backgroundColor: appColor//'#BE8F6C' 
-  },
+  // headDrawer: { 
+  //   height: 210, 
+  //   backgroundColor: appColor//'#BE8F6C' 
+  // },
   scrollView: {
     flex: 0,
     alignItems: 'center',
@@ -130,10 +130,10 @@ const globalStyles = StyleSheet.create({
     borderRadius: 50,
     padding: 20,
   },
-  icon: {
-    width: 24,
-    height: 24,
-  },
+  // icon: {
+  //   width: 24,
+  //   height: 24,
+  // },
   menu: {
     marginTop: 20,
     marginLeft: 20,

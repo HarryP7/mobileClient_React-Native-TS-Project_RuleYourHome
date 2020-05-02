@@ -1,13 +1,12 @@
 import React, { PureComponent } from 'react';
 import {
-  View, Text, ScrollView, ActivityIndicator, Image, Alert, RefreshControl
+  View, Text, ScrollView, Alert, RefreshControl
 } from 'react-native';
-import { Header, SearchHeader, HomeCard, globalStyles, TentantCard, TentantNewCard } from '../..';
-import { menu, search, backArrow, rightBack } from '../../../allSvg'
-import { HOMEProfile, PROFILE, HOMEScreen, NAVIGATIONAdmin, NAVIGATIONUser } from '../../../routes';
-import { appColor, serverUrl, BackgroundImage, Background } from '../../../constants';
-import { ListItem, Button, Icon, Card, Divider } from 'react-native-elements'
-import { Home, User } from '../../../interfaces'
+import { Header, SearchHeader, globalStyles, TentantCard, TentantNewCard } from '../..';
+import { PROFILE,  } from '../../../Navigations/routes';
+import { serverUrl, Background } from '../../../constants';
+import { Card, Divider } from 'react-native-elements'
+import { User } from '../../../interfaces'
 import { store } from '../../../store';
 import { Role } from '../../../enum/Enums';
 
@@ -40,7 +39,7 @@ class TentantsScreen extends PureComponent<any, State, Props> {
   componentDidMount = async () => {
     var $this = this
     const { userLogin, token } = store.state;
-    var { approvedTentants, newTenants, uid } = this.props.navigation.state.params
+    var { approvedTentants, newTenants, uid } = this.props.route.params
     if (!uid) {
       Alert.alert('Внимание', 'uid: ' + uid, [{ text: 'OK' }]);
       return
@@ -102,7 +101,7 @@ class TentantsScreen extends PureComponent<any, State, Props> {
       refreshing, loadError, reload } = this.state
     const { h3, container, indicator, im, cardUsersStyle } = globalStyles
     const { navigation } = this.props
-    var { uid, fk_Manager } = this.props.navigation.state.params
+    var { uid, fk_Manager } = this.props.route.params
     console.log('Rander Props: ', this.props)
     console.log('Rander uid: ', uid)
     console.log('Rander approvedTentants: ', approvedTentants)

@@ -7,7 +7,7 @@ import { SvgXml } from 'react-native-svg';
 import { save } from '../../allSvg'
 import { Header, globalStyles } from '..';//, styles 
 import { Dropdown, DropDownData } from 'react-native-material-dropdown';
-import { h, w, appColor, serverUrl, BackgroundImage } from '../../constants'
+import { h, w, appColor, serverUrl, Background } from '../../constants'
 import { HomeStatus, Role } from '../../enum/Enums'
 import { backArrow } from '../../allSvg'
 import { TextInput } from 'react-native-gesture-handler';
@@ -15,7 +15,7 @@ import { Card } from 'react-native-elements'
 import { CityList, VladimirStreetList } from '../auth/Lists'
 import { User, initAdrBool, initAdrTxt, adrHomeBool, adrHomeText } from '../../interfaces'
 import { store } from '../../store';
-import { HOMEProfile } from '../../routes';
+import { HOMEProfile } from '../../Navigations/routes';
 
 interface Props { }
 interface User_Op {
@@ -71,11 +71,10 @@ class AddHomeScreen extends Component<any, State, Props> {
         leftIcon={'arrow-left'}
         onPressLeft={() => {
           this.setClearState();
-          navigation.goBack();
+          navigation.pop();
         }} />
+          {Background}
       <ScrollView>
-        <Image source={BackgroundImage} style={imScroll}></Image>
-
         <Card containerStyle={cardStyle} >
         {submit && <ActivityIndicator style={[indicator,{marginTop: h/2}]} size={50} color={appColor} />}
           <View>

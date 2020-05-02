@@ -3,7 +3,7 @@ import {
     View, Text, ScrollView, Image, ActivityIndicator, Button, Alert, RefreshControl, Route
 } from 'react-native';
 import { Header, AdvertCard, globalStyles } from '..';
-import { AddADVERT, ADVERTPro } from '../../routes';
+import { AddADVERT, ADVERTPro } from '../../Navigations/routes';
 import { useGlobal, store } from '../../store'
 import { Role } from '../../enum/Enums';
 import { serverUrl, appColor, NoFoto, w } from '../../constants';
@@ -41,7 +41,7 @@ class GroupProfile extends Component<any, Props, State> {
         console.log(this.props.navigation)
         try {
             const { userLogin, token } = store.state;
-            const { uid } = this.props.navigation.state.params
+            const { uid } = this.props.route.params
             const response = await fetch(serverUrl + 'adverts?Fk_Group=' + uid,
                 {
                     headers: { 'Authorization': `Bearer ${token}` }
@@ -55,7 +55,7 @@ class GroupProfile extends Component<any, Props, State> {
 
     render() {
         const { button2, images, h1, container, indicator } = globalStyles
-        const { uid, title, image, fk_Supervisor } = this.props.navigation.state.params
+        const { uid, title, image, fk_Supervisor } = this.props.route.params
         const { navigation } = this.props
         const { adverts, load, refreshing, fk_Status } = this.state
         const { userLogin, token } = store.state;

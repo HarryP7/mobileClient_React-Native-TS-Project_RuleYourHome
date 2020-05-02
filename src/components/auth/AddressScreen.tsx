@@ -1,25 +1,24 @@
 import React, { PureComponent } from 'react';
 import {
   StyleSheet, ScrollView, View, Text, TouchableOpacity, Alert,
-  ActivityIndicator, Picker, SafeAreaView, Image
+  ActivityIndicator, Image
 } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { user, home, homeLoc, write, notFound } from '../../allSvg'
 import { Header, globalStyles, HomeCard } from '..';
-import { h, w, appColor, serverUrl, BackgroundImage, Background, disColor } from '../../constants'
-import { backArrow } from '../../allSvg'
+import { h, w, appColor, serverUrl, Background, disColor } from '../../constants'
 import { User, adrText, adrBool, addressColor, AuthData } from '../../interfaces'
 import { actions, store } from '../../store'
-import { AUTH, HOMEProfile, NAVIGATIONAdmin, NAVIGATIONUser } from '../../routes';
+import { AUTH, HOMEProfile, NAVIGATIONAdmin, NAVIGATIONUser } from '../../Navigations/routes';
 import { CityList, VladimirStreetList } from './Lists'
-import { Card, Input, CheckBox, Button } from 'react-native-elements'
-import { Dropdown, DropDownMargins } from 'react-native-material-dropdown';
+import { Card, Input, CheckBox, Icon } from 'react-native-elements'
+import { Dropdown } from 'react-native-material-dropdown';
 import { Home } from '../../interfaces'
 import { Role } from '../../enum/Enums';
 import { List, TextInput, Provider, Portal, Modal } from 'react-native-paper';
 import Geolocation from 'react-native-geolocation-service';
 import Geocoder from 'react-native-geocoding';
-import { Autocomplete, Icon, Layout, AutocompleteOption, ApplicationProvider } from '@ui-kitten/components';
+// import { Autocomplete, Icon, Layout, AutocompleteOption, ApplicationProvider } from '@ui-kitten/components';
 import { mapping, light as lightTheme } from '@eva-design/eva';
 
 var arrTxt: adrText = { city: '', street: '', homeN: '', appartment: '', home: '' };
@@ -45,7 +44,6 @@ interface State {
   checked: boolean[],
   fk_home: string,
   disBtn: boolean,
-  address: string,
   colorField: addressColor,
   latitude: number,
   longitude: number,
@@ -60,45 +58,48 @@ const initAddressColor: addressColor = {
 
 class AddressScreen extends PureComponent<any, State, Props> {
   state = {
-    city: '', street: '', homeN: '', appartment: '', disBtn: true, address: '',
+    city: '', street: '', homeN: '', appartment: '', disBtn: true,
     good: true, submit: false, badEnter: arr, errorText: arrTxt, colorIcon: arrColor,
     search: false, searchText: '', dataHome: [], dataOld: [], loadHome: false, checked: [], fk_home: '',
     colorField: initAddressColor, latitude: 0, longitude: 0, errorMsg: '',
   } as State
 
-  async componentDidMount() {
-    Geolocation.getCurrentPosition((position) => {
-      console.log(position);
-      this.setState({
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
-      });
+  async componentDidMount() {    
+    const propsData = this.props.route.params.propsData
+    const { city, street, homeNumber, uid } = propsData
+    this.setState({ city, street, homeN: homeNumber, fk_home: uid })
+    // Geolocation.getCurrentPosition((position) => {
+    //   console.log(position);
+    //   this.setState({
+    //     latitude: position.coords.latitude,
+    //     longitude: position.coords.longitude,
+    //   });
 
-      // Geocoder.init('AIzaSyCJybXjiXDmOad2vmbeJQQH15yO_YH19gg', { language: "ru" });
-      // Geocoder.from(position.coords.latitude, position.coords.longitude).then((json: any) => {
-      //   console.log(json);
+    //   Geocoder.init('AIzaSyCJybXjiXDmOad2vmbeJQQH15yO_YH19gg', { language: "ru" });
+    //   Geocoder.from(position.coords.latitude, position.coords.longitude).then((json: any) => {
+    //     console.log(json);
 
-      //   var addressComponent = json.results[0].address_components;
-      //   console.log(addressComponent);
-      //   this.setState({
-      //     address: addressComponent
-      //   });
+    //     var addressComponent = json.results[0].address_components;
+    //     console.log(addressComponent);
+    //     this.setState({
+    //       address: addressComponent
+    //     });
 
-      //   console.log(addressComponent);
-      // }).catch((error: any) => console.warn(error));
+    //     console.log(addressComponent);
+    //   }).catch((error: any) => console.warn(error));
 
-    }, (error) => {
-      // См. таблицы кодов ошибок выше.
-      this.setState({ errorMsg: error.message });
-      console.log(error.code, error.message);
-    }, {
-      enableHighAccuracy: false,
-      timeout: 10000,
-      maximumAge: 100000
-    });
+    // }, (error) => {
+    //   // См. таблицы кодов ошибок выше.
+    //   this.setState({ errorMsg: error.message });
+    //   console.log(error.code, error.message);
+    // }, {
+    //   enableHighAccuracy: false,
+    //   timeout: 10000,
+    //   maximumAge: 100000
+    // });
 
 
-    // И пример использования
+    // // И пример использования
     // Geocoder.from(41.89, 12.49).then((json: any) => {
     //   var addressComponent = json.results[0].address_components[0];
     //   console.log(addressComponent);
@@ -111,7 +112,7 @@ class AddressScreen extends PureComponent<any, State, Props> {
   render() {
     console.log('Props AddresScreen', this.props)
     const { appartment, city, street, homeN, badEnter, errorText, colorIcon, submit,
-      loadHome, dataHome, search, checked, disBtn, colorField, errorMsg, address }: State = this.state
+      loadHome, dataHome, search, checked, disBtn, colorField, errorMsg, }: State = this.state
     const { navigation } = this.props
     const { fixToText, icon, textInput, input, button, buttonContainer, buttonTitle,
       notFoundStyle, containerList } = locStyles
@@ -240,8 +241,7 @@ class AddressScreen extends PureComponent<any, State, Props> {
                             badEnter.home = false;
                             checked[id] = !checked[id];
                             !checked[id] ? uid = '' : uid = item.uid;
-                            var address = 'г. ' + item.city + ', ' + item.street + ', д. ' + item.homeNumber
-                            this.setState({ address, checked, fk_home: uid, badEnter })
+                            this.setState({ checked, fk_home: uid, badEnter })
                           }}
                           checkedColor='green'
                           right
@@ -266,7 +266,7 @@ class AddressScreen extends PureComponent<any, State, Props> {
               <TouchableOpacity
                 onPress={this.onSubmit.bind(this)}
                 disabled={disBtn} >
-                <View style={[buttonContainer, button]}>
+                <View style={[buttonContainer, button, {backgroundColor: !disBtn ? appColor : 'gray'}]}>
                   <Text style={buttonTitle}>Подтверить</Text>
                 </View>
               </TouchableOpacity>
@@ -366,14 +366,14 @@ class AddressScreen extends PureComponent<any, State, Props> {
       this.checkFields();
     }
   }
-  private onSelectCity(city: AutocompleteOption) {
-    var { badEnter, colorIcon } = this.state
-    badEnter.city = false;
-    colorIcon.city = 'green'
-    this.setState({ city: city.title, badEnter, search: true });
-    this.onSearchHome();
-    this.checkFields();
-  }
+  // private onSelectCity(city: AutocompleteOption) {
+  //   var { badEnter, colorIcon } = this.state
+  //   badEnter.city = false;
+  //   colorIcon.city = 'green'
+  //   this.setState({ city: city.title, badEnter, search: true });
+  //   this.onSearchHome();
+  //   this.checkFields();
+  // }
   private onChangeStreet(street: string) {
     var { badEnter, errorText, colorIcon } = this.state
     if (street == ' ') { return }
@@ -423,6 +423,7 @@ class AddressScreen extends PureComponent<any, State, Props> {
     else {
       badEnter.appartment = false;
       colorIcon.appartment = 'green'
+      const propsData = this.props.route.params.propsData
       this.setState({ appartment, colorIcon });
       this.checkFields();
     }
@@ -440,7 +441,7 @@ class AddressScreen extends PureComponent<any, State, Props> {
 
   private onSubmit() {
     const { appartment, city, street, homeN, badEnter, errorText,
-      colorIcon, fk_home, address } = this.state
+      colorIcon, fk_home } = this.state
     const { navigation } = this.props
     var $this = this;
     var obj, url, logAction: string;
@@ -474,8 +475,9 @@ class AddressScreen extends PureComponent<any, State, Props> {
     else this.setState({ good: true });
 
     var { token, userLogin } = store.state
-    var back = this.props.navigation.state.params
+    var back = this.props.route.params
 
+    var address = 'г. ' + city + ', ' + street + ', д. ' + homeN
     obj = {
       Fk_User: userLogin.uid,
       Fk_Home: fk_home,

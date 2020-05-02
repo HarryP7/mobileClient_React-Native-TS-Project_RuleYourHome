@@ -6,8 +6,8 @@ import {
 import { Header, globalStyles } from '..';
 import { menu } from '../../allSvg'
 import { HomeStatus, Role } from '../../enum/Enums';
-import { h, w, appColor, NoFoto, serverUrl, BackgroundImage, Background } from '../../constants'
-import { AddGROUP, AUTH, REGISTRATION, GroupLIST, ADDRESSScreen, TENTENScreen, PROFILE } from '../../routes';
+import { h, w, appColor, NoFoto, serverUrl, Background } from '../../constants'
+import { AddGROUP, AUTH, REGISTRATION, GroupLIST, ADDRESSScreen, TENTENScreen, PROFILE } from '../../Navigations/routes';
 import { Home, User, InitialHome, HomeData } from '../../interfaces'
 import { useGlobal, store, actions } from '../../store'
 import { Card, Badge, Divider } from 'react-native-elements'
@@ -84,7 +84,7 @@ class HomeScreen extends Component<any, State, Props> {
     const { indicator, im, scrollView, screenWH } = globalStyles
     const { load, loadError, refreshing } = this.state
     var { userLogin, token } = store.state;
-    const reload = this.props.navigation.state.params
+    const reload = false;//this.props.route.params
     if (reload) {
       this.onRefresh()
       console.log('reload: true')
@@ -92,6 +92,7 @@ class HomeScreen extends Component<any, State, Props> {
     console.log('userLogin.fk_Home: ' + userLogin.fk_Home + ' userLogin.isApprovedHome: ' + userLogin.isApprovedHome)
     return (<View>
       <Header title='Дом'
+        bold={true}
         // leftIcon={'menu'}
         // onPressLeft={() => {
         //   navigation.openDrawer()
@@ -140,7 +141,7 @@ class HomeScreen extends Component<any, State, Props> {
                 style={{ alignSelf: 'center' }} />
               <Text style={h2}>{text}</Text>
               <TouchableOpacity
-                onPress={() => navigation.navigate(AUTH)}>
+                onPress={() => navigation.navigate('AUTH')}>
                 <View style={buttonContainer}>
                   <Text style={buttonTitle}>Войти</Text>
                 </View>

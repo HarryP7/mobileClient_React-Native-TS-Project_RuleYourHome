@@ -5,7 +5,7 @@ import {
 import { Header, globalStyles } from '..';
 import { backArrow } from '../../allSvg'
 import { HomeStatus, Role } from '../../enum/Enums';
-import { h, w, appColor, NoFoto, serverUrl, BackgroundImage, months, Background } from '../../constants'
+import { h, w, appColor, NoFoto, serverUrl, months, Background } from '../../constants'
 import { Badge, Divider, Card, Input, CheckBox } from 'react-native-elements';
 import { store } from '../../store';
 import { advert, Voting, Answer, Advert, Voted } from '../../interfaces';
@@ -60,12 +60,12 @@ class AdvertProfile extends Component<any, State, Props> {
 
     componentDidMount = async () => {
         console.log('props: ', this.props)
-        console.log(' props.params: ', this.props.navigation.state.params)
+        console.log(' props.params: ', this.props.route.params)
         this.setState({ loadError: false })
         var logAction = 'Объявление';
         try {
             const { userLogin, token } = store.state;
-            const { uid, votings } = this.props.navigation.state.params
+            const { uid, votings } = this.props.route.params
             if (votings && token) {
                 const response = await fetch(serverUrl + 'adverts/profile?Uid=' + uid,
                     { headers: { 'Authorization': `Bearer ${token}` } })
@@ -102,7 +102,7 @@ class AdvertProfile extends Component<any, State, Props> {
     render() {
         const { userLogin, token } = store.state;
         const { navigation } = this.props
-        const { uid, title, text, fk_Category, createdAt, votings, } = this.props.navigation.state.params
+        const { uid, title, text, fk_Category, createdAt, votings, } = this.props.route.params
         const { refreshing, load } = this.state
         const { im, h1, h3, indicator, cardStyle, sub } = globalStyles
         const { dateStyle, time, } = styles
@@ -246,7 +246,7 @@ class AdvertProfile extends Component<any, State, Props> {
         var logAction = 'Голосование'
         try {
             const { userLogin, token } = store.state;
-            const { uid, voting } = this.props.navigation.state.params
+            const { uid, voting } = this.props.route.params
             var obj = {
                 Fk_User: userLogin.uid,
                 Fk_Voting: elV.uid,

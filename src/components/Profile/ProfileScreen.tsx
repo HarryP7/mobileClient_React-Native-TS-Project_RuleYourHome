@@ -4,12 +4,11 @@ import {
   RefreshControl, Alert
 } from 'react-native';
 import { Header, globalStyles } from '..';
-import { backArrow } from '../../allSvg'
 import { store, actions } from '../../store'
 import { User, initialUser } from '../../interfaces'
 import { h, w, appColor, serverUrl, Background, NoAvatar } from '../../constants'
-import { Gender } from '../../enum/Enums';
-import { AddGROUP, AUTH, REGISTRATION, GroupLIST, ADDRESSScreen, LOGOUT } from '../../routes';
+import { Gender, Role } from '../../enum/Enums';
+import { AddGROUP, AUTH, REGISTRATION, GroupLIST, ADDRESSScreen, EXITScreen } from '../../Navigations/routes';
 import { Card, Icon } from 'react-native-elements'
 import { Avatar, List, Appbar, FAB, Menu, Button, Divider, Provider, IconButton } from 'react-native-paper';
 import { SvgXml } from 'react-native-svg';
@@ -32,7 +31,7 @@ class ProfileScreen extends React.Component<any, State> {
     try {
       const { userLogin, token } = store.state;
       var uid = userLogin.uid;
-      var param = this.props.navigation.state.params
+      var param = this.props.route.params
       if (param) uid = param;
       if (token) {
         const response = await fetch(serverUrl + 'profile?Uid=' + uid,
@@ -93,11 +92,16 @@ class ProfileScreen extends React.Component<any, State> {
 
           {userLogin.uid == data.uid && <Appbar.Action icon="dots-vertical" onPress={() => this.setState({ visible: true })} color='white' />}
         </Appbar.Header> */}
-        <Header title='Профиль'
-          leftIcon={userLogin.uid != data.uid && token && 'arrow-left'}
+        <Header title={data.login}//'Профиль'
+          leftIcon={load && (userLogin.uid != data.uid && token && 'arrow-left')}
           onPressLeft={() => navigation.goBack()}
-          rightIcon={ 'dots-vertical'} //userLogin.uid == data.uid && token &&
-          onPressRight={() => this.setState({ visible: true })}
+          // rightIcon={ 'dots-vertical'} //userLogin.uid == data.uid && token &&
+          // onPressRight={() => this.setState({ visible: true })}
+          rightIcon={load && token && (userLogin.uid == data.uid ? 'menu' : userLogin.fk_Role == Role.admin && 'dots-vertical')}
+          onPressRight={userLogin.fk_Role == Role.admin && userLogin.uid != data.uid ? 
+            () => this.setState({ visible: true }) :
+            () => { navigation.openDrawer() }
+          } 
           />
 
         {load ? (
@@ -160,7 +164,7 @@ class ProfileScreen extends React.Component<any, State> {
             <Divider />
             <Menu.Item onPress={() => {
               this.setState({ visible: false })
-              navigation.navigate(LOGOUT);
+              navigation.navigate(EXITScreen);
             }} title="Выйти          " />
           </Menu>
         </View>

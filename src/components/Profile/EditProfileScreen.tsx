@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, View, Text, Alert, ActivityIndicator
-} from 'react-native';
+import { StyleSheet, ScrollView, View, Text, Alert,
+  ActivityIndicator, } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { user, homeLoc, lock, lockRep, shield } from '../../allSvg'
 import { Header, globalStyles } from '..';
@@ -43,7 +43,7 @@ var initArrColor: arrColor = {
   button: disColor
 };
 
-class RegistrationScreen extends Component<any, State, Props> {
+class EditProfileScreen extends Component<any, State, Props> {
   state = {
     login: '', email: '', name: '', password: '', repeatPassword: '', width: 1,
     visibility: false, visibilityRep: false,
@@ -52,7 +52,7 @@ class RegistrationScreen extends Component<any, State, Props> {
   }
 
   componentDidMount = () => {
-    console.log('Props RegistrationScreen', this.props)
+    console.log('Props EditProfileScreen', this.props)
   }
   render() {
     const { login, email, name, password, repeatPassword, visibility,
@@ -63,7 +63,7 @@ class RegistrationScreen extends Component<any, State, Props> {
     const { im, cardStyle, inputStyle, inputPaper, buttonContentSp } = globalStyles
     return (
       <View style={{ height: h }}>
-        <Header title={'Регистрация'}
+        <Header title={'Изменить профиль'}
           leftIcon={'arrow-left'}
           onPressLeft={() => {
             navigation.goBack();
@@ -489,7 +489,6 @@ class RegistrationScreen extends Component<any, State, Props> {
     }
     url = serverUrl + 'auth/signup/';
     log = 'Регистрации'
-    const propsData = this.props.route.params
 
     console.log('login: ' + login + ' ФИО: ' + name + ' Email: ' + email)
     console.log('badEnter.login: ' + badEnter.login + ' badEnter.name: ' + badEnter.name +
@@ -536,7 +535,7 @@ class RegistrationScreen extends Component<any, State, Props> {
           $this.setClearState();
           actions.Login(data.token, data.userLogin)
           const back = false;
-          navigation.navigate(ADDRESSScreen, {propsData, back});
+          navigation.navigate(ADDRESSScreen, (back));
         }
       })
       .catch(error => {
@@ -651,4 +650,4 @@ const locStyles = StyleSheet.create({
   },
 })
 
-export { RegistrationScreen };
+export { EditProfileScreen };

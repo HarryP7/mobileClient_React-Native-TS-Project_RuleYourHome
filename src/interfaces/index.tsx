@@ -196,7 +196,7 @@ export const initialUser: User = {
   uid: '', fullName: '',
   avatar: {
     uid: '',
-    url: 'https://docplus.kg/img/noavatar.png',
+    url: 'https://i.ibb.co/jL1RZKp/noAvatar.png',
     createdAt: '',
     removed: false
   },

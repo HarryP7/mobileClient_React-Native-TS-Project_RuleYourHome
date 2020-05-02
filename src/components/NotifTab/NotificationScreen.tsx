@@ -1,10 +1,7 @@
 import * as React from 'react';
-import {
-  View, Text, TouchableHighlight, Image,
-} from 'react-native';
+import { View, } from 'react-native';
 import { Header, globalStyles } from '..';
-import { menu } from '../../allSvg'
-import { BackgroundImage, Background } from '../../constants';
+import { Background } from '../../constants';
 
 interface Props { }
 

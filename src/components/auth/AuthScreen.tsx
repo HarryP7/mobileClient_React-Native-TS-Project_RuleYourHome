@@ -8,7 +8,7 @@ import { h, w, appColor, serverUrl, Background, disColor } from '../../constants
 import { backArrow } from '../../allSvg'
 import { User, AuthData, initAuthBool, initAuthTxt, authBool, authText, authColor } from '../../interfaces'
 import { actions, store } from '../../store'
-import { NAVIGATIONAdmin, NAVIGATIONUser, REGISTRATION } from '../../routes';
+import { NAVIGATIONAdmin, NAVIGATIONUser, REGISTRATION } from '../../Navigations/routes';
 import { Card, Input, Icon } from 'react-native-elements'
 import { Role } from '../../enum/Enums';
 import { TextInput, Modal, Portal, Button, Provider } from 'react-native-paper';
@@ -30,7 +30,7 @@ class AuthScreen extends PureComponent<any, State, Props> {
 
   componentDidMount = async () => {
     console.log('Props AuthScreen', this.props)
-    var user: User = this.props.navigation.state.params
+    var user: User = this.props.route.params
     if (user) this.setState({ login: user.login })
   }
 
@@ -277,13 +277,21 @@ class AuthScreen extends PureComponent<any, State, Props> {
             actions.Login(data.token, data.userLogin)
           }
           if (data.userLogin.fk_Role == Role.admin) {
-            navigation.navigate(NAVIGATIONAdmin);
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'NAVIGATIONAdmin'}],
+            });
           }
           if (data.userLogin.fk_Role == Role.moderator) {
-            navigation.navigate(NAVIGATIONAdmin);
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'NAVIGATIONAdmin'}],
+            });
           }
           else if (data.userLogin.fk_Role == Role.user) {
-            navigation.navigate(NAVIGATIONUser);
+            navigation.reset({index: 0,
+              routes: [{ name: 'NAVIGATIONUser'}],
+            });
           }
         }
       })

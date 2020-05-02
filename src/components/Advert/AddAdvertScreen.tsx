@@ -1,19 +1,16 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet, ScrollView, View, Text, TouchableOpacity,
-  TextInput, Alert, Switch, StatusBar, Image, SafeAreaView, ActivityIndicator
+import {  StyleSheet, ScrollView, View, Text, TouchableOpacity,
+  Alert, Switch, SafeAreaView, ActivityIndicator
 } from 'react-native';
 import { Card, Input, CheckBox, Icon } from 'react-native-elements'
 import { SvgXml } from 'react-native-svg';
 import { save, add } from '../../allSvg'
-import { Header } from '..';//, styles 
+import { Header } from '..';
 import { Dropdown } from 'react-native-material-dropdown';
-import { h, w, appColor, serverUrl, BackgroundImage } from '../../constants'
+import { h, w, appColor, serverUrl, Background } from '../../constants'
 import { Category } from '../../enum/Enums'
-import { backArrow } from '../../allSvg'
 import { globalStyles } from '..';
 import { store } from '../../store';
-import { Avatar, Button, Title, Paragraph,  } from 'react-native-paper';
 import { Voting, AdvBool, Advert, Answer, initAdvBool, initAdvText } from '../../interfaces';
 
 interface Props { }
@@ -82,8 +79,9 @@ class AddAdvertScreen extends Component<any, State, Props> {
           this.setClearState();
           navigation.goBack();
         }} />
-      <View>
-        <Image source={BackgroundImage} style={imScroll}></Image></View>
+      {/* <View>
+        <Image source={BackgroundImage} style={imScroll}></Image></View> */}
+        {Background}
       <ScrollView>
         <SafeAreaView>
           <Card containerStyle={cardUsersStyle} >          

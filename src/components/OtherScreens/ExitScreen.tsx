@@ -1,15 +1,12 @@
 import React, { PureComponent } from 'react';
-import {
-  View, Text, TouchableOpacity,  Image
-} from 'react-native';
+import { View, Text, TouchableOpacity,  Image} from 'react-native';
 import { Header, globalStyles } from '..';
 import { Card } from 'react-native-elements'
 import { actions } from '../../store'
 import { initialUser } from '../../interfaces'
-import { menu } from '../../allSvg';
-import { NotAuthNAVIGATION } from '../../routes'
+import { NotAuthNAVIGATION } from '../../Navigations/routes'
 import { backArrow } from '../../allSvg'
-import { BackgroundImage, Background } from '../../constants';
+import { Background } from '../../constants';
 
 class ExitScreen extends PureComponent<any> {
 
@@ -20,7 +17,7 @@ class ExitScreen extends PureComponent<any> {
       <Header title={'Выход'}
         leftIcon={'arrow-left'}
         onPressLeft={() => {
-          navigation.goBack();
+          navigation.pop();
         }}
       />
         <View>{Background}</View>
@@ -32,7 +29,10 @@ class ExitScreen extends PureComponent<any> {
             <TouchableOpacity
               onPress={() => {
                 actions.Login('',initialUser)
-                navigation.navigate(NotAuthNAVIGATION)}}>
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: NotAuthNAVIGATION}],
+                })}}>
               <View style={buttonContainer}>
                 <Text style={buttonTitle}>Выйти</Text>
               </View>

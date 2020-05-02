@@ -1,16 +1,13 @@
 import React from 'react';
-import {
-  View, Text, TouchableOpacity, Image } from 'react-native';
-import { createAppContainer } from 'react-navigation';
-import { createStackNavigator } from 'react-navigation-stack';
-import NotAuthNavigation from '../..';
-import NavigationUser from '../../NavigationUser';
-import NavigationAdmin from '../../NavigationAdmin';
-import { globalStyles } from '..'
-import { useGlobal, store } from '../../store'
-import { Role } from '../../enum/Enums';
-import { NotAuthNAVIGATION, NAVIGATIONAdmin, NAVIGATIONUser } from '../../routes';
-import { Button  } from 'react-native-paper';
+import { View, Text, Image } from 'react-native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { globalStyles, AuthScreen, RegistrationScreen, HomeProfile, AddressScreen, ProfileScreen, EditProfileScreen, TentantsScreen, GroupListScreen, GroupProfile, AddHomeScreen, AddGroupScreen, AddAdvertScreen, SearchHomeScreen, AdvertProfile, ExitScreen } from '..'
+import { Button } from 'react-native-paper';
+import { NavigationContainer } from '@react-navigation/native';
+import MainNavigation from '../../Navigations/MainNavigation';
+import { StackNavigatorParamlist } from '../../Navigations/types';
+import { NavigationAdmin } from '../../Navigations/NavigationAdmin';
+import NavigationUser from '../../Navigations/NavigationUser';
 
 interface Props { }
 
@@ -31,10 +28,10 @@ class SplashScreen extends React.Component<any, Props> {
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
           <View style={paddingBottom}>
             <Image source={require('../../../icon/bigHome.png')} style={image} />
-          <Button 
+            <Button
               mode="contained"
               uppercase={false}
-              onPress={() => navigation.navigate('App')}
+              onPress={() => navigation.replace('MainNavigation')}
               contentStyle={buttonContentSp}
               style={buttonContainerSp}
               labelStyle={buttonTitleSp}>Продолжить </Button >
@@ -45,17 +42,34 @@ class SplashScreen extends React.Component<any, Props> {
   }
 }
 
-const { userLogin, token } = store.state;
+const Stack = createStackNavigator<StackNavigatorParamlist>();
 
-const RootStack = createStackNavigator(
-  {
-    Splash: SplashScreen,
-    App: !token ? NotAuthNavigation : userLogin.fk_Role == Role.admin ? NavigationAdmin : userLogin.fk_Role == Role.moderator ? NavigationAdmin : NavigationUser,
-  },
-  {
-    initialRouteName: 'Splash',
-    headerMode: 'none',
-  }
-);
+function RootStackScreen() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator headerMode='none'>
+        <Stack.Screen name="SplashScreen" component={SplashScreen} />
+        <Stack.Screen name="MainNavigation" component={MainNavigation} />
+        <Stack.Screen name="NAVIGATIONAdmin" component={NavigationAdmin} />
+        <Stack.Screen name="NAVIGATIONUser" component={NavigationUser} />
+        <Stack.Screen name="AUTH" component={AuthScreen} />
+        <Stack.Screen name="REGISTRATION" component={RegistrationScreen} />
+        <Stack.Screen name='HOMEProfile' component={HomeProfile} />
+        <Stack.Screen name='ADDRESSScreen' component={AddressScreen} />
+        <Stack.Screen name='PROFILE' component={ProfileScreen} />
+        <Stack.Screen name='EditPROFILE' component={EditProfileScreen} />
+        <Stack.Screen name='TENTENScreen' component={TentantsScreen} />
+        <Stack.Screen name='GroupLIST' component={GroupListScreen} />
+        <Stack.Screen name='GroupPRO' component={GroupProfile} />
+        <Stack.Screen name='AddHOME' component={AddHomeScreen} />
+        <Stack.Screen name='AddGROUP' component={AddGroupScreen} />
+        <Stack.Screen name='AddADVERT' component={AddAdvertScreen} />
+        <Stack.Screen name='SEARCHHomeScreen' component={SearchHomeScreen} />
+        <Stack.Screen name='ADVERTPro' component={AdvertProfile} />
+        <Stack.Screen name='EXITScreen' component={ExitScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
 
-export default createAppContainer(RootStack);
+export default (RootStackScreen);

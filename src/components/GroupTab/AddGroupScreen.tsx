@@ -1,22 +1,16 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet, ScrollView, View, Text, TouchableOpacity, Image,
-  Button, TextInput, Alert, ActivityIndicator
-} from 'react-native';
-import {
-  LearnMoreLinks, Colors, DebugInstructions, ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import { StyleSheet, ScrollView, View, Text, TouchableOpacity,
+  Alert, ActivityIndicator} from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { save } from '../../allSvg'
 import { Header } from '..';//, styles 
 import { Dropdown, DropDownMargins } from 'react-native-material-dropdown';
-import { h, w, appColor, serverUrl, BackgroundImage, Background } from '../../constants'
+import { h, w, appColor, serverUrl, Background } from '../../constants'
 import { GroupStatus } from '../../enum/Enums'
-import { backArrow } from '../../allSvg'
 import { useGlobal, store } from '../../store'
 import { globalStyles } from '../globalStyles';
 import { Card, Input } from 'react-native-elements';
-import { GroupPRO } from '../../routes';
+import { GroupPRO } from '../../Navigations/routes';
 import { Group } from '../../interfaces';
 
 interface Props { }

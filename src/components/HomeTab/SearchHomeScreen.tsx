@@ -1,11 +1,8 @@
 import * as React from 'react';
-import {
-  View,Text, ScrollView, ActivityIndicator, Image, Alert, RefreshControl } from 'react-native';
-import { Header, SearchHeader, HomeCard,  globalStyles } from '..';
-import {  menu, search,backArrow, rightBack } from '../../allSvg'
-import {  HOMEProfile } from '../../routes';
-import { appColor, serverUrl, BackgroundImage, Background, h, w } from '../../constants';
-import {  ListItem, Button, Icon } from 'react-native-elements'
+import { View,Text, ScrollView, ActivityIndicator, Alert, RefreshControl } from 'react-native';
+import { SearchHeader, HomeCard,  globalStyles } from '..';
+import {  HOMEProfile } from '../../Navigations/routes';
+import { appColor, serverUrl, Background, h, w } from '../../constants';
 import { Home } from '../../interfaces'
 
 interface State {
