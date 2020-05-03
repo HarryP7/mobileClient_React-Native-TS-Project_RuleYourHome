@@ -42,10 +42,11 @@ class AuthScreen extends PureComponent<any, State, Props> {
     return (
       <View style={{ height: h }}>
         <Header title={'Вход'}
-          leftIcon={'arrow-left'}
-          onPressLeft={() => {
-            navigation.goBack();
-          }}
+          position='center'
+          // leftIcon={'arrow-left'}
+          // onPressLeft={() => {
+          //   navigation.goBack();
+          // }}
         />
         <View>{Background}</View>
 

@@ -1,21 +1,9 @@
 import * as React from 'react';
-import {
-  View, Text, TouchableOpacity, Image, ScrollView, SafeAreaView, StyleSheet, 
-} from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import {  StyleSheet, } from 'react-native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
-import {
-  SearchHomeScreen, ProfileScreen, AuthScreen, RegistrationScreen, globalStyles
-} from '../components';
-import HomeScreen from '../components/HomeTab/HomeScreen'
+import {  SearchHomeScreen, AuthScreen, } from '../components';
 import { SvgXml } from 'react-native-svg';
-import { backArrow, login, home, searchHome, notif, menu, search, write } from '../allSvg'
-import { appColor } from '../constants';
-import { AUTH, REGISTRATION } from './routes';
-
-// const {  icon, back, imageIcon, imageCont, button4, link, buttonTitle } = globalStyles
+import { user, searchHome } from '../allSvg'
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -37,12 +25,12 @@ function MyTabs() {
         }}
       />
       <Tab.Screen
-        name="Home"
-        component={HomeScreen}
+        name="Auth"
+        component={AuthScreen}
         options={{
-          tabBarLabel: 'Дом',
+          tabBarLabel: 'Вход',
           tabBarIcon: ({ color }) => (
-            <SvgXml xml={home} style={icon} fill={color} />
+            <SvgXml xml={user} style={icon} fill={color} />
           ),
         }}
       />

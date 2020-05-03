@@ -332,7 +332,7 @@ class RegistrationScreen extends Component<any, State, Props> {
   private activePass() {
     var { colorField, errorText } = this.state
     colorField.password = appColor
-    errorText.infoPassword = 'Придумайте пароль от 8 символов с обяхательной комбинацией цифр и латинских букв'
+    errorText.infoPassword = 'Придумайте пароль от 8 символов с обязательной комбинацией цифр и латинских букв'
     this.setState({ colorField, errorText, width: 2 });
   }
   private onChangePassword(password: string) {
@@ -379,6 +379,7 @@ class RegistrationScreen extends Component<any, State, Props> {
       badEnter.password = false;
       colorField.repeatPassword = appColor//'green'
       this.setState({ badEnter, colorField, passGood: true });
+      this.checkFields()
     }
     else if (pass.trim().length <= repeatPassword.trim().length) {
       badEnter.repeatPassword = true;
