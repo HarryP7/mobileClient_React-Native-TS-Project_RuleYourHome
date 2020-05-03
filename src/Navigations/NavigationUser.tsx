@@ -1,27 +1,13 @@
 import * as React from 'react';
-import {
-  View, Text, TouchableHighlight, Image, ScrollView, Button, ActivityIndicator, Alert, ColorPropType, SafeAreaView, TouchableOpacity, StyleSheet
-} from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { StyleSheet } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
-import {
-  SearchHomeScreen, NotificationScreen, ProfileScreen, globalStyles, ExitScreen, EditProfileScreen
-} from '../components';
-import HomeScreen from '../components/HomeTab/HomeScreen'
+import {  SearchHomeScreen, NotificationScreen, ProfileScreen, AdvertList, } from '../components';
 import { SvgXml } from 'react-native-svg';
-import { backArrow, login, home, searchHome, notif, user, } from '../allSvg'
-import { appColor, NoAvatar, w } from '../constants';
-import { useGlobal, store } from '../store'
-import { PROFILE, EXITScreen } from './routes';
-import { Avatar, Divider, IconButton } from 'react-native-paper';
-import { DrawerUserContent } from './drawerUserContent';
+import { searchHome, notif, user, } from '../allSvg'
 import NavigatorStack from '../index';
 import { DrawerAdminContent } from './DrawerAdminContent';
-
-// const { back, imageCont, imageIcon, button4, link, buttonTitle } = globalStyles
-// const { userLogin, token } = store.state;
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 
 const Tab = createMaterialBottomTabNavigator();
@@ -34,12 +20,12 @@ function BottomTabs() {
       barStyle={{ backgroundColor: '#fff' }}
     >
       <Tab.Screen
-        name="Home"
-        component={HomeScreen}
+        name="NewsOfHome"
+        component={AdvertList}
         options={{
-          tabBarLabel: 'Дом',
+          tabBarLabel: 'Объявления',
           tabBarIcon: ({ color }) => (
-            <SvgXml xml={home} style={icon} fill={color} />
+            <MaterialCommunityIcons name="newspaper" color={color} size={24} />
           ),
         }}
       />
@@ -84,6 +70,8 @@ function MainDrawer() {
       <Drawer.Navigator 
       drawerPosition='right'
       edgeWidth={100}
+      drawerType='slide'
+      // overlayColor="transparent"
       drawerContent={props => <DrawerAdminContent {...props} />}>
         <Drawer.Screen name="BottomTabs" component={BottomTabs} />
         <Drawer.Screen name="NavigatorStack" component={NavigatorStack} />

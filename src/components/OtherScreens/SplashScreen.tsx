@@ -8,6 +8,7 @@ import MainNavigation from '../../Navigations/MainNavigation';
 import { StackNavigatorParamlist } from '../../Navigations/types';
 import { NavigationAdmin } from '../../Navigations/NavigationAdmin';
 import NavigationUser from '../../Navigations/NavigationUser';
+import  HOMEScreen  from '../HomeTab/HomeScreen';
 
 interface Props { }
 
@@ -54,6 +55,7 @@ function RootStackScreen() {
         <Stack.Screen name="NAVIGATIONUser" component={NavigationUser} />
         <Stack.Screen name="AUTH" component={AuthScreen} />
         <Stack.Screen name="REGISTRATION" component={RegistrationScreen} />
+        <Stack.Screen name='HOMEScreen' component={HOMEScreen} />
         <Stack.Screen name='HOMEProfile' component={HomeProfile} />
         <Stack.Screen name='ADDRESSScreen' component={AddressScreen} />
         <Stack.Screen name='PROFILE' component={ProfileScreen} />

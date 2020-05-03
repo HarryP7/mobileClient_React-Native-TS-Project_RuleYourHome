@@ -4,19 +4,17 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import { useTheme, Portal, FAB } from 'react-native-paper';
 import { useSafeArea } from 'react-native-safe-area-context';
 import { useIsFocused, RouteProp } from '@react-navigation/native';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import overlay from './overlay';
 import { Feed } from './feed';
-import { Message } from './message';
 import { Notifications } from './notifications';
 import { StackNavigatorParamlist } from './types';
 import { appColor } from '../constants';
-import HomeScreen from '../components/HomeTab/HomeScreen';
 import { SvgXml } from 'react-native-svg';
 import { home, searchHome, user } from '../allSvg';
 import { StyleSheet } from 'react-native';
-import { SearchHomeScreen, ProfileScreen } from '../components';
+import { SearchHomeScreen, ProfileScreen, AdvertList } from '../components';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -63,14 +61,15 @@ export const BottomTabs = (props: Props) => {
         sceneAnimationEnabled={false}
       >
         <Tab.Screen
-          name="Дом"
-          component={HomeScreen}
-          options={{
-            tabBarIcon: ({ color }) => (
-                <SvgXml xml={home} style={iconSt} fill={color} />      
-              ),
-            tabBarColor,
-          }}
+        name="NewsOfHome"
+        component={AdvertList}
+        options={{
+          tabBarLabel: 'Объявления',
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons name="newspaper" color={color} size={24} />
+          ),
+          tabBarColor,
+        }}
         />
         <Tab.Screen
           name="SearchHome"

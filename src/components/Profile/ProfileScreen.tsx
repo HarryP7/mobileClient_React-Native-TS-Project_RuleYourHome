@@ -8,7 +8,7 @@ import { store, actions } from '../../store'
 import { User, initialUser } from '../../interfaces'
 import { h, w, appColor, serverUrl, Background, NoAvatar } from '../../constants'
 import { Gender, Role } from '../../enum/Enums';
-import { AddGROUP, AUTH, REGISTRATION, GroupLIST, ADDRESSScreen, EXITScreen } from '../../Navigations/routes';
+import {  ADDRESSScreen, EXITScreen, HOMEScreen } from '../../Navigations/routes';
 import { Card, Icon } from 'react-native-elements'
 import { Avatar, List, Appbar, FAB, Menu, Button, Divider, Provider, IconButton } from 'react-native-paper';
 import { SvgXml } from 'react-native-svg';
@@ -137,10 +137,9 @@ class ProfileScreen extends React.Component<any, State> {
     >
       <View style={[sub, { margin: 5 }]}>
         <Avatar.Image size={w * 0.4} source={{ uri: avatar ? avatar.url : NoAvatar }} style={{ backgroundColor: 'white' }} />
-        <TouchableOpacity onPress={() => myGroups.length && navigation.navigate(GroupLIST, uid)} >
+        <TouchableOpacity onPress={() => navigation.navigate(HOMEScreen)} >
           <View style={sectionContainer1}>
-            <Text style={[sectionTitle1, { color: 'grey' }]}>Группы</Text>
-            <Text style={sectionTitle1}>{myGroups.length ? myGroups.length : 0}</Text>
+            <Text style={[sectionTitle1]}>Профиль дома</Text>
           </View>
         </TouchableOpacity>
         

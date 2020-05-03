@@ -29,10 +29,7 @@ class ExitScreen extends PureComponent<any> {
             <TouchableOpacity
               onPress={() => {
                 actions.Login('',initialUser)
-                navigation.reset({
-                  index: 0,
-                  routes: [{ name: NotAuthNAVIGATION}],
-                })}}>
+                navigation.navigate(NotAuthNAVIGATION)}}>
               <View style={buttonContainer}>
                 <Text style={buttonTitle}>Выйти</Text>
               </View>

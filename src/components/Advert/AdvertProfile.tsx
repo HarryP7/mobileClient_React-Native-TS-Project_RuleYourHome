@@ -155,7 +155,7 @@ class AdvertProfile extends Component<any, State, Props> {
 
                         {voted ? elV.options.map((elA: Answer, idAns: number) => {
                             return <View>                           
-                            <View style={optionCont}>
+                            <View style={optionCont} key={idAns}>
                                 <Text style={label5}>{elA.option} - {elA.count} голос(ов). </Text>
                             </View>
                             <ProgressBar style={progress} progress={elA.count*0.01} color='blue' /> 

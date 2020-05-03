@@ -23,7 +23,7 @@ export const NavigationAdmin = () => {
           width: 240,
         }}
         drawerType='slide'
-        overlayColor="transparent"
+        // overlayColor="transparent"
         drawerContent={props => <DrawerAdminContent {...props} />}>
         <Drawer.Screen name="Home" component={StackNavigator} />
       </Drawer.Navigator>

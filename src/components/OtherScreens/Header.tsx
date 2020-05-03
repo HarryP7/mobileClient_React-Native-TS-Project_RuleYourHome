@@ -9,7 +9,7 @@ import { Icon } from 'react-native-elements';
 import { Appbar, Provider, Menu, IconButton } from 'react-native-paper';
 import { menu, backArrow, search } from '../../allSvg';
 
-const Header = ({ title, onPressLeft, leftIcon, onPressRight, rightIcon, bold}: any) => {
+const Header = ({ title, onPressLeft, leftIcon, onPressRight, rightIcon, bold, position}: any) => {
     const { container, containerBtn, titleStyle, positionRight, iconLeftStyle, iconRightStyle } = styles
     return (
       <View >
@@ -26,8 +26,8 @@ const Header = ({ title, onPressLeft, leftIcon, onPressRight, rightIcon, bold}: 
                 <SvgXml xml={menu} style={iconLeftStyle} fill='white' />
               }
             </TouchableOpacity>)
-            : <View style={{width: w*0.05}}></View>}
-          <Appbar.Content title={title} titleStyle={{ fontSize: 22, fontWeight: bold ? 'bold' : 'normal' }} />
+            : position != 'center' && <View style={{width: w*0.05}}></View>}
+          <Appbar.Content title={title} titleStyle={{ fontSize: 22, fontWeight: bold ? 'bold' : 'normal', textAlign: position }} />
           {rightIcon && (
             rightIcon == 'search' ?
               <TouchableOpacity

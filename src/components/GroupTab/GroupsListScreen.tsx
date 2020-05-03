@@ -10,7 +10,7 @@ import { useGlobal, store } from '../../store'
 import { Group } from '../../interfaces'
 
 interface State {
-  data: Group[],
+  group: Group[],
   dataOld: Group[],
   load: boolean,
   visibleSearch: boolean,
@@ -18,7 +18,7 @@ interface State {
 }
 
 class GroupListScreen extends React.PureComponent<any, State> {
-  state = { data: [], dataOld: [], load: false, visibleSearch: false, text: '' } as State
+  state = { group: [], dataOld: [], load: false, visibleSearch: false, text: '' } as State
 
   componentDidMount = async () => {
     try {
@@ -26,9 +26,9 @@ class GroupListScreen extends React.PureComponent<any, State> {
       var Fk_Home = this.props.route.params
       const response = await fetch(serverUrl + 'groups/home?Fk_Home=' + Fk_Home,
         { headers: { 'Authorization': `Bearer ${token}` } })
-      const data = await response.json()
-      console.log("Успех HomeGroups fetch: ", data)
-      this.setState({ data, load: true, dataOld: data })
+      const group = await response.json()
+      console.log("Успех HomeGroups fetch: ", group)
+      this.setState({ group, load: true, dataOld: group })
     } catch (e) {
       throw e
     }
@@ -39,24 +39,24 @@ class GroupListScreen extends React.PureComponent<any, State> {
     if (text) {
       var filtered = txt.filter((el) =>
         el.title.toLowerCase().indexOf(text.toLowerCase()) > -1);
-      this.setState({ data: filtered, text });
+      this.setState({ group: filtered, text });
     }
-    else this.setState({ data: this.state.dataOld, text });
+    else this.setState({ group: this.state.dataOld, text });
   }
 
   render() {
-    const { data, load, visibleSearch } = this.state
+    const { group, load, visibleSearch } = this.state
     const { background, container, indicator, im } = globalStyles
     const { navigation } = this.props
     console.log("props", this.props)
-    console.log("data: ", data)
+    console.log("group: ", group)
     return (<View>
       {visibleSearch ?
         <SearchHeader
           rightIcon={'arrow-up'}
           onChangeText={this.onSearchGroup}
           value={this.state.text}
-          onPressRight={() => this.setState({ visibleSearch: false, data: this.state.dataOld, text:'' })}
+          onPressRight={() => this.setState({ visibleSearch: false, group: this.state.dataOld, text:'' })}
           onBlur={() => this.setState({ visibleSearch: false })}
           subjectSearch='группу'
         /> :
@@ -72,7 +72,7 @@ class GroupListScreen extends React.PureComponent<any, State> {
       <ScrollView >
         {load ?
           <View style={container}>
-            {data.map(item => {
+            {group.map(item => {
               return <GroupCard data={item} key={item.uid}
                 onPress={() => navigation.navigate(GroupPRO, (item))} />//
             })}

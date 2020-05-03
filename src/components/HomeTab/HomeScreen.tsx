@@ -92,7 +92,9 @@ class HomeScreen extends Component<any, State, Props> {
     console.log('userLogin.fk_Home: ' + userLogin.fk_Home + ' userLogin.isApprovedHome: ' + userLogin.isApprovedHome)
     return (<View>
       <Header title='Дом'
-        bold={true}
+        bold={true}        
+        leftIcon={'arrow-left'}
+        onPressLeft={() => navigation.goBack()}
         // leftIcon={'menu'}
         // onPressLeft={() => {
         //   navigation.openDrawer()

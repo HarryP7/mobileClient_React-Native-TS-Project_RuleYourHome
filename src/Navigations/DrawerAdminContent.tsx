@@ -1,4 +1,3 @@
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
   DrawerContentComponentProps,
   DrawerContentOptions,
@@ -11,10 +10,11 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Avatar, Caption, Drawer, Paragraph, Switch, Text, Title, TouchableRipple, useTheme,
 } from 'react-native-paper';
 import Animated from 'react-native-reanimated';
-
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { PreferencesContext } from './context/preferencesContext';
 import { store } from '../store';
 import { Role } from '../enum/Enums';
+import { NoAvatar } from '../constants';
 
 const { userLogin } = store.state;
 
@@ -30,6 +30,7 @@ export function DrawerAdminContent(props: Props) {
     inputRange: [0, 0.5, 0.7, 0.8, 1],
     outputRange: [-100, -85, -70, -45, 0],
   });
+  var { myGroups, address, fk_Role, login, fullName, avatar, uid } = userLogin
 
   return (
     <DrawerContentScrollView {...props}>
@@ -44,22 +45,16 @@ export function DrawerAdminContent(props: Props) {
         ]}
       >
         <View style={styles.userInfoSection}>
-          {/* <TouchableOpacity
-            style={{ marginLeft: 10 }}
+          <TouchableOpacity
+            style={{ marginLeft: 10, marginBottom: -10 }}
             onPress={() => {
               props.navigation.toggleDrawer();
             }}
           >
-            <Avatar.Image
-              source={{
-                uri:
-                  'https://pbs.twimg.com/profile_images/952545910990495744/b59hSXUd_400x400.jpg',
-              }}
-              size={50}
-            />
-          </TouchableOpacity> */}
-          <Title style={styles.title}>{userLogin.fullName}</Title>
-          <Caption style={styles.caption}>@{userLogin.login}</Caption>
+            <Avatar.Image source={{ uri: avatar ? avatar.url : NoAvatar, }} size={50} style={{backgroundColor:'white'}} />
+          </TouchableOpacity>
+          <Title style={styles.title}>{fullName}</Title>
+          <Caption style={styles.caption}>@{login}</Caption>
           {/* <View style={styles.row}>
             <View style={styles.section}>
               <Paragraph style={[styles.paragraph, styles.caption]}>
@@ -87,7 +82,7 @@ export function DrawerAdminContent(props: Props) {
             }
           }
           />
-          {(Role.admin == userLogin.fk_Role || Role.moderator  == userLogin.fk_Role) && 
+          {(Role.admin == fk_Role || Role.moderator  == fk_Role) && 
           <DrawerItem
             icon={({ color, size }) => (
               <MaterialCommunityIcons name="home-plus" color={color} size={size} />

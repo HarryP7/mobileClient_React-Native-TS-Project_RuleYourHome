@@ -7,24 +7,9 @@ import { AddADVERT, ADVERTPro } from '../../Navigations/routes';
 import { useGlobal, store } from '../../store'
 import { Role } from '../../enum/Enums';
 import { serverUrl, appColor, NoFoto, w } from '../../constants';
-import { Voting } from '../../interfaces';
-import { BottomNavigation } from 'react-native-paper';
+import { Advert } from '../../interfaces';
 
 interface Props { }
-
-interface Advert {
-    uid: string,
-    title: string,
-    text: string,
-    fk_Author: string,
-    fk_Image: string,
-    fk_Category: number,
-    Fk_LocalGroup: string,
-    createdAt: Date,
-    editedAt: Date,
-    removed: boolean,
-    voting: Voting[]
-}
 
 interface State {
     fk_Status: boolean,
@@ -41,10 +26,9 @@ class GroupProfile extends Component<any, Props, State> {
         console.log(this.props.navigation)
         try {
             const { userLogin, token } = store.state;
-            const { uid } = this.props.route.params
+            var { uid } = this.props.route.params
             const response = await fetch(serverUrl + 'adverts?Fk_Group=' + uid,
-                {
-                    headers: { 'Authorization': `Bearer ${token}` }
+                { headers: { 'Authorization': `Bearer ${token}` }
                 })
             const adverts: Advert[] = await response.json()
             this.setState({ adverts, load: true })

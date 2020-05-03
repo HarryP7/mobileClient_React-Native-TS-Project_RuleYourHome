@@ -55,6 +55,8 @@ export interface Group {
   createdAt: Date,
   editedAt: Date,
   removed: boolean
+  adverts: Advert[],
+  image: ImageUrl,
 }
 
 export interface Advert {
@@ -63,6 +65,14 @@ export interface Advert {
   text: string,
   category: string,
   voting: Voting[]
+  fk_Author: string,
+  fk_Image: string,
+  fk_Category: number,
+  Fk_LocalGroup: string,
+  createdAt: Date,
+  editedAt: Date,
+  removed: boolean,
+  lg: Group,
 }
 export interface Voted {
   fk_User: string,
