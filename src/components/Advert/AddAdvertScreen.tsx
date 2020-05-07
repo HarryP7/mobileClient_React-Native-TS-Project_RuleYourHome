@@ -73,10 +73,10 @@ class AddAdvertScreen extends Component<any, State, Props> {
       value: Category.CommunityInfrastructure }, {
       value: Category.Attention },];
     return (<View>
-      <Header title='Добавление объявления'
+      <Header title='Добавление объявление'
         leftIcon={'arrow-left'}
         onPressLeft={() => {
-          this.setClearState();
+          this.setClearState(); 
           navigation.goBack();
         }} />
       {/* <View>

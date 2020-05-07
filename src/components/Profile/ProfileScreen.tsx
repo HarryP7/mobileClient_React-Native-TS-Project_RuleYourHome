@@ -9,9 +9,7 @@ import { User, initialUser } from '../../interfaces'
 import { h, w, appColor, serverUrl, Background, NoAvatar } from '../../constants'
 import { Gender, Role } from '../../enum/Enums';
 import {  ADDRESSScreen, EXITScreen, HOMEScreen } from '../../Navigations/routes';
-import { Card, Icon } from 'react-native-elements'
 import { Avatar, List, Appbar, FAB, Menu, Button, Divider, Provider, IconButton } from 'react-native-paper';
-import { SvgXml } from 'react-native-svg';
 
 
 interface State {
@@ -129,6 +127,7 @@ class ProfileScreen extends React.Component<any, State> {
     const { images, noImages, sub, h1 } = globalStyles
     const { sectionContainer1, sectionTitle1, h3, editStyle } = locStyles
     var { data, refreshing, visible } = this.state
+    var { userLogin, token } = store.state;
     var { myGroups, address, phone, fk_Gender, fullName, avatar, uid } = data
     return <ScrollView
       refreshControl={

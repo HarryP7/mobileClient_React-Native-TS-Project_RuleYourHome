@@ -78,7 +78,7 @@ export function DrawerAdminContent(props: Props) {
             label="Изменить профиль"
             onPress={() => {
               props.navigation.toggleDrawer();
-              props.navigation.navigate('EditPROFILE')
+              props.navigation.navigate('EditPROFILE', userLogin)
             }
           }
           />

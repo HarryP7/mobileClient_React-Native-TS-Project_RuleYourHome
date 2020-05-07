@@ -10,9 +10,9 @@ const HomeCard = ({ data, onPress }: any) => {
     return (
         <TouchableOpacity onPress={onPress}>
             <Card style={container}>
-                <Card.Cover source={{ uri: imageUrl ? imageUrl.url : NoFoto }} />
+                <Card.Cover source={{ uri: imageUrl ? imageUrl.url : NoFoto }} style={{padding: -5, margin: -6}}/>
                 <Text style={h1}>г. {city}, {street}, д. {homeNumber}</Text>
-                <Text style={[fk_Status == 1 ? homeStatusGood : homeStatusBad, {marginHorizontal:5}]}>
+                <Text style={[fk_Status == 1 ? homeStatusGood : homeStatusBad, {marginHorizontal:5, marginBottom:5}]}>
                     {fk_Status == 1 ? HomeStatus.Exploited : HomeStatus.Emergency} </Text>
             </Card>
             {/* <View style={container}>
@@ -31,22 +31,22 @@ const styles = StyleSheet.create({
         padding: 5,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        borderColor: '#ccc',
+        borderColor: '#eee',
         borderWidth: 1,
-        borderRadius: 5,
-        margin: 5,
+        borderRadius: 0,
         backgroundColor: 'white'
     },
     containerText: {
         flexDirection: 'column'
     },
     h1: {
+        marginTop:10,
         margin:5,
         fontSize: 20,
-        width: w * 0.65,
+        width: w * 0.85,
     },
     homeStatusGood: {
-        color: '#13CE66'
+        color: '#15a009'
     },
     homeStatusBad: {
         color: '#ff3437'

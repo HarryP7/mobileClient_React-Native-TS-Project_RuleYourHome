@@ -1,66 +1,56 @@
 import React, { Component } from 'react';
 import { StyleSheet, ScrollView, View, Text, Alert,
   ActivityIndicator, } from 'react-native';
-import { SvgXml } from 'react-native-svg';
-import { user, homeLoc, lock, lockRep, shield } from '../../allSvg'
 import { Header, globalStyles } from '..';
 import { h, w, appColor, serverUrl, Background, disColor } from '../../constants'
-import { User, arrText, arrBool, arrColor } from '../../interfaces'
-import { actions } from '../../store'
-import { ADDRESSScreen } from '../../Navigations/routes';
+import { User, arrBoolEd, arrTextEd, arrColorEd } from '../../interfaces'
+import { actions, store } from '../../store'
 import { Icon, Card, Input } from 'react-native-elements'
 import { TextInput, Modal, Portal, Button, Provider } from 'react-native-paper';
+import TextInputMask from 'react-native-text-input-mask';
 
 interface Props { }
 interface State { }
-interface AuthData {
-  token: string,
-  userLogin: User,
-}
-var initArrBool: arrBool = {
+var initArrBool: arrBoolEd = {
   login: false,
   email: false,
   name: false,
   surname: false,
-  password: false,
-  repeatPassword: false
+  phone: false,
 };
-var initArrTxt: arrText = {
+var initArrTxt: arrTextEd = {
   login: '',
   email: '',
   name: '',
-  password: '',
-  infoPassword: '',
-  repeatPassword: ''
+  phone: '',
 };
-var initArrColor: arrColor = {
+var initArrColor: arrColorEd = {
   login: appColor,
   email: appColor,
   name: appColor,
-  iconPassword: appColor,
-  password: '#666',
-  repeatPassword: appColor,
+  phone: appColor,
   button: disColor
 };
 
 class EditProfileScreen extends Component<any, State, Props> {
   state = {
-    login: '', email: '', name: '', password: '', repeatPassword: '', width: 1,
+    login: '', email: '', name: '', phone: '', width: 1,
     visibility: false, visibilityRep: false,
-    passGood: false, submit: false, disBtn: true, refreshing: false,
+    submit: false, disBtn: true, refreshing: false,
     badEnter: initArrBool, errorText: initArrTxt, colorField: initArrColor
   }
 
   componentDidMount = () => {
-    console.log('Props EditProfileScreen', this.props)
+    console.log('Props EditProfileScreen', this.props)    
+    var { login, email, fullName, phone } = this.props.route.params
+    this.setState({ login, email, name: fullName, phone })
   }
   render() {
-    const { login, email, name, password, repeatPassword, visibility,
-      badEnter, errorText, colorField, passGood, submit, disBtn, width } = this.state
+    const { login, email, name, phone, badEnter, errorText, colorField, submit, disBtn, width } = this.state
     const { navigation } = this.props
     const { fixToText, icon, textInput, input, button, buttonContainer, buttonTitle, indicator,
       link, error, paddingBottom } = locStyles
-    const { im, cardStyle, inputStyle, inputPaper, buttonContentSp } = globalStyles
+    const { im, cardStyle, inputStyle, inputPaper, buttonContentSp, inputPaperWhite } = globalStyles
     return (
       <View style={{ height: h }}>
         <Header title={'Изменить профиль'}
@@ -72,18 +62,12 @@ class EditProfileScreen extends Component<any, State, Props> {
 
         <View >
           {Background}</View>
-        <ScrollView
-        // refreshControl={
-        //   <RefreshControl refreshing={refreshing} onRefresh={this.setClearState.bind(this)} /> }
-        >
+        <ScrollView >
           <Card containerStyle={cardStyle} >
             <View style={fixToText}>
-              <SvgXml xml={user} style={icon} fill={colorField.login} />
               <View style={textInput}>
                 <TextInput
-                  //inputContainerStyle={input}
-                  mode='outlined'
-                  style={[inputPaper, inputStyle]}
+                  style={[inputPaperWhite, inputStyle]}
                   onChangeText={this.onChangeLogin.bind(this)}
                   placeholder='Введите..'
                   label='Логин'
@@ -97,13 +81,9 @@ class EditProfileScreen extends Component<any, State, Props> {
               </View>
             </View>
             <View style={fixToText}>
-              <Icon name="email" size={40} style={icon}
-                containerStyle={{ marginTop: 8 }}
-                color={colorField.email}></Icon>
               <View style={textInput}>
                 <TextInput
-                  mode='outlined'
-                  style={[inputPaper, inputStyle]}
+                  style={[inputPaperWhite, inputStyle]}
                   onChangeText={this.onChangeEmail.bind(this)}
                   placeholder='Введите..'
                   label='Email'
@@ -119,11 +99,9 @@ class EditProfileScreen extends Component<any, State, Props> {
               </View>
             </View>
             <View style={fixToText}>
-              <SvgXml xml={user} style={icon} fill={colorField.name} />
               <View style={textInput}>
                 <TextInput
-                  mode='outlined'
-                  style={[inputPaper, inputStyle]}
+                  style={[inputPaperWhite, inputStyle]}
                   onChangeText={this.onChangeName.bind(this)}
                   placeholder='Введите..'
                   label='ФИО'
@@ -140,53 +118,30 @@ class EditProfileScreen extends Component<any, State, Props> {
               </View>
             </View>
             <View style={fixToText}>
-              <SvgXml xml={lock} style={icon} fill={colorField.iconPassword} />
-              <View style={textInput}>
-                <Input
-                  inputContainerStyle={[input, {
-                    borderColor: colorField.password,
-                    borderWidth: width, borderBottomWidth: width, marginLeft: -5, marginTop: 10, width: w * 0.8
-                  }]}
-                  inputStyle={inputStyle}
-                  onChangeText={this.onChangePassword.bind(this)}
-                  onTouchStart={this.activePass.bind(this)}
-                  placeholder='Пароль'
-                  placeholderTextColor='#666'
-                  autoCompleteType='password'
-                  textContentType='password'
-                  secureTextEntry={!visibility}
-                  value={password}
-                  onEndEditing={() => this.onCheckPass(password)}
-                  disabled={submit}
-                  rightIcon={visibility ? <Icon name='visibility' onPress={this.onVisibility.bind(this)} />
-                    : <Icon name='visibility-off' onPress={this.onVisibility.bind(this)} color='grey' />}
-                />
-                {badEnter.password && <Text style={error}></Text>}          
-                {!badEnter.password && errorText.infoPassword.length != 0 &&
-                  <Text style={[error, { color: '#666' }]}>{errorText.infoPassword}</Text>}
-              </View>
-            </View>
-            <View style={fixToText}>
-              <SvgXml xml={passGood ? shield : lockRep} style={icon}
-                fill={colorField.repeatPassword} />
               <View style={textInput}>
                 <TextInput
-                  mode='outlined'
-                  style={[inputPaper, inputStyle]}
-                  onChangeText={this.onChangeRepeatPassword.bind(this)}
+                  style={[inputPaperWhite, inputStyle]}
+                  onChangeText={this.onChangePhone.bind(this)}
                   placeholder='Введите..'
-                  label='Повторите пароль'
-                  autoCompleteType={'password'}
-                  textContentType={'password'}
-                  secureTextEntry={!visibility}
-                  value={repeatPassword}
-                  onEndEditing={() => this.onCheckRep(repeatPassword)}
+                  label='Номер телефона'
+                  render={props =>
+                    <TextInputMask
+                      {...props}
+                      mask="8 ([000]) [000]-[00]-[00]"
+                    />
+                  }
+                  value={phone}
+                  onEndEditing={() => this.onCheckPhone(phone)}
                   disabled={submit}
-                  theme={{ colors: { primary: colorField.repeatPassword } }}
-                />
-                {badEnter.repeatPassword && <Text style={error}>{errorText.repeatPassword}</Text>}
+                  theme={{ colors: { primary: colorField.name } }}
+                />                
+                {/* <HelperText type="error" visible={badEnter.name} style={{marginBottom: -20, fontSize: 14, color: 'red'}} >
+                  {errorText.name} 
+                </HelperText> */}
+                {badEnter.phone && <Text style={error}>{errorText.phone}</Text>}
               </View>
             </View>
+            
 
             <View style={{ alignItems: 'center' }}>
               <View style={button}>
@@ -198,7 +153,7 @@ class EditProfileScreen extends Component<any, State, Props> {
                   contentStyle={buttonContentSp}
                   style={[buttonContainer, { backgroundColor: colorField.button }]}
                   labelStyle={buttonTitle}>
-                  Продолжить
+                  Сохранить
               </Button>
               </View>
             </View>
@@ -220,10 +175,9 @@ class EditProfileScreen extends Component<any, State, Props> {
 
 
   private checkFields() {
-    const { login, email, name, password, repeatPassword, badEnter, colorField } = this.state
-    if (login && email && name && password && repeatPassword && !badEnter.login &&
-      !badEnter.email && !badEnter.name && !badEnter.password &&
-      !badEnter.repeatPassword) {
+    const { login, email, name, badEnter, colorField } = this.state
+    if (login && email && name && !badEnter.login &&
+      !badEnter.email && !badEnter.name && !badEnter.phone) {
       colorField.button = appColor;
       this.setState({ disBtn: false, colorField })
     }
@@ -321,7 +275,7 @@ class EditProfileScreen extends Component<any, State, Props> {
   }
   private onCheckName(name: string) {
     var { badEnter, errorText, colorField } = this.state
-    if (name.trim().length < 2 || name.trim().length > 25) {
+    if (name.trim().length < 2 || name.trim().length > 50) {
       badEnter.name = true;
       colorField.name = 'red'
       errorText.name = 'ФИО должно быть больше 1 символа и меньше 50'
@@ -329,89 +283,36 @@ class EditProfileScreen extends Component<any, State, Props> {
       return;
     }
   }
-  private activePass() {
-    var { colorField, errorText } = this.state
-    colorField.password = appColor
-    errorText.infoPassword = 'Придумайте пароль от 8 символов с обяхательной комбинацией цифр и латинских букв'
-    this.setState({ colorField, errorText, width: 2 });
-  }
-  private onChangePassword(password: string) {
+  private onChangePhone(phone: string) {
     var { badEnter, errorText, colorField } = this.state
-    if (password == ' ') { return }
-    if (password.trim().length >= 8) {
-      badEnter.password = false
-      colorField.password = appColor//'green'
-      this.setState({ colorField, badPass: false });
-      var repPass = this.state.repeatPassword;
-      if (repPass && repPass != password) {
-        badEnter.repeatPassword = true;
-        errorText.repeatPassword = 'Пароли не совпадают'
-        colorField.repeatPassword = 'red'
-        this.setState({ badEnter, errorText, colorField, passGood: false, disBtn: true });
-      }
-    }
-    else {
-      colorField.password = appColor
-    }
-    this.setState({ password: password.trim(), colorField });
-    this.checkFields()
-  }
-  private onCheckPass(pass: string) {
-    var { badEnter, errorText, colorField } = this.state
-    if (pass.trim().length < 8) {
-      badEnter.password = true;
-      errorText.password = 'Пароль должен иметь длину не менее 8 знаков'
-      colorField.password = 'red'
-      this.setState({ badEnter, errorText, colorField, pass, disBtn: true });
+    if (phone == ' ') { return }
+    if (!phone) {
+      badEnter.phone = true;
+      colorField.phone = 'red'
+      errorText.phone = 'Поле не заполнено'
+      this.setState({ badEnter, errorText, phone, disBtn: true, colorField });
       return;
     }
-    var { colorField, errorText } = this.state
-    colorField.password = '#666'
-    errorText.infoPassword = ''
-    this.setState({ colorField, width: 1 });
-  }
-  private onChangeRepeatPassword(repeatPassword: string) {
-    var { badEnter, errorText, colorField } = this.state
-    var pass = this.state.password;
-    if (repeatPassword == ' ') { return }
-    if (pass.trim().length == repeatPassword.trim().length && pass === repeatPassword) {
-      badEnter.repeatPassword = false;
-      badEnter.password = false;
-      colorField.repeatPassword = appColor//'green'
-      this.setState({ badEnter, colorField, passGood: true });
-    }
-    else if (pass.trim().length <= repeatPassword.trim().length) {
-      badEnter.repeatPassword = true;
-      errorText.repeatPassword = 'Пароли не совпадают'
-      colorField.repeatPassword = 'red'
-      this.setState({ badEnter, errorText, colorField, passGood: false, disBtn: true });
-    }
     else {
-      colorField.repeatPassword = appColor
-      badEnter.repeatPassword = false;
-      this.setState({ badEnter, colorField });
+      badEnter.phone = false;
+      colorField.phone = appColor
+      this.setState({ phone, badEnter, colorField });
       this.checkFields()
     }
-    this.setState({ repeatPassword: repeatPassword.trim() });
   }
-  private onCheckRep(repeatPassword: string) {
+  private onCheckPhone(phone: string) {
     var { badEnter, errorText, colorField } = this.state
-    var pass = this.state.password;
-    if (pass !== repeatPassword) {
-      badEnter.repeatPassword = true;
-      errorText.repeatPassword = 'Пароли не совпадают'
-      colorField.repeatPassword = 'red'
-      this.setState({ badEnter, errorText, colorField, passGood: false, disBtn: true });
+    if (phone.trim().length < 1 || phone.trim().length > 17) {
+      badEnter.phone = true;
+      colorField.phone = 'red'
+      errorText.phone = 'Номер должен состоять из 11 символов'
+      this.setState({ badEnter, errorText, phone, disBtn: true, colorField });
+      return;
     }
   }
-  private onVisibility() {
-    var { visibility } = this.state
-    this.setState({ visibility: !visibility })
-  }
-
+  
   private onSubmit() {
-    const { login, email, name, password, repeatPassword, badEnter, errorText,
-      colorField } = this.state
+    const { login, email, name, phone, badEnter, errorText, colorField } = this.state
     const { navigation } = this.props
     var $this = this;
     var obj, url, log: string;
@@ -434,19 +335,14 @@ class EditProfileScreen extends Component<any, State, Props> {
       colorField.name = 'red'
       this.setState({ badEnter, errorText, colorField });
     }
-    if (!password) {
-      badEnter.password = true;
-      errorText.password = 'Поле не заполнено'
-      colorField.password = 'red'
+    if (!phone) {
+      badEnter.phone = true;
+      errorText.phone = 'Поле не заполнено'
+      colorField.phone = 'red'
       this.setState({ badEnter, errorText, colorField });
     }
-    if (!repeatPassword) {
-      badEnter.repeatPassword = true;
-      errorText.repeatPassword = 'Поле не заполнено'
-      colorField.repeatPassword = 'red'
-      this.setState({ badEnter, errorText, colorField });
-    }
-    if (!login || !email || !name || !password || !repeatPassword) {
+    
+    if (!login || !email || !name || !phone ) {
       Alert.alert('Внимание', 'Не все поля заполнены',
         [{ text: 'OK' }],
         { cancelable: false },
@@ -455,51 +351,38 @@ class EditProfileScreen extends Component<any, State, Props> {
       return;
     }
 
-    if (badEnter.login || badEnter.name || badEnter.surname ||
-      badEnter.password || badEnter.repeatPassword) {
+    if (badEnter.login || badEnter.email  || badEnter.name || badEnter.phone ) {
       this.setState({ good: false }); //, isVisible: true, textOverlay: txt 
       Alert.alert('Внимание', 'Заполните поля правильно',
         [{ text: 'OK' }]);
 
       return;
     }
-    if (password.trim().length < 8 || repeatPassword.trim().length < 8) {
-      this.setState({ good: false }); //, isVisible: true, textOverlay: txt 
-      Alert.alert('Внимание', 'Пароль должен иметь длину не менее 8 знаков',
-        [{ text: 'OK' }]);
-
-      return;
-    }
     else this.setState({ good: true, disBtn: false });
 
-    if (password !== repeatPassword) {
-      badEnter.repeatPassword = true;
-      errorText.repeatPassword = 'Пароли не совпадают'
-      colorField.repeatPassword = 'red'
-      this.setState({ badEnter, errorText, colorField, passGood: false })
-      return;
-    }
-    else this.setState({ passGood: true })
+    var { uid } = this.props.route.params
+    const { userLogin, token } = store.state;
+    
     obj = {
       Login: login,
       Email: email,
       FullName: name,
-      Password: password,
-      Role: 2
+      Phone: phone,
     }
-    url = serverUrl + 'auth/signup/';
-    log = 'Регистрации'
+    url = serverUrl + 'profile/upd?Uid='+uid;
+    log = 'Изменить профиль'
 
-    console.log('login: ' + login + ' ФИО: ' + name + ' Email: ' + email)
+    console.log('login: ' + login + ' ФИО: ' + name + ' Email: ' + email + ' Phone: ' + phone)
     console.log('badEnter.login: ' + badEnter.login + ' badEnter.name: ' + badEnter.name +
-      ' badEnter.surname: ' + badEnter.surname + ' badEnter.password: ' + badEnter.password)
+      ' badEnter.surname: ' + badEnter.surname)
 
     this.setState({ submit: true, disBtn: true })
     fetch(url, {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      method: 'PUT', // *GET, POST, PUT, DELETE, etc.
       headers: {
         'Accept': "application/json",
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify(obj),
     })
@@ -507,8 +390,8 @@ class EditProfileScreen extends Component<any, State, Props> {
         if (response.status == 200 || response.status == 201) {
           console.log('Успех ' + log + ' Post статус: ' + response.status + ' ok: ' + response.ok);
           console.log(response);
-          Alert.alert('Вы зарегистрированы!', 'Пожалуйста, заполните дополнительную информацию по вашему адресу',
-            [{ text: 'OK' }]);
+          // Alert.alert('Сохранено!', 'Пожалуйста, заполните дополнительную информацию по вашему адресу',
+          //   [{ text: 'OK' }]);
           return response.json();
         }
         else if (response.status == 500) {
@@ -521,21 +404,25 @@ class EditProfileScreen extends Component<any, State, Props> {
           Alert.alert('Внимание', 'Пользователь с таким логином уже существует',
             [{ text: 'OK' }]);
         }
+        else if (response.status == 404) {
+          console.log('Bad Request', "Status: " + response.status + ' ' + response)
+          Alert.alert('Внимание', 'Пользователь не найден',
+            [{ text: 'OK' }]);
+        }
         else {
           console.log(response.statusText, "Status: " + response.status + ' ' + response)
           Alert.alert('Внимание', response.statusText + " Status: " + response.status + ' ' + response,
             [{ text: 'OK' }]);
         }
         $this.setState({ submit: false, disBtn: false });
-        return response.status
+        return undefined
       })
-      .then(function (data: AuthData) {
+      .then(function (data: User) {
         console.log('data: ', data);
-        if (data.token) {
+        if (data != undefined) {
           $this.setClearState();
-          actions.Login(data.token, data.userLogin)
-          const back = false;
-          navigation.navigate(ADDRESSScreen, (back));
+          actions.Login(token, data)
+          navigation.pop();
         }
       })
       .catch(error => {
@@ -551,27 +438,23 @@ class EditProfileScreen extends Component<any, State, Props> {
       });
   }
   private setClearState() {
-    var arr: arrBool = {
+    var arr: arrBoolEd = {
       login: false,
       email: false,
       name: false,
       surname: false,
-      password: false,
-      repeatPassword: false
+      phone: false,
     };
-    var arrCol: arrColor = {
+    var arrCol: arrColorEd = {
       login: appColor,
       email: appColor,
       name: appColor,
-      iconPassword: appColor,
-      password: disColor,
-      repeatPassword: appColor,
+      phone: appColor,
       button: disColor
     };
     this.setState({
       login: '', email: '', name: '', surname: '',
-      password: '', repeatPassword: '', color: appColor,
-      good: true, passGood: false, submit: false, disBtn: true,
+      color: appColor, good: true, submit: false, disBtn: true,
       badEnter: arr, errorText: initArrTxt, colorField: arrCol
     })
   }
@@ -579,12 +462,12 @@ class EditProfileScreen extends Component<any, State, Props> {
 
 const locStyles = StyleSheet.create({
   icon: {
-    marginTop: 10,
+    marginTop: 20,
     width: 35,
     height: 35,
   },
   textInput: {
-    width: w * 0.82,
+    width: w * 0.8,
   },
   input: {
     borderColor: 'gray',
@@ -608,7 +491,7 @@ const locStyles = StyleSheet.create({
     paddingBottom: 200,
   },
   fixToText: {
-    marginTop: 20,
+    marginTop: 10,
     flexDirection: 'row',
     justifyContent: 'center',
   },

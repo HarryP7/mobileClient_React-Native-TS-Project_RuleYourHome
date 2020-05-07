@@ -43,6 +43,7 @@ const Header = ({ title, onPressLeft, leftIcon, onPressRight, rightIcon, bold, p
               </TouchableOpacity>
               : <Appbar.Action icon={rightIcon} onPress={onPressRight} color='white' />
           )}
+          {position == 'center' && leftIcon && <View style={{width: w*0.15}}></View>}
         </Appbar.Header>        
       </View>
     )

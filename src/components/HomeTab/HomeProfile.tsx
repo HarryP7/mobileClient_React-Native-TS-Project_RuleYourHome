@@ -155,7 +155,7 @@ class HomeProfile extends Component<any, State, Props> {
             <TouchableOpacity
               onPress={() => navigation.navigate('REGISTRATION', propsData)}>
                 <View style={[buttonContainer, {margin: 20}]}>
-                  <Text style={buttonTitle}>Зарегистрировться в этом доме</Text>
+                  <Text style={buttonTitle}>Зарегистрироваться в этом доме</Text>
                   </View>
             </TouchableOpacity>
           }
@@ -184,7 +184,7 @@ const locStyles = StyleSheet.create({
     marginVertical: 10
   },
   homeStatusGood: {
-    backgroundColor: '#13CE66'
+    backgroundColor: '#15a009'
   },
   homeStatusBad: {
     backgroundColor: '#ff3437'

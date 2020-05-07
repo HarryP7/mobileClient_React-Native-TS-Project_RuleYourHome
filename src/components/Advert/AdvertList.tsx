@@ -5,7 +5,7 @@ import {
 import { Header, AdvertCard, globalStyles } from '..';
 import { AddADVERT, ADVERTPro } from '../../Navigations/routes';
 import { useGlobal, store } from '../../store'
-import { serverUrl, appColor, NoFoto, w } from '../../constants';
+import { serverUrl, appColor, NoFoto, w, Background } from '../../constants';
 import { Group, Advert } from '../../interfaces';
 
 interface Props { }
@@ -47,27 +47,25 @@ class AdvertList extends Component<any, Props, State> {
     render() {
         const { button2, images, h1, container, indicator } = globalStyles
         const { navigation } = this.props
-        const { localGroups,adverts, load, refreshing, fk_Status } = this.state
+        const { localGroups, adverts, load, refreshing, fk_Status } = this.state
         return (
             <View >
                 <Header title='Обявления дома' position='center' />
+
                 <ScrollView
                     refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={this.onRefresh.bind(this)} />
                     }
                 >
                     {load ?
-                        <View style={container}>
-                            {adverts.map((adv: Advert) => {
-                                    return <AdvertCard data={adv} key={adv.uid}
-                                        onPress={() => navigation.navigate(ADVERTPro, (adv))}
-                                        onMoveGroup={() => navigation.navigate('GroupPRO', (adv.lg))} />
-                                })
-                            }
-                        </View>
+                        adverts.map((adv: Advert) => {
+                            return <AdvertCard data={adv} key={adv.uid}
+                                onPress={() => navigation.navigate(ADVERTPro, (adv))}
+                                onMoveGroup={() => navigation.navigate('GroupPRO', (adv.lg))} />
+                        })
                         : <ActivityIndicator style={[indicator, { marginTop: w + 20 }]} size={50} color={appColor} />
                     }
-                    <View style={{ margin: 30 }}><Text> </Text></View>
+                    <View style={{ margin: 20 }}><Text> </Text></View>
                 </ScrollView>
             </View>
         );

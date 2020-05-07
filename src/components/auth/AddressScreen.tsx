@@ -7,7 +7,7 @@ import { SvgXml } from 'react-native-svg';
 import { user, home, homeLoc, write, notFound } from '../../allSvg'
 import { Header, globalStyles, HomeCard } from '..';
 import { h, w, appColor, serverUrl, Background, disColor } from '../../constants'
-import { User, adrText, adrBool, addressColor, AuthData } from '../../interfaces'
+import { adrText, adrBool, addressColor, AuthData } from '../../interfaces'
 import { actions, store } from '../../store'
 import { AUTH, HOMEProfile, NAVIGATIONAdmin, NAVIGATIONUser } from '../../Navigations/routes';
 import { CityList, VladimirStreetList } from './Lists'

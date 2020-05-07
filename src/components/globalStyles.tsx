@@ -71,7 +71,7 @@ const globalStyles = StyleSheet.create({
     paddingHorizontal: 24,
     fontSize: 18,
     color: Colors.dark,
-    textAlign: 'justify',
+    textAlign: 'center',
     padding: 10,
   },
   image: {
@@ -191,10 +191,12 @@ const globalStyles = StyleSheet.create({
     marginLeft: 20
   },
   images: {
-    width: w * 0.9,
+    width: w,
     height: w * 0.7,
     alignSelf: 'center',
-    borderRadius: 10,
+    borderBottomRightRadius: 10,
+    borderBottomLeftRadius: 10,
+    marginBottom: 5
   },
   noImages: {
     alignSelf: 'center',
@@ -302,7 +304,7 @@ const globalStyles = StyleSheet.create({
     flexDirection: 'row',
   },  
   inputStyle: {
-    fontSize: 16,
+    fontSize: 15,
     paddingVertical: 0,
   },
   inputPaperWhite: {

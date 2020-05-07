@@ -1,14 +1,13 @@
 import * as React from 'react';
 import {NavigationAdmin} from './NavigationAdmin';
 import { Provider as PaperProvider } from 'react-native-paper';
-import NotAuthNavigation from './NotAuthNavigation';
-import NavigationUser from '../Navigations/NavigationUser';
+import {NavigationUser, NotAuthNavigation} from '../Navigations';
 import {  store } from '../store'
 import { Role } from '../enum/Enums';
 
 const { userLogin, token } = store.state;
 
-export default function MainNavigation() {
+ function MainNavigation() {
   return (
     <PaperProvider>
         {!token ? 
@@ -21,3 +20,4 @@ export default function MainNavigation() {
     </PaperProvider>
   );
 }
+export {MainNavigation}

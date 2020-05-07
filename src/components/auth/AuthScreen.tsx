@@ -12,6 +12,7 @@ import { NAVIGATIONAdmin, NAVIGATIONUser, REGISTRATION } from '../../Navigations
 import { Card, Input, Icon } from 'react-native-elements'
 import { Role } from '../../enum/Enums';
 import { TextInput, Modal, Portal, Button, Provider } from 'react-native-paper';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 
 interface Props { }
@@ -38,7 +39,7 @@ class AuthScreen extends PureComponent<any, State, Props> {
     const { login, password, colorField, submit, disBtn,  visibility } = this.state
     const { navigation } = this.props
     const { fixToText, textInput, input, button, buttonContainer, buttonTitle } = locStyles
-    const { cardStyle, indicator, buttonContentSp, inputStyle, link, inputPaperWhite } = globalStyles
+    const { cardStyle, indicator, buttonContentSp, inputStyle, link, inputPaperWhite, sub } = globalStyles
     return (
       <View style={{ height: h }}>
         <Header title={'Вход'}
@@ -53,7 +54,7 @@ class AuthScreen extends PureComponent<any, State, Props> {
         <ScrollView >
           <Card containerStyle={cardStyle} >
             <View style={fixToText}>
-              <View style={{width: w * 0.75}}>
+              <View style={textInput}>
                 <TextInput
                   style={[inputPaperWhite,inputStyle]}
                   onChangeText={this.onChangeLogin.bind(this)}
@@ -63,20 +64,29 @@ class AuthScreen extends PureComponent<any, State, Props> {
                   value={login}
                   disabled={submit}
                   theme={{ colors: { primary: colorField.login } }}
+                  // right={
+                  //   <MaterialCommunityIcons name={visibility ? 'eye' : 'eye-off'} 
+                  //   onPress={this.onVisibilityPassword.bind(this)}
+                  //   color={visibility ? 'black': 'grey' } size={25} />
+                  // }
+                  // render={()  =>
+                  //   <MaterialCommunityIcons name={visibility ? 'eye' : 'eye-off'} 
+                  //   onPress={this.onVisibilityPassword.bind(this)}
+                  //   color={visibility ? 'black': 'grey' } size={25}
+                  //   style={{position: 'absolute', top: 30, right: 5}}/> 
+                  // }
                 />
                 {/* {badEnter.login && <Text style={error}>{errorText.login}</Text>} */}
               </View>
             </View>
 
-            <View style={[fixToText, { marginTop: 20, }]}>
+            <View style={fixToText}>
               <View style={textInput}>
-                <Input
-                  inputContainerStyle={[input, { borderColor: colorField.password }]}
-                  inputStyle={inputStyle}
+                <TextInput
+                  style={[inputPaperWhite,inputStyle]}
                   onChangeText={this.onChangePassword.bind(this)}
-                  onTouchStart={this.activePass.bind(this)}
-                  placeholder='Пароль'
-                  placeholderTextColor='#777'
+                  placeholder='Введите..'
+                  label='Пароль'
                   autoCompleteType='password'
                   textContentType='password'
                   onEndEditing={this.onEndPass.bind(this)}
@@ -84,12 +94,12 @@ class AuthScreen extends PureComponent<any, State, Props> {
                   secureTextEntry={!visibility}
                   value={password}
                   disabled={submit}
-                  //onEndEditing={() => this.onCheckPass(password)}
-                  //errorMessage={badEnter.password ? errorText.password : ''}
-                  rightIcon={visibility ? <Icon name='visibility' onPress={this.onVisibilityPassword.bind(this)} />
-                    : <Icon name='visibility-off' onPress={this.onVisibilityPassword.bind(this)} color='grey' />}
+                  theme={{ colors: { primary: colorField.login } }}
                 />
-                {/* {badEnter.password ? <Text style={error}>{errorText.password}</Text> : <View></View>} */}
+                <MaterialCommunityIcons name={visibility ? 'eye' : 'eye-off'} 
+                  onPress={this.onVisibilityPassword.bind(this)}
+                  color={visibility ? 'black': 'grey' } size={25}
+                  style={{position: 'absolute', top: 30, right: 5}}/> 
               </View>
             </View>
 
@@ -112,7 +122,7 @@ class AuthScreen extends PureComponent<any, State, Props> {
           <TouchableOpacity
             onPress={() => navigation.navigate(REGISTRATION)}
             disabled={submit} >
-            <Text style={[link, { marginTop: -20 }]}>{'Зарегистрируйтесь'}</Text>
+            <Text style={[link, { marginTop: -15 }]}>{'Зарегистрироваться'}</Text>
           </TouchableOpacity>
           </Card>
 
@@ -333,7 +343,7 @@ const locStyles = StyleSheet.create({
     marginRight: 10,
   },
   textInput: {
-    width: w * 0.8,
+    width: w * 0.75,
   },
   input: {
     borderBottomWidth: 1,

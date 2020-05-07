@@ -8,6 +8,7 @@ export interface User {
   fk_Home: string,
   fk_Avatar: string,
   login: string,
+  email: string,
   fk_Gender: number,
   appartament: string,
   myGroups: Group[],
@@ -122,6 +123,27 @@ export interface arrBool {
   password: boolean,
   repeatPassword: boolean
 };
+
+export interface arrTextEd {
+  login: string,
+  email: string,
+  name: string,
+  phone: string,
+};
+export interface arrColorEd {
+  login: string,
+  email: string,
+  name: string,
+  phone: string,
+  button: string
+};
+export interface arrBoolEd {
+  login: boolean,
+  email: boolean,
+  name: boolean,
+  surname: boolean,
+  phone: boolean,
+};
 export interface authText {
   login: string,
   password: string,
@@ -210,7 +232,7 @@ export const initialUser: User = {
     createdAt: '',
     removed: false
   },
-  fk_Role: 0, fk_Home: '', fk_Avatar: '', fk_Gender: 0, login: '', appartament: '', myGroups: [], address: '', phone: '',
+  fk_Role: 0, fk_Home: '', fk_Avatar: '', fk_Gender: 0, login: '', email: '', appartament: '', myGroups: [], address: '', phone: '',
   isApprovedHome: false
 }
 /**{
@@ -300,12 +322,31 @@ export const initAdvVoting: Voting = {
   voteds: [initVoted],  
   totalVotes: 0
 };
+export const initGroupText: Group = {
+  uid: '',
+  title: '',
+  fk_Supervisor: '',
+  fk_Image: '',
+  fk_Status: 0,
+  fk_Home: '',
+  createdAt: new Date(),
+  editedAt: new Date(),
+  removed: false,   
+}
 export const initAdvText: Advert = {
   uid: '',
   text: '',
   title: '',
   category: '',
   voting: [initAdvVoting],
+  fk_Author: '', 
+  fk_Image: '', 
+  fk_Category: 0, 
+  Fk_LocalGroup: '',
+  createdAt: new Date(),
+  editedAt: new Date(), 
+  removed: false,
+  lg: initGroupText 
 };
 
 export const advAnswer: Answer = {
@@ -328,4 +369,12 @@ export const advert: Advert = {
   title: '',
   category: '',
   voting: [initAdvVoting],
+  fk_Author: '', 
+  fk_Image: '', 
+  fk_Category: 0, 
+  Fk_LocalGroup: '',
+  createdAt: new Date(),
+  editedAt: new Date(), 
+  removed: false, 
+  lg: initGroupText 
 };

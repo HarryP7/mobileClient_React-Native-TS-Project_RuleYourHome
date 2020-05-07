@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
 import {
   StyleSheet, ScrollView, View, Text, TouchableOpacity, ActivityIndicator,
-  Alert, Image
+  Alert, Image, TextInput
 } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import { save } from '../../allSvg'
-import { Header, globalStyles } from '..';//, styles 
+import { Header, globalStyles } from '..'; 
 import { Dropdown, DropDownData } from 'react-native-material-dropdown';
 import { h, w, appColor, serverUrl, Background } from '../../constants'
 import { HomeStatus, Role } from '../../enum/Enums'
-import { backArrow } from '../../allSvg'
-import { TextInput } from 'react-native-gesture-handler';
 import { Card } from 'react-native-elements'
 import { CityList, VladimirStreetList } from '../auth/Lists'
 import { User, initAdrBool, initAdrTxt, adrHomeBool, adrHomeText } from '../../interfaces'

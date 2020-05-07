@@ -22,6 +22,7 @@ class SearchHomeScreen extends React.PureComponent<any, State> {
   componentDidMount = async () => {
     this.setState({loadError: false})
     var logAction = 'home all';
+    
     try {
       const response = await fetch(serverUrl+'home/all')
       if (response.status == 200) {
@@ -89,12 +90,10 @@ class SearchHomeScreen extends React.PureComponent<any, State> {
       }
     >        
         {load ?
-          <View style={container}>
-            {data.map(item => {
+            data.map(item => {
               return <HomeCard data={item} key={item.uid}
                 onPress={() => navigation.navigate(HOMEProfile, (item))} />//
-            })}
-          </View> :
+            }) :
           <View>
           {Background}
           {!loadError && <ActivityIndicator style={indicator} size={50} color={appColor} />}

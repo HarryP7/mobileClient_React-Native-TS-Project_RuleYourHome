@@ -509,7 +509,7 @@ class EditPassScreen extends Component<any, State, Props> {
         if (response.status == 200 || response.status == 201) {
           console.log('Успех ' + log + ' Post статус: ' + response.status + ' ok: ' + response.ok);
           console.log(response);
-          Alert.alert('Вы зарегистрированы!', 'Пожалуйста, заполните дополнительную информацию по вашему адресу',
+          Alert.alert('Вы зарегистрированы!', 'Пожалуйста, заполните дополнительную информацию по вашему адресу.',
             [{ text: 'OK' }]);
           return response.json();
         }
@@ -520,7 +520,7 @@ class EditPassScreen extends Component<any, State, Props> {
         }
         else if (response.status == 400) {
           console.log('Bad Request', "Status: " + response.status + ' ' + response)
-          Alert.alert('Внимание', 'Пользователь с таким логином уже существует',
+          Alert.alert('Внимание', 'Пользователь с таким логином уже существует.',
             [{ text: 'OK' }]);
         }
         else {

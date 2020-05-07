@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import { Header, globalStyles } from '..';
 import { backArrow } from '../../allSvg'
-import { HomeStatus, Role } from '../../enum/Enums';
+import { HomeStatus, Role, Category } from '../../enum/Enums';
 import { h, w, appColor, NoFoto, serverUrl, months, Background } from '../../constants'
 import { Badge, Divider, Card, Input, CheckBox } from 'react-native-elements';
 import { store } from '../../store';
@@ -105,7 +105,7 @@ class AdvertProfile extends Component<any, State, Props> {
         const { uid, title, text, fk_Category, createdAt, votings, } = this.props.route.params
         const { refreshing, load } = this.state
         const { im, h1, h3, indicator, cardStyle, sub } = globalStyles
-        const { dateStyle, time, } = styles
+        const { dateStyle, time, category} = styles
         //console.log('votings: ', votings)
         return (<View>
             <Header title='Объявление'
@@ -122,6 +122,13 @@ class AdvertProfile extends Component<any, State, Props> {
                         <View style={sub}>
                             <Text style={dateStyle}>{this.toDate(createdAt)} </Text>
                             <Text style={time}> {this.toTime(createdAt)}</Text>
+                            <Text style={category}>{fk_Category == 1 ? Category.Repairs :
+                        fk_Category == 2 ? Category.EngineeringWorks :
+                            fk_Category == 3 ? Category.Overhaul :
+                                fk_Category == 4 ? Category.EnergySaving :
+                                    fk_Category == 5 ? Category.Owners :
+                                        fk_Category == 6 ? Category.CommunityInfrastructure :
+                                            Category.Attention}</Text>
                         </View>
                         <Text style={h1}>{title}</Text>
                         <Text style={h3}>Уважаемые жильцы!</Text>
@@ -140,17 +147,16 @@ class AdvertProfile extends Component<any, State, Props> {
         const { submit, load, voting, option, checkedOps, loadError, vote, voted } = this.state
         const { navigation } = this.props
         const { fixToText, label, label2, textInput, optionCont, optionText, progress,
-            inputMultiline, votingContainer, row, label5, btnCont, containerStyle } = styles
-        const { inputStyle, cardUsersStyle, indicator, buttonContainer, buttonTitle } = globalStyles
+            inputMultiline, votingContainer, row, label5, btnCont, containerStyle, votings } = styles
+        const { inputStyle, cardUsersStyle, indicator, buttonContainer, buttonTitle, sub } = globalStyles
         var uidChecked: string[] = [];
         return <View>            
             {load ?
                 voting.map((elV: Voting, idV: number) => {
                     return <View style={votingContainer}>
-                        <View style={fixToText}>
-                            <View style={textInput}>
+                        <View style={sub}>
                                 <Text style={label}>{elV.title}</Text>
-                            </View>
+                                <Text style={votings}>Голосование</Text>
                         </View>
 
                         {voted ? elV.options.map((elA: Answer, idAns: number) => {
@@ -370,10 +376,10 @@ class AdvertProfile extends Component<any, State, Props> {
 
 const styles = StyleSheet.create({
     votingContainer: {
-        borderColor: 'gray',
-        backgroundColor: '#FFD0AE',
-        borderWidth: 1,
-        borderRadius: 10,
+        // borderColor: 'gray',
+        // backgroundColor: '#8fa4f2',
+        // borderWidth: 1,
+        // borderRadius: 10,
         marginHorizontal: 10,
         marginTop: 5,
         paddingVertical: 10
@@ -399,9 +405,8 @@ const styles = StyleSheet.create({
         marginRight: 20
     },
     label: {
-        marginTop: -5,
         marginBottom: 5,
-        marginLeft: 5,
+        marginHorizontal: 10,
         fontSize: 18,
         fontWeight: 'bold',
     },
@@ -463,8 +468,8 @@ const styles = StyleSheet.create({
         marginTop: 10
     },
     containerStyle: {
-        backgroundColor: '#FFD0AE',
-        borderColor: '#FFD0AE',
+        backgroundColor: 'lightsteelblue',
+        borderColor: 'lightsteelblue',
         paddingVertical: 0,
     },
     optionCont: {
@@ -482,6 +487,22 @@ const styles = StyleSheet.create({
         height: 15,
         marginHorizontal: 20,
         borderRadius: 10
+    },
+    category: {
+        backgroundColor: '#15a009',
+        borderRadius: 6,
+        color: '#fff',
+        margin: 3,
+        paddingVertical: 1,
+        paddingHorizontal: 7
+    },
+    votings: {
+        backgroundColor: '#2D3AF2',
+        borderRadius: 6,
+        color: '#fff',
+        margin: 3,
+        paddingVertical: 1,
+        paddingHorizontal: 7
     }
 })
 

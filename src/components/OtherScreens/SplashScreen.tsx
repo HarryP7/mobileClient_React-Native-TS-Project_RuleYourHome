@@ -1,14 +1,14 @@
 import React from 'react';
 import { View, Text, Image } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { globalStyles, AuthScreen, RegistrationScreen, HomeProfile, AddressScreen, ProfileScreen, EditProfileScreen, TentantsScreen, GroupListScreen, GroupProfile, AddHomeScreen, AddGroupScreen, AddAdvertScreen, SearchHomeScreen, AdvertProfile, ExitScreen } from '..'
+import { globalStyles, AuthScreen, RegistrationScreen, HomeProfile, HomeScreen,
+  AddressScreen, ProfileScreen, EditProfileScreen, TentantsScreen, 
+  GroupListScreen, GroupProfile, AddHomeScreen, AddGroupScreen, 
+  AddAdvertScreen, SearchHomeScreen, AdvertProfile, ExitScreen } from '..'
 import { Button } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
-import MainNavigation from '../../Navigations/MainNavigation';
+import {MainNavigation, NavigationAdmin, NavigationUser, NotAuthNavigation} from '../../Navigations';
 import { StackNavigatorParamlist } from '../../Navigations/types';
-import { NavigationAdmin } from '../../Navigations/NavigationAdmin';
-import NavigationUser from '../../Navigations/NavigationUser';
-import  HOMEScreen  from '../HomeTab/HomeScreen';
 
 interface Props { }
 
@@ -53,9 +53,10 @@ function RootStackScreen() {
         <Stack.Screen name="MainNavigation" component={MainNavigation} />
         <Stack.Screen name="NAVIGATIONAdmin" component={NavigationAdmin} />
         <Stack.Screen name="NAVIGATIONUser" component={NavigationUser} />
+        <Stack.Screen name="NOTAuthNavigation" component={NotAuthNavigation} />
         <Stack.Screen name="AUTH" component={AuthScreen} />
         <Stack.Screen name="REGISTRATION" component={RegistrationScreen} />
-        <Stack.Screen name='HOMEScreen' component={HOMEScreen} />
+        <Stack.Screen name='HOMEScreen' component={HomeScreen} />
         <Stack.Screen name='HOMEProfile' component={HomeProfile} />
         <Stack.Screen name='ADDRESSScreen' component={AddressScreen} />
         <Stack.Screen name='PROFILE' component={ProfileScreen} />

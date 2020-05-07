@@ -9,7 +9,7 @@ import { DrawerAdminContent } from './DrawerAdminContent';
 
 const Drawer = createDrawerNavigator();
 
-export const NavigationAdmin = () => {
+const NavigationAdmin = () => {
   const theme = useTheme();
   const navigationTheme = theme.dark ? DarkTheme : DefaultTheme;
 
@@ -30,3 +30,5 @@ export const NavigationAdmin = () => {
     // </NavigationContainer>
   );
 };
+
+export {NavigationAdmin}

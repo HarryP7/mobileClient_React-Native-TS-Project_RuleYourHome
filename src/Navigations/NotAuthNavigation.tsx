@@ -4,6 +4,7 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import {  SearchHomeScreen, AuthScreen, } from '../components';
 import { SvgXml } from 'react-native-svg';
 import { user, searchHome } from '../allSvg'
+import { appColor } from '../constants';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -11,7 +12,7 @@ function MyTabs() {
   const { icon } = styles
   return (
     <Tab.Navigator
-      activeColor="#009999"
+      activeColor={appColor}
       barStyle={{ backgroundColor: '#fff' }}
     >
       <Tab.Screen
@@ -38,7 +39,7 @@ function MyTabs() {
   );
 }
 
-export default function NotAuthNavigation() {
+function NotAuthNavigation() {
   return (
       <MyTabs />
   );
@@ -50,3 +51,5 @@ icon: {
     height: 24,
   },
 })
+
+export {NotAuthNavigation}

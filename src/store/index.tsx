@@ -23,6 +23,7 @@ const initialState: IAppState = {
         fk_Avatar: '',
         fk_Gender: 0,
         login: '',
+        email: '',
         appartament: '',
         myGroups: [],
         address: '',

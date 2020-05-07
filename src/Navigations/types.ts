@@ -18,6 +18,7 @@ export type StackNavigatorParamlist = {
     MainNavigation: undefined;
     NavigationUser: undefined;
     NavigationAdmin: undefined;
+    NOTAuthNavigation: undefined;
     HOMEProfile: undefined;
     PROFILE: undefined;
     EditPROFILE: undefined;

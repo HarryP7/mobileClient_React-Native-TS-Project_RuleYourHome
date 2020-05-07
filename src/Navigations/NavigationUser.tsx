@@ -8,6 +8,7 @@ import { searchHome, notif, user, } from '../allSvg'
 import NavigatorStack from '../index';
 import { DrawerAdminContent } from './DrawerAdminContent';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { appColor } from '../constants';
 
 
 const Tab = createMaterialBottomTabNavigator();
@@ -16,7 +17,7 @@ function BottomTabs() {
   const { icon } = styles
   return (
     <Tab.Navigator
-      activeColor="#009999"
+    activeColor={appColor}
       barStyle={{ backgroundColor: '#fff' }}
     >
       <Tab.Screen
@@ -79,7 +80,7 @@ function MainDrawer() {
   );
 }
 
-export default function NavigationUser() {
+function NavigationUser() {
   return (
       <MainDrawer />
   );
@@ -91,3 +92,5 @@ icon: {
     height: 24,
   },
 })
+
+export {NavigationUser}

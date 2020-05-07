@@ -348,7 +348,7 @@ const locStyles = StyleSheet.create({
     paddingHorizontal: 7,
   },
   homeStatusGood: {
-    backgroundColor: '#13CE66'
+    backgroundColor: '#15a009'
   },
   homeStatusBad: {
     backgroundColor: '#ff3437'
@@ -389,5 +389,5 @@ const locStyles = StyleSheet.create({
   },
 })
 
-export default (HomeScreen)
+export {HomeScreen}
 
