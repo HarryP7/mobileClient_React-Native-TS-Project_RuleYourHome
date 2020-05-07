@@ -139,7 +139,7 @@ class HomeScreen extends Component<any, State, Props> {
         >
           <View style={positionCard}>
             <Card containerStyle={{ paddingBottom: 20, borderRadius: 10 }} >
-              <Image source={require('../../../icon/warning-shield.png')}
+              <Image source={{uri:'https://i.ibb.co/zmm8rmJ/warning-shield.png'}}
                 style={{ alignSelf: 'center' }} />
               <Text style={h2}>{text}</Text>
               <TouchableOpacity
@@ -173,7 +173,7 @@ class HomeScreen extends Component<any, State, Props> {
         >
           <View style={positionCard}>
             <Card containerStyle={{ paddingBottom: 20, borderRadius: 10 }} >
-              <Image source={require('../../../icon/warning-shield.png')}
+              <Image source={{uri:'https://i.ibb.co/zmm8rmJ/warning-shield.png'}}
                 style={{ alignSelf: 'center' }} />
               <Text style={h2}>{text}</Text>
             </Card>
@@ -198,7 +198,7 @@ class HomeScreen extends Component<any, State, Props> {
         >
           <View style={positionCard}>
             <Card containerStyle={{ paddingBottom: 20, borderRadius: 10 }} >
-              <Image source={require('../../../icon/warning-shield.png')}
+              <Image source={{uri:'https://i.ibb.co/zmm8rmJ/warning-shield.png'}}
                 style={{ alignSelf: 'center' }} />
               <Text style={h2}>{text}</Text>
               <TouchableOpacity

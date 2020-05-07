@@ -23,7 +23,7 @@ class ExitScreen extends PureComponent<any> {
         <View>{Background}</View>
       <View style={positionCard}>
         <Card containerStyle={{ paddingBottom: 20, borderRadius: 10 }} >
-          <Image source={require('../../../icon/doorOut.png')}
+          <Image source={{uri:'https://i.ibb.co/y6XszL9/doorOut.png'}}
             style={{ alignSelf: 'center' }} />
           <Text style={h2}>Вы хотите выйти из дома?</Text>
             <TouchableOpacity

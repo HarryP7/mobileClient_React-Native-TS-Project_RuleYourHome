@@ -64,7 +64,7 @@ class AddressScreen extends PureComponent<any, State, Props> {
     colorField: initAddressColor, latitude: 0, longitude: 0, errorMsg: '',
   } as State
 
-  async componentDidMount() {    
+  async componentDidMount() {
     const propsData = this.props.route.params.propsData
     const { city, street, homeNumber, uid } = propsData
     this.setState({ city, street, homeN: homeNumber, fk_home: uid })
@@ -134,9 +134,9 @@ class AddressScreen extends PureComponent<any, State, Props> {
           {Background}
         </View>
         <ScrollView >
-           <Card containerStyle={cardStyle} >
+          <Card containerStyle={cardStyle} >
             <View>
-             {/* <Text> {errorMsg ? Error : errorMsg} </Text>
+              {/* <Text> {errorMsg ? Error : errorMsg} </Text>
               <Text> {address} </Text> */}
               <View style={fixToText}>
                 <List.Icon icon="home-city" style={[icon, { margin: 0 }]} color={colorIcon.city} />
@@ -256,7 +256,7 @@ class AddressScreen extends PureComponent<any, State, Props> {
                       <Text style={notFoundStyle}> По заданным параметрам ничего не найдено! </Text>
                       {badEnter.home && <Text style={[error, { marginHorizontal: 20, marginBottom: 5 }]}>{errorText.home}</Text>}
                     </Card>
-                    <Image source={require('../../../icon/notFound.png')} />
+                    <Image source={{ uri: 'https://i.ibb.co/D7c3bfK/notFound.png' }} />
                   </View>
               ) :
                 <ActivityIndicator style={indicator} size={50} color={appColor} />
@@ -266,7 +266,7 @@ class AddressScreen extends PureComponent<any, State, Props> {
               <TouchableOpacity
                 onPress={this.onSubmit.bind(this)}
                 disabled={disBtn} >
-                <View style={[buttonContainer, button, {backgroundColor: !disBtn ? appColor : 'gray'}]}>
+                <View style={[buttonContainer, button, { backgroundColor: !disBtn ? appColor : 'gray' }]}>
                   <Text style={buttonTitle}>Подтверить</Text>
                 </View>
               </TouchableOpacity>

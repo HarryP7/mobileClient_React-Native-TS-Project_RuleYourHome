@@ -28,7 +28,7 @@ class SplashScreen extends React.Component<any, Props> {
               </Text>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
           <View style={paddingBottom}>
-            <Image source={require('../../../icon/bigHome.png')} style={image} />
+            <Image source={{uri:'https://i.ibb.co/CnM58Qb/bigHome.png'}} style={image} />
             <Button
               mode="contained"
               uppercase={false}
