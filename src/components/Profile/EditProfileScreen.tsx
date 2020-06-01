@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
-import { StyleSheet, ScrollView, View, Text, Alert,
-  ActivityIndicator, } from 'react-native';
+import {
+  StyleSheet, ScrollView, View, Text, Alert,
+  ActivityIndicator,
+  TouchableOpacity,
+} from 'react-native';
 import { Header, globalStyles } from '..';
-import { h, w, appColor, serverUrl, Background, disColor } from '../../constants'
-import { User, arrBoolEd, arrTextEd, arrColorEd } from '../../interfaces'
+import { h, w, appColor, serverUrl, Background, disColor, NoAvatar, ApiKeyImage } from '../../constants'
+import { User, arrBoolEd, arrTextEd, arrColorEd, ImageService } from '../../interfaces'
 import { actions, store } from '../../store'
-import { Icon, Card, Input } from 'react-native-elements'
-import { TextInput, Modal, Portal, Button, Provider } from 'react-native-paper';
+import { Icon, Card, } from 'react-native-elements'
+import { TextInput, Modal, Portal, Button, Provider, Avatar, Badge } from 'react-native-paper';
 import TextInputMask from 'react-native-text-input-mask';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import ImagePicker from 'react-native-image-picker';
 
 interface Props { }
 interface State { }
@@ -31,23 +36,35 @@ var initArrColor: arrColorEd = {
   phone: appColor,
   button: disColor
 };
+const options = {
+  title: 'Выберите фото',
+  takePhotoButtonTitle: 'Открыть камеру',
+  chooseFromLibraryButtonTitle: 'Выбрать из галереи',
+  //customButtons: [{ name: 'fb', title: 'Choose Photo from Facebook' }],
+  storageOptions: {
+    skipBackup: true,
+    path: 'images',
+  },
+  cancelButtonTitle: 'Отмена'
+};
 
 class EditProfileScreen extends Component<any, State, Props> {
   state = {
-    login: '', email: '', name: '', phone: '', width: 1,
+    login: '', email: '', name: '', phone: '', width: 1, avatarSource: '',
     visibility: false, visibilityRep: false,
     submit: false, disBtn: true, refreshing: false,
     badEnter: initArrBool, errorText: initArrTxt, colorField: initArrColor
   }
 
   componentDidMount = () => {
-    console.log('Props EditProfileScreen', this.props)    
+    console.log('Props EditProfileScreen', this.props)
     var { login, email, fullName, phone } = this.props.route.params
     this.setState({ login, email, name: fullName, phone })
   }
   render() {
-    const { login, email, name, phone, badEnter, errorText, colorField, submit, disBtn, width } = this.state
+    const { login, email, name, phone, badEnter, errorText, colorField, submit, disBtn, avatarSource } = this.state
     const { navigation } = this.props
+    var { userLogin, token } = store.state;
     const { fixToText, icon, textInput, input, button, buttonContainer, buttonTitle, indicator,
       link, error, paddingBottom } = locStyles
     const { im, cardStyle, inputStyle, inputPaper, buttonContentSp, inputPaperWhite } = globalStyles
@@ -64,6 +81,14 @@ class EditProfileScreen extends Component<any, State, Props> {
           {Background}</View>
         <ScrollView >
           <Card containerStyle={cardStyle} >
+            <TouchableOpacity
+              onPress={() => { this.imagePicker() }}>
+              <Avatar.Image size={w * 0.3} source={{ uri: avatarSource ? avatarSource : userLogin.avatar ? userLogin.avatar.url : NoAvatar }}
+                style={{ backgroundColor: 'white', alignSelf: 'center' }} />
+              <Badge style={{ backgroundColor: 'white', position: 'absolute', bottom: 5, right: w * 0.3 }} size={25} >
+                <MaterialCommunityIcons name="content-save-edit" color='black' size={20} />
+              </Badge>
+            </TouchableOpacity>
             <View style={fixToText}>
               <View style={textInput}>
                 <TextInput
@@ -110,7 +135,7 @@ class EditProfileScreen extends Component<any, State, Props> {
                   onEndEditing={() => this.onCheckName(name)}
                   disabled={submit}
                   theme={{ colors: { primary: colorField.name } }}
-                />                
+                />
                 {/* <HelperText type="error" visible={badEnter.name} style={{marginBottom: -20, fontSize: 14, color: 'red'}} >
                   {errorText.name} 
                 </HelperText> */}
@@ -134,14 +159,22 @@ class EditProfileScreen extends Component<any, State, Props> {
                   onEndEditing={() => this.onCheckPhone(phone)}
                   disabled={submit}
                   theme={{ colors: { primary: colorField.name } }}
-                />                
+                />
                 {/* <HelperText type="error" visible={badEnter.name} style={{marginBottom: -20, fontSize: 14, color: 'red'}} >
                   {errorText.name} 
                 </HelperText> */}
                 {badEnter.phone && <Text style={error}>{errorText.phone}</Text>}
               </View>
             </View>
-            
+
+            <TouchableOpacity
+              onPress={() => {
+                const back = true;
+                navigation.navigate('ADDRESSScreen', (back));
+              }}
+              disabled={submit} >
+              <Text style={[link]}>{'Изменить свой адрес'}</Text>
+            </TouchableOpacity>
 
             <View style={{ alignItems: 'center' }}>
               <View style={button}>
@@ -171,6 +204,104 @@ class EditProfileScreen extends Component<any, State, Props> {
         </Provider>}
       </View>
     );
+  }
+
+  private imagePicker() {
+    ImagePicker.showImagePicker(options, (response) => {
+      console.log('Response = path:' + response.path
+        + ' uri:' + response.uri + ' fileName:' + response.fileName);
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      } else {
+        this.setState({ avatarSource: response.uri, });
+        this.LoadImage(response.data);
+      }
+    });
+  }
+
+  private async LoadImage(url: string) {
+    var { uid } = this.props.route.params
+    var { userLogin, token } = store.state;
+    var obj
+    this.setState({ load: false, submit: true, disBtn: true })
+    var logAction = 'Отправление картинки'
+    const imgData = new FormData()
+    imgData.append('image', url)
+    const response = await fetch('https://api.imgbb.com/1/upload?key=' + ApiKeyImage, {
+      method: 'POST',
+      mode: 'cors',
+      body: imgData
+    })
+    if (response.status == 200) {
+      const dataImg: ImageService = await response.json()
+      console.log('Успех fetch ' + logAction, dataImg)
+      obj = {
+        Url: dataImg.data.url,
+        UrlDelete: dataImg.data.delete_url
+      } 
+    }
+    else {
+      Alert.alert('Внимание', 'Ошибка загрузки изображения, status'+response.status, [{ text: 'OK' }]);
+      console.log('Внимание', response);
+      this.setState({ loadError: true })
+      return
+    }
+    var log = 'Изменить аватар'
+    var $this = this
+    fetch(serverUrl + 'profile/loadImage?Uid=' + uid, {
+      method: 'PUT', // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        'Accept': "application/json",
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(obj),
+    })
+      .then(function (response) {
+        if (response.status == 200 || response.status == 201) {
+          console.log('Успех ' + log + ' Post статус: ' + response.status + ' ok: ' + response.ok);
+          console.log(response);
+          return response.json();
+        }
+        else if (response.status == 500) {
+          console.log('Server Error', "Status: " + response.status + ' ' + response)
+          Alert.alert('Внимание', 'Ошибка сервера. Status: ' + response.status + ' ' + response,
+            [{ text: 'OK' }]);
+        }
+        else if (response.status == 404) {
+          console.log('Bad Request', "Status: " + response.status + ' ' + response)
+          Alert.alert('Внимание', 'Пользователь не найден',
+            [{ text: 'OK' }]);
+        }
+        else {
+          console.log(response.statusText, "Status: " + response.status + ' ' + response)
+          Alert.alert('Внимание', response.statusText + " Status: " + response.status + ' ' + response,
+            [{ text: 'OK' }]);
+        }
+        $this.setState({ load: true, submit: false, disBtn: false });
+        return undefined
+      })
+      .then(function (data: User) {
+        console.log('data: ', data);
+        if (data != undefined) {
+          actions.Login(token, data)
+        }
+      })
+      .catch(error => {
+        console.log('Внимание', 'Ошибка ' + log + ' Post fetch: ' + error);
+        if (error == 'TypeError: Network request failed') {
+          Alert.alert('Внимание', 'Сервер не доступен, попробуйте позже', [{ text: 'OK' }]);
+        }
+        else {
+          Alert.alert('Внимание', 'Ошибка входа. ' + error, [{ text: 'OK' }]);
+        }
+        $this.setState({ submit: false, disBtn: false })
+        return
+      });
   }
 
 
@@ -310,7 +441,7 @@ class EditProfileScreen extends Component<any, State, Props> {
       return;
     }
   }
-  
+
   private onSubmit() {
     const { login, email, name, phone, badEnter, errorText, colorField } = this.state
     const { navigation } = this.props
@@ -341,8 +472,8 @@ class EditProfileScreen extends Component<any, State, Props> {
       colorField.phone = 'red'
       this.setState({ badEnter, errorText, colorField });
     }
-    
-    if (!login || !email || !name || !phone ) {
+
+    if (!login || !email || !name || !phone) {
       Alert.alert('Внимание', 'Не все поля заполнены',
         [{ text: 'OK' }],
         { cancelable: false },
@@ -351,7 +482,7 @@ class EditProfileScreen extends Component<any, State, Props> {
       return;
     }
 
-    if (badEnter.login || badEnter.email  || badEnter.name || badEnter.phone ) {
+    if (badEnter.login || badEnter.email || badEnter.name || badEnter.phone) {
       this.setState({ good: false }); //, isVisible: true, textOverlay: txt 
       Alert.alert('Внимание', 'Заполните поля правильно',
         [{ text: 'OK' }]);
@@ -362,14 +493,14 @@ class EditProfileScreen extends Component<any, State, Props> {
 
     var { uid } = this.props.route.params
     const { userLogin, token } = store.state;
-    
+
     obj = {
       Login: login,
       Email: email,
       FullName: name,
       Phone: phone,
     }
-    url = serverUrl + 'profile/upd?Uid='+uid;
+    url = serverUrl + 'profile/upd?Uid=' + uid;
     log = 'Изменить профиль'
 
     console.log('login: ' + login + ' ФИО: ' + name + ' Email: ' + email + ' Phone: ' + phone)
@@ -390,8 +521,6 @@ class EditProfileScreen extends Component<any, State, Props> {
         if (response.status == 200 || response.status == 201) {
           console.log('Успех ' + log + ' Post статус: ' + response.status + ' ok: ' + response.ok);
           console.log(response);
-          // Alert.alert('Сохранено!', 'Пожалуйста, заполните дополнительную информацию по вашему адресу',
-          //   [{ text: 'OK' }]);
           return response.json();
         }
         else if (response.status == 500) {
@@ -420,7 +549,6 @@ class EditProfileScreen extends Component<any, State, Props> {
       .then(function (data: User) {
         console.log('data: ', data);
         if (data != undefined) {
-          $this.setClearState();
           actions.Login(token, data)
           navigation.pop();
         }
@@ -431,7 +559,7 @@ class EditProfileScreen extends Component<any, State, Props> {
           Alert.alert('Внимание', 'Сервер не доступен, попробуйте позже', [{ text: 'OK' }]);
         }
         else {
-          Alert.alert('Внимание', 'Ошибка входа. ' + error, [{ text: 'OK' }]);
+          Alert.alert('Внимание', 'Ошибка ' + error, [{ text: 'OK' }]);
         }
         $this.setState({ submit: false, disBtn: false })
         return
@@ -511,10 +639,10 @@ const locStyles = StyleSheet.create({
     color: '#fff',
   },
   link: {
-    marginVertical: 20,
+    margin: 20,
     color: appColor,
-    textAlign: 'center',
-    fontSize: 20,
+    // textAlign: 'center',
+    fontSize: 18,
   },
   error: {
     marginTop: 5,

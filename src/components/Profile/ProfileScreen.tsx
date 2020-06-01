@@ -8,9 +8,9 @@ import { store, actions } from '../../store'
 import { User, initialUser } from '../../interfaces'
 import { h, w, appColor, serverUrl, Background, NoAvatar } from '../../constants'
 import { Gender, Role } from '../../enum/Enums';
-import {  ADDRESSScreen, EXITScreen, HOMEScreen } from '../../Navigations/routes';
+import { ADDRESSScreen, EXITScreen, HOMEScreen } from '../../Navigations/routes';
 import { Avatar, List, Appbar, FAB, Menu, Button, Divider, Provider, IconButton } from 'react-native-paper';
-
+import DocumentPicker from 'react-native-document-picker';
 
 interface State {
   data: User,
@@ -80,12 +80,12 @@ class ProfileScreen extends React.Component<any, State> {
         {/* <StatusBar backgroundColor={appColor} barStyle="light-content" />
         <Appbar.Header
           style={{ backgroundColor: appColor }}> */}
-          {/* <TouchableOpacity
+        {/* <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={containerBtn}>
               <SvgXml xml={backArrow} style={iconLeftStyle} fill='white' />
           </TouchableOpacity> */}
-          {/* <View style={{ width: w * 0.05 }}></View>
+        {/* <View style={{ width: w * 0.05 }}></View>
           <Appbar.Content title="Профиль" titleStyle={{ fontSize: 22, fontWeight: 'bold' }} />
 
           {userLogin.uid == data.uid && <Appbar.Action icon="dots-vertical" onPress={() => this.setState({ visible: true })} color='white' />}
@@ -96,11 +96,11 @@ class ProfileScreen extends React.Component<any, State> {
           // rightIcon={ 'dots-vertical'} //userLogin.uid == data.uid && token &&
           // onPressRight={() => this.setState({ visible: true })}
           rightIcon={load && token && (userLogin.uid == data.uid ? 'menu' : userLogin.fk_Role == Role.admin && 'dots-vertical')}
-          onPressRight={userLogin.fk_Role == Role.admin && userLogin.uid != data.uid ? 
+          onPressRight={userLogin.fk_Role == Role.admin && userLogin.uid != data.uid ?
             () => this.setState({ visible: true }) :
             () => { navigation.openDrawer() }
-          } 
-          />
+          }
+        />
 
         {load ? (
           this.ProfileData()
@@ -124,8 +124,8 @@ class ProfileScreen extends React.Component<any, State> {
 
   private ProfileData() {
     const { navigation } = this.props
-    const { images, noImages, sub, h1 } = globalStyles
-    const { sectionContainer1, sectionTitle1, h3, editStyle } = locStyles
+    const { images, noImages, sub, h1, buttonContentSp } = globalStyles
+    const { sectionContainer1, sectionTitle1, h3, editStyle, button, buttonContainer, buttonTitle } = locStyles
     var { data, refreshing, visible } = this.state
     var { userLogin, token } = store.state;
     var { myGroups, address, phone, fk_Gender, fullName, avatar, uid } = data
@@ -135,38 +135,48 @@ class ProfileScreen extends React.Component<any, State> {
       }
     >
       <View style={[sub, { margin: 5 }]}>
-        <Avatar.Image size={w * 0.4} source={{ uri: avatar ? avatar.url : NoAvatar }} style={{ backgroundColor: 'white' }} />
-        <TouchableOpacity onPress={() => navigation.navigate(HOMEScreen)} >
-          <View style={sectionContainer1}>
-            <Text style={[sectionTitle1]}>Профиль дома</Text>
+        <Avatar.Image size={w * 0.3} source={{ uri: avatar ? avatar.url : NoAvatar }} style={{ backgroundColor: 'white' }} />
+        <View style={{ flexDirection: 'column' }}>
+          <Text style={[h1,{width: w*0.65}]}>{fullName} </Text>
+          <View style={{alignSelf: 'center',  flexDirection: "row"}}>
+          <TouchableOpacity onPress={() => navigation.navigate(HOMEScreen)} >
+            <View style={sectionContainer1}>
+              <Text style={sectionTitle1}>Профиль дома</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate(HOMEScreen)} >
+            <View style={[sectionContainer1,{width:120, justifyContent: 'center', marginLeft: 10}]}>
+              <Text style={sectionTitle1}>Документы</Text>
+            </View>
+          </TouchableOpacity>
           </View>
-        </TouchableOpacity>
-        
-      <Provider >
-        <View style={{marginTop:-200}}>
-          <Menu
-            visible={visible}
-            onDismiss={() => this.setState({ visible: false })}
-            anchor={
-              <IconButton icon="pencil" onPress={() => console.log('') } color={'white'} />
-            }
-          >
-            <Menu.Item onPress={() => {
-              this.setState({ visible: false })
-            }} title="Изменить профиль" />
-            <Menu.Item onPress={() => {
-              this.setState({ visible: false })
-              const back = true;
-              navigation.navigate(ADDRESSScreen, (back));
-            }} title="Изменить адрес" />
-            <Divider />
-            <Menu.Item onPress={() => {
-              this.setState({ visible: false })
-              navigation.navigate(EXITScreen);
-            }} title="Выйти          " />
-          </Menu>
         </View>
-      </Provider>
+
+        <Provider >
+          <View style={{ marginTop: -200 }}>
+            <Menu
+              visible={visible}
+              onDismiss={() => this.setState({ visible: false })}
+              anchor={
+                <IconButton icon="pencil" onPress={() => console.log('')} color={'white'} />
+              }
+            >
+              <Menu.Item onPress={() => {
+                this.setState({ visible: false })
+              }} title="Изменить профиль" />
+              <Menu.Item onPress={() => {
+                this.setState({ visible: false })
+                const back = true;
+                navigation.navigate(ADDRESSScreen, (back));
+              }} title="Изменить адрес" />
+              <Divider />
+              <Menu.Item onPress={() => {
+                this.setState({ visible: false })
+                navigation.navigate(EXITScreen);
+              }} title="Выйти          " />
+            </Menu>
+          </View>
+        </Provider>
         {/* <TouchableOpacity onPress={() => {
             const back = true;
             navigation.navigate(ADDRESSScreen, (back));
@@ -176,7 +186,6 @@ class ProfileScreen extends React.Component<any, State> {
           </View>
         </TouchableOpacity> */}
       </View>
-      <Text style={[h1]}>{fullName} </Text>
       <View style={{ margin: 5 }}></View>
       <View style={sub}>
         <List.Icon icon="map-marker" style={{ margin: 0 }} color='grey' />
@@ -188,6 +197,21 @@ class ProfileScreen extends React.Component<any, State> {
           <Text style={h3}>{phone}</Text>
         </View>
       }
+      <View style={{ alignItems: "center" }}>
+        <View style={button}>
+          <Button
+            mode="contained"
+            uppercase={false}
+            onPress={() => userLogin.uid == uid ? navigation.navigate('EditPROFILE', userLogin) :
+              navigation.navigate('CHannelScreen')}
+            contentStyle={buttonContentSp}
+            style={[buttonContainer]}
+            labelStyle={buttonTitle}>
+            {userLogin.uid == uid ? 'Изменить профиль' : 'Написать'}
+          </Button>
+        </View>
+      </View>
+
       {/* <Text style={h3}>{fk_Gender ? 'Пол: ' : ' '}{fk_Gender == 1 ? Gender.male : fk_Gender == 2 && Gender.female} </Text> */}
       <View style={{ margin: 155 }}><Text> </Text></View>
 
@@ -238,7 +262,6 @@ const locStyles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 7,
     marginTop: 15,
-    marginHorizontal: w * 0.125,
     width: 90,
     alignSelf: 'center'
   },
@@ -273,6 +296,21 @@ const locStyles = StyleSheet.create({
   iconLeftStyle: {
     width: 20,
     height: 20,
+  },
+  button: {
+    marginTop: 20,
+    width: w * 0.9,
+  },
+  buttonContainer: {
+    backgroundColor: '#eee',
+    height: 35,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 7,
+  },
+  buttonTitle: {
+    fontSize: 16,
+    color: 'black',
   },
 })
 
