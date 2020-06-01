@@ -11,7 +11,7 @@ import { actions, store } from '../../store'
 import { NAVIGATIONAdmin, NAVIGATIONUser, REGISTRATION } from '../../Navigations/routes';
 import { Card, Input, Icon } from 'react-native-elements'
 import { Role } from '../../enum/Enums';
-import { TextInput, Modal, Portal, Button, Provider } from 'react-native-paper';
+import { TextInput, Modal, Portal, Button, Provider, Title } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 
@@ -24,9 +24,10 @@ const initAuthColor: authColor = {
 };
 class AuthScreen extends PureComponent<any, State, Props> {
   state = {
-    login: '', password: '', good: true, submit: false, disBtn: true, refreshing: false,
-    badEnter: initAuthBool, errorText: initAuthTxt, colorField: initAuthColor, visibility: false
-  
+    login: '', password: '', passwordActive: false, countPassword: 0, good: true,
+    submit: false, disBtn: true, refreshing: false, badEnter: initAuthBool,
+    errorText: initAuthTxt, colorField: initAuthColor, visibility: false
+
   }
 
   componentDidMount = async () => {
@@ -36,72 +37,69 @@ class AuthScreen extends PureComponent<any, State, Props> {
   }
 
   render() {
-    const { login, password, colorField, submit, disBtn,  visibility } = this.state
+    const { login, password, passwordActive, countPassword, colorField, submit, disBtn, visibility } = this.state
     const { navigation } = this.props
-    const { fixToText, textInput, input, button, buttonContainer, buttonTitle } = locStyles
-    const { cardStyle, indicator, buttonContentSp, inputStyle, link, inputPaperWhite, sub } = globalStyles
+    const { fixToText, sectionTitle, textInput, input, button, buttonContainer, buttonTitle, cardStyle } = locStyles
+    const { indicator, buttonContentSp, inputStyle, link, inputPaperWhite, countStyle, sub } = globalStyles
     return (
       <View style={{ height: h }}>
         <Header title={'Вход'}
-          position='center'
-          // leftIcon={'arrow-left'}
-          // onPressLeft={() => {
-          //   navigation.goBack();
-          // }}
-        />
+          position='center' />
         <View>{Background}</View>
 
-        <ScrollView >
-          <Card containerStyle={cardStyle} >
-            <View style={fixToText}>
-              <View style={textInput}>
-                <TextInput
-                  style={[inputPaperWhite,inputStyle]}
-                  onChangeText={this.onChangeLogin.bind(this)}
-                  placeholder='Введите..'
-                  label='Логин'
-                  autoCompleteType='name'
-                  value={login}
-                  disabled={submit}
-                  theme={{ colors: { primary: colorField.login } }}
-                  // right={
-                  //   <MaterialCommunityIcons name={visibility ? 'eye' : 'eye-off'} 
-                  //   onPress={this.onVisibilityPassword.bind(this)}
-                  //   color={visibility ? 'black': 'grey' } size={25} />
-                  // }
-                  // render={()  =>
-                  //   <MaterialCommunityIcons name={visibility ? 'eye' : 'eye-off'} 
-                  //   onPress={this.onVisibilityPassword.bind(this)}
-                  //   color={visibility ? 'black': 'grey' } size={25}
-                  //   style={{position: 'absolute', top: 30, right: 5}}/> 
-                  // }
-                />
-                {/* {badEnter.login && <Text style={error}>{errorText.login}</Text>} */}
-              </View>
+        <Card containerStyle={cardStyle} >
+          <Title style={sectionTitle}>Управляй своим домом🏡</Title>
+          <View style={fixToText}>
+            <View style={textInput}>
+              <TextInput
+                style={[inputPaperWhite, inputStyle]}
+                onChangeText={this.onChangeLogin.bind(this)}
+                placeholder='Введите..'
+                label='Логин'
+                autoCompleteType='name'
+                value={login}
+                disabled={submit}
+                theme={{ colors: { primary: colorField.login } }}
+              // right={
+              //   <MaterialCommunityIcons name={visibility ? 'eye' : 'eye-off'} 
+              //   onPress={this.onVisibilityPassword.bind(this)}
+              //   color={visibility ? 'black': 'grey' } size={25} />
+              // }
+              // render={()  =>
+              //   <MaterialCommunityIcons name={visibility ? 'eye' : 'eye-off'} 
+              //   onPress={this.onVisibilityPassword.bind(this)}
+              //   color={visibility ? 'black': 'grey' } size={25}
+              //   style={{position: 'absolute', top: 30, right: 5}}/> 
+              // }
+              />
+              {/* {badEnter.login && <Text style={error}>{errorText.login}</Text>} */}
             </View>
+          </View>
 
-            <View style={fixToText}>
-              <View style={textInput}>
-                <TextInput
-                  style={[inputPaperWhite,inputStyle]}
-                  onChangeText={this.onChangePassword.bind(this)}
-                  placeholder='Введите..'
-                  label='Пароль'
-                  autoCompleteType='password'
-                  textContentType='password'
-                  onEndEditing={this.onEndPass.bind(this)}
-                  keyboardType={visibility?'visible-password':'twitter'}
-                  secureTextEntry={!visibility}
-                  value={password}
-                  disabled={submit}
-                  theme={{ colors: { primary: colorField.login } }}
-                />
-                <MaterialCommunityIcons name={visibility ? 'eye' : 'eye-off'} 
-                  onPress={this.onVisibilityPassword.bind(this)}
-                  color={visibility ? 'black': 'grey' } size={25}
-                  style={{position: 'absolute', top: 30, right: 5}}/> 
-              </View>
+          <View style={fixToText}>
+            <View style={textInput}>
+              <TextInput
+                style={[inputPaperWhite, inputStyle]}
+                onChangeText={this.onChangePassword.bind(this)}
+                onTouchStart={this.activePass.bind(this)}
+                placeholder='Введите..'
+                label='Пароль'
+                autoCompleteType='password'
+                textContentType='password'
+                onEndEditing={this.onEndPass.bind(this)}
+                keyboardType={visibility ? 'visible-password' : 'twitter'}
+                secureTextEntry={!visibility}
+                value={password}
+                disabled={submit}
+                theme={{ colors: { primary: colorField.login } }}
+              />
+              <MaterialCommunityIcons name={visibility ? 'eye' : 'eye-off'}
+                onPress={this.onVisibilityPassword.bind(this)}
+                color={visibility ? 'black' : 'grey'} size={25}
+                style={{ position: 'absolute', top: 30, right: 5 }} />
+              {passwordActive && <Text style={countStyle}>{countPassword}/8</Text>}
             </View>
+          </View>
 
           <View style={{ alignItems: "center" }}>
             <View style={button}>
@@ -118,20 +116,29 @@ class AuthScreen extends PureComponent<any, State, Props> {
             </View>
           </View>
 
+          {/* <View style={[sub,{alignSelf: 'center'}]}>
+              <Text style={[link, { color: 'grey' }]}>{'Забыли пароль?'}</Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('FindAccountScreen')}
+                disabled={submit} >
+                <Text style={[link, { marginLeft: 15 }]}>{'Восстановить'}</Text>
+              </TouchableOpacity>
+            </View> */}
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate('FindAccountScreen')}
+            disabled={submit} >
+            <Text style={link}>{'Забыли пароль?'}</Text>
+          </TouchableOpacity>
+
           <Text style={[link, { color: 'grey' }]}>{'У вас еще нет аккаунта?'}</Text>
           <TouchableOpacity
             onPress={() => navigation.navigate(REGISTRATION)}
             disabled={submit} >
             <Text style={[link, { marginTop: -15 }]}>{'Зарегистрироваться'}</Text>
           </TouchableOpacity>
-          </Card>
+        </Card>
 
-        </ScrollView>
-        {/* <TouchableOpacity
-            onPress={this.onPress.bind(this)}
-            disabled={submit} >
-            <Text style={link}>{'Забыли пароль?'}</Text>
-          </TouchableOpacity> */}
         {submit && <Provider>
           <Portal>
             <Modal visible={submit} >
@@ -177,22 +184,22 @@ class AuthScreen extends PureComponent<any, State, Props> {
     if (password.trim().length >= 8) {
       this.setState({ password: password.trim() });
       this.checkFields(true);
-      return
     }
     else {
       this.setState({ password: password.trim() });
       this.checkFields(false);
     }
+    this.setState({ countPassword: password.trim().length })
   }
   private activePass() {
-    var { colorField } = this.state
-    colorField.password = appColor
-    this.setState({ colorField });
+    // var { passwordActive } = this.state
+    // colorField.password = appColor
+    this.setState({ passwordActive: true });
   }
   private onEndPass() {
-    var { colorField } = this.state
-    colorField.password = disColor
-    this.setState({ colorField });
+    // var { colorField } = this.state
+    // colorField.password = disColor
+    // this.setState({ passwordActive: false });
   }
   private onVisibilityPassword() {
     var { visibility } = this.state
@@ -290,18 +297,19 @@ class AuthScreen extends PureComponent<any, State, Props> {
           if (data.userLogin.fk_Role == Role.admin) {
             navigation.reset({
               index: 0,
-              routes: [{ name: 'NAVIGATIONAdmin'}],
+              routes: [{ name: 'NAVIGATIONAdmin' }],
             });
           }
           if (data.userLogin.fk_Role == Role.moderator) {
             navigation.reset({
               index: 0,
-              routes: [{ name: 'NAVIGATIONAdmin'}],
+              routes: [{ name: 'NAVIGATIONAdmin' }],
             });
           }
           else if (data.userLogin.fk_Role == Role.user) {
-            navigation.reset({index: 0,
-              routes: [{ name: 'NAVIGATIONUser'}],
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'NAVIGATIONUser' }],
             });
           }
         }
@@ -337,6 +345,18 @@ class AuthScreen extends PureComponent<any, State, Props> {
 }
 
 const locStyles = StyleSheet.create({
+  cardStyle: {
+    borderRadius: 0,
+    margin: 0,
+    paddingTop: h * 0.18,
+    paddingBottom: h * 0.25,
+  },
+  sectionTitle: {
+    fontSize: 28,
+    textAlign: 'center',
+    fontFamily: 'Regular2',    
+    paddingBottom: 25,
+  },
   icon: {
     width: 35,
     height: 35,
