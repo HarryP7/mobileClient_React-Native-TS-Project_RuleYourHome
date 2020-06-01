@@ -4,13 +4,13 @@ import {
   ActivityIndicator, RefreshControl, Alert,
 } from 'react-native';
 import { Header, globalStyles } from '..';
-import { menu } from '../../allSvg'
 import { HomeStatus, Role } from '../../enum/Enums';
 import { h, w, appColor, NoFoto, serverUrl, Background } from '../../constants'
 import { AddGROUP, AUTH, REGISTRATION, GroupLIST, ADDRESSScreen, TENTENScreen, PROFILE } from '../../Navigations/routes';
 import { Home, User, InitialHome, HomeData } from '../../interfaces'
 import { useGlobal, store, actions } from '../../store'
 import { Card, Badge, Divider } from 'react-native-elements'
+import { Button } from 'react-native-paper';
 
 interface State {
   data: Home,
@@ -139,7 +139,7 @@ class HomeScreen extends Component<any, State, Props> {
         >
           <View style={positionCard}>
             <Card containerStyle={{ paddingBottom: 20, borderRadius: 10 }} >
-              <Image source={{uri:'https://i.ibb.co/zmm8rmJ/warning-shield.png'}}
+              <Image source={require('../../../icon/warning-shield.png')}
                 style={{ alignSelf: 'center' }} />
               <Text style={h2}>{text}</Text>
               <TouchableOpacity
@@ -173,7 +173,7 @@ class HomeScreen extends Component<any, State, Props> {
         >
           <View style={positionCard}>
             <Card containerStyle={{ paddingBottom: 20, borderRadius: 10 }} >
-              <Image source={{uri:'https://i.ibb.co/zmm8rmJ/warning-shield.png'}}
+              <Image source={require('../../../icon/warning-shield.png')}
                 style={{ alignSelf: 'center' }} />
               <Text style={h2}>{text}</Text>
             </Card>
@@ -198,18 +198,20 @@ class HomeScreen extends Component<any, State, Props> {
         >
           <View style={positionCard}>
             <Card containerStyle={{ paddingBottom: 20, borderRadius: 10 }} >
-              <Image source={{uri:'https://i.ibb.co/zmm8rmJ/warning-shield.png'}}
+              <Image source={require('../../../icon/warning-shield.png')}
                 style={{ alignSelf: 'center' }} />
               <Text style={h2}>{text}</Text>
-              <TouchableOpacity
-                onPress={() => {
-                  this.setClearState()
-                  navigation.navigate(ADDRESSScreen, back)
-                }}>
-                <View style={buttonContainer}>
-                  <Text style={buttonTitle}>Добавить дом</Text>
-                </View>
-              </TouchableOpacity>
+              <Button
+                  mode="contained"
+                  uppercase={false}
+                  onPress={() => {
+                    this.setClearState()
+                    navigation.navigate(ADDRESSScreen, back)
+                  }}
+                  style={[buttonContainer, { backgroundColor: appColor }]}
+                  labelStyle={buttonTitle}>
+                  Добавить дом
+              </Button>
             </Card>
           </View>
         </ScrollView>

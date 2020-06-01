@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    View, Text, ScrollView, Image, ActivityIndicator, Button, Alert, RefreshControl, Route
+    View, Text, ScrollView, Image, ActivityIndicator, Alert, RefreshControl, Route
 } from 'react-native';
 import { Header, AdvertCard, globalStyles } from '..';
 import { AddADVERT, ADVERTPro } from '../../Navigations/routes';
@@ -8,6 +8,7 @@ import { useGlobal, store } from '../../store'
 import { Role } from '../../enum/Enums';
 import { serverUrl, appColor, NoFoto, w, Background } from '../../constants';
 import { Advert, Group } from '../../interfaces';
+import { Button } from 'react-native-paper';
 
 interface Props { }
 
@@ -53,36 +54,40 @@ class GroupProfile extends Component<any, Props, State> {
             <View >
                 <Header title='Группа'
                     leftIcon={'arrow-left'}
-                    onPressLeft={() => navigation.goBack()} />
-                <View>
+                    onPressLeft={navigation.goBack} />
+                {/* <View>
                     {Background}
-                </View>
+                </View> */}
                 <ScrollView refreshControl={
-                        <RefreshControl refreshing={refreshing} onRefresh={this.onRefresh.bind(this)} />
-                    }>
+                    <RefreshControl refreshing={refreshing} onRefresh={this.onRefresh.bind(this)} />
+                }>
                     <Image source={{ uri: image ? image.url : NoFoto }}
                         style={images} />
                     <Text style={h1}>{title} </Text>
                     <View style={{ width: 150, alignSelf: 'center' }}>
                     </View>
                     <View style={button2}>
-                        <View style={{ width: w * 0.42 }}>
-                            {(userLogin.fk_Role == Role.admin || userLogin.uid == fk_Supervisor) ?
+                        {(userLogin.fk_Role == Role.admin || userLogin.uid == fk_Supervisor) &&
+                            <View style={{ width: w * 0.42 }}>
                                 <Button
-                                    title='Добавить'
+                                    mode="contained"
                                     onPress={() => navigation.navigate(AddADVERT, (uid))}//navigation.navigate(GroupPRO, (adverts))
-                                    color={appColor} />
-                                : <Button
-                                    title='Присоединиться'
-                                    onPress={() => this.onJoin(userLogin.uid)}
-                                    color={appColor} />
-                            }
-                        </View>
-                        <View style={{ width: w * 0.42 }}>
+                                    color={appColor} >
+                                    Добавить
+                                </Button>
+                                {/* : <Button
+                                     title='Присоединиться'
+                                     onPress={() => this.onJoin(userLogin.uid)}
+                                     color={appColor} /> */}
+                            </View>
+                        }
+                        <View style={{ width: (userLogin.fk_Role == Role.admin || userLogin.uid == fk_Supervisor) ? w * 0.42 : w * 0.92 }}>
                             <Button
-                                title='Обсуждения'
-                                onPress={this.onDiscussions}
-                                color={appColor} />
+                                mode="contained"
+                                onPress={() => navigation.navigate('ChatScreen', uid)}//, (userLogin.uid)
+                                uppercase={false}
+                                labelStyle={{fontSize: 17}}
+                                color={appColor} >Обсуждения</Button>
                         </View>
                     </View>
                     {load ?

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator, Button, RefreshControl, Alert
+  StyleSheet, View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator, RefreshControl, Alert
 } from 'react-native';
 import { Header, globalStyles } from '..';
 import { backArrow } from '../../allSvg'
@@ -10,6 +10,7 @@ import { GroupLIST, TENTENScreen, PROFILE, AddGROUP } from '../../Navigations/ro
 import { Badge, Divider } from 'react-native-elements';
 import { store } from '../../store';
 import { Home, InitialHome, User, HomeData } from '../../interfaces';
+import { Button } from 'react-native-paper';
 
 
 interface Props { }
@@ -73,9 +74,9 @@ class HomeProfile extends Component<any, State, Props> {
       yearCommissioning, fk_Manager, manager } = propsData
     const { data, load, approvedTentants, newTenants, refreshing } = this.state
     const { localGroups } = data
-    const { images, h1, sub, link, indicator, buttonContainer, buttonTitle } = globalStyles
+    const { images, h1, sub, link, indicator } = globalStyles
     const { status, h3, sectionContainer, sectionTitle, sectionContainer1, sectionTitle1, numberStyle,
-      homeStatusGood, homeStatusBad } = locStyles
+      homeStatusGood, homeStatusBad, buttonTitle, buttonContainer } = locStyles
     console.log('props: ', this.props)
     //console.log(' props.params: ', this.props.route.params) 
     return (<View>
@@ -152,12 +153,14 @@ class HomeProfile extends Component<any, State, Props> {
           <Text style={h3}><Text style={{ color: 'grey' }}>Кол-во подъездов:</Text> {porches} </Text>
           <Text style={h3}><Text style={{ color: 'grey' }}>Введен в эксплуатацию:</Text> {yearCommissioning} г.</Text>
           {!token &&
-            <TouchableOpacity
-              onPress={() => navigation.navigate('REGISTRATION', propsData)}>
-                <View style={[buttonContainer, {margin: 20}]}>
-                  <Text style={buttonTitle}>Зарегистрироваться в этом доме</Text>
-                  </View>
-            </TouchableOpacity>
+            <Button
+              mode="contained"
+              onPress={() => navigation.navigate('REGISTRATION', propsData)}
+              style={[buttonContainer, { margin: 20 }]}
+              labelStyle={buttonTitle}
+              uppercase={false}>
+              Зарегистрироваться в этом доме
+            </Button>
           }
           <View style={{ margin: 55 }}><Text> </Text></View>
         </ScrollView>
@@ -228,6 +231,15 @@ const locStyles = StyleSheet.create({
     paddingLeft: 15,
     marginVertical: 2,
     fontSize: 18,
+  },
+  buttonTitle: {
+    fontSize: 17,
+    color: '#fff',
+  },
+  buttonContainer: {
+    backgroundColor: appColor,
+    height: 40,
+    borderRadius: 7,
   },
 })
 
