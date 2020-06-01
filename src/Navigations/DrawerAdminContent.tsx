@@ -46,7 +46,7 @@ export function DrawerAdminContent(props: Props) {
       >
         <View style={styles.userInfoSection}>
           <TouchableOpacity
-            style={{ marginLeft: 10, marginBottom: -10 }}
+            style={{ marginBottom: -10 }}
             onPress={() => {
               props.navigation.toggleDrawer();
             }}
@@ -76,6 +76,7 @@ export function DrawerAdminContent(props: Props) {
               <MaterialCommunityIcons name="account-edit" color={color} size={size} />
             )}
             label="Изменить профиль"
+            labelStyle={{marginLeft: -20}}
             onPress={() => {
               props.navigation.toggleDrawer();
               props.navigation.navigate('EditPROFILE', userLogin)
@@ -88,6 +89,7 @@ export function DrawerAdminContent(props: Props) {
               <MaterialCommunityIcons name="home-plus" color={color} size={size} />
             )}
             label="Добавить дом"
+            labelStyle={{marginLeft: -20}}
             onPress={() => {
               props.navigation.toggleDrawer();
               props.navigation.navigate('AddHOME')
@@ -133,6 +135,7 @@ export function DrawerAdminContent(props: Props) {
               <MaterialCommunityIcons name="logout" color={color} size={size} />
             )}
             label="Выход"
+            labelStyle={{marginLeft: -20}}
             onPress={() => {
               props.navigation.toggleDrawer();
               props.navigation.navigate('EXITScreen')

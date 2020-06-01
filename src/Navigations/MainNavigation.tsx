@@ -1,7 +1,6 @@
 import * as React from 'react';
-import {NavigationAdmin} from './NavigationAdmin';
 import { Provider as PaperProvider } from 'react-native-paper';
-import {NavigationUser, NotAuthNavigation} from '../Navigations';
+import {NavigationAdmin, NavigationUser, NotAuthNavigation} from '../Navigations';
 import {  store } from '../store'
 import { Role } from '../enum/Enums';
 

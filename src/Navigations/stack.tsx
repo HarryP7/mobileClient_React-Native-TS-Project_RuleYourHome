@@ -9,12 +9,12 @@ import { BottomTabs } from './bottomTabs';
 import { Details } from './details';
 import { StackNavigatorParamlist } from './types';
 import { appColor, w } from '../constants';
-import { AuthScreen, RegistrationScreen, ProfileScreen, HomeProfile, TentantsScreen, 
-  GroupListScreen, GroupProfile, AddressScreen, AddHomeScreen, AddGroupScreen, AddAdvertScreen, 
-  SearchHomeScreen, AdvertProfile, ExitScreen, EditProfileScreen } from '../components';
-import NotAuthNavigation from './NotAuthNavigation';
-import { NavigationAdmin } from './NavigationAdmin';
-import NavigationUser from './NavigationUser';
+import {
+  AuthScreen, RegistrationScreen, ProfileScreen, HomeProfile, TentantsScreen,
+  GroupListScreen, GroupProfile, AddressScreen, AddHomeScreen, AddGroupScreen, AddAdvertScreen,
+  SearchHomeScreen, AdvertProfile, ExitScreen, EditProfileScreen, ChannelScreen, ChannelListScreen
+} from '../components';
+import { NavigationAdmin, NotAuthNavigation, NavigationUser } from './';
 
 const Stack = createStackNavigator<StackNavigatorParamlist>();
 
@@ -32,14 +32,14 @@ export const StackNavigator = () => {
             options.headerTitle !== undefined
               ? options.headerTitle
               : options.title !== undefined
-              ? options.title
-              : scene.route.name;
+                ? options.title
+                : scene.route.name;
 
           return (
             <Appbar.Header
-              theme={{ colors: { primary: appColor },  }}
-            >             
-            <StatusBar backgroundColor={appColor} barStyle="light-content" /> 
+              theme={{ colors: { primary: appColor }, }}
+            >
+              <StatusBar backgroundColor={appColor} barStyle="light-content" />
               <Appbar.Content
                 title={
                   title === 'Feed' ? (
@@ -50,8 +50,8 @@ export const StackNavigator = () => {
                       color={appColor}
                     />
                   ) : (
-                    title
-                  )
+                      title
+                    )
                 }
                 titleStyle={{
                   // alignSelf: 'center',
@@ -67,21 +67,21 @@ export const StackNavigator = () => {
                   color={appColor}
                 />
               ) : (
-                <TouchableOpacity
-                  // style={{ marginLeft: 10 }}
-                  onPress={() => {
-                    ((navigation as any) as DrawerNavigationProp<{}>).openDrawer();
-                  }}
-                >
-                  {/* <Avatar.Image
+                  <TouchableOpacity
+                    // style={{ marginLeft: 10 }}
+                    onPress={() => {
+                      ((navigation as any) as DrawerNavigationProp<{}>).openDrawer();
+                    }}
+                  >
+                    {/* <Avatar.Image
                     size={40}
                     source={{
                       uri:
                         'https://pbs.twimg.com/profile_images/952545910990495744/b59hSXUd_400x400.jpg',
                     }}
                   /> */}
-                </TouchableOpacity>
-              )}
+                  </TouchableOpacity>
+                )}
             </Appbar.Header>
           );
         },
@@ -111,6 +111,8 @@ export const StackNavigator = () => {
       <Stack.Screen name='TENTENScreen' component={TentantsScreen} />
       <Stack.Screen name='GroupLIST' component={GroupListScreen} />
       <Stack.Screen name='GroupPRO' component={GroupProfile} />
+      <Stack.Screen name={'CHannelScreen'} component={ChannelScreen} />
+      <Stack.Screen name={'CHannelListScreen'} component={ChannelListScreen} />
       <Stack.Screen name='ADDRESSScreen' component={AddressScreen} />
       <Stack.Screen name='AddHOME' component={AddHomeScreen} />
       <Stack.Screen name='AddGROUP' component={AddGroupScreen} />
@@ -118,7 +120,7 @@ export const StackNavigator = () => {
       <Stack.Screen name='SEARCHHomeScreen' component={SearchHomeScreen} />
       <Stack.Screen name='ADVERTPro' component={AdvertProfile} />
       <Stack.Screen name='EXITScreen' component={ExitScreen} />
-      <Stack.Screen name='NotAuthNAVIGATION' component={NotAuthNavigation} />
+      <Stack.Screen name='NOTAuthNavigation' component={NotAuthNavigation} />
       <Stack.Screen name='NAVIGATIONAdmin' component={NavigationAdmin} />
       <Stack.Screen name='NAVIGATIONUser' component={NavigationUser} />
     </Stack.Navigator>

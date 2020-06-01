@@ -14,6 +14,8 @@ export type StackNavigatorParamlist = {
     };
     AUTH: undefined;
     REGISTRATION: undefined;
+    FindAccountScreen: undefined;
+    EditPassScreen: undefined;
     SplashScreen: undefined;
     MainNavigation: undefined;
     NavigationUser: undefined;
@@ -25,6 +27,8 @@ export type StackNavigatorParamlist = {
     TENTENScreen: undefined;
     GroupLIST: undefined;
     GroupPRO: undefined;
+    CHannelScreen: undefined;
+    CHannelListScreen: undefined;
     ADDRESSScreen: undefined;
     AddHOME: undefined;
     AddGROUP: undefined;
@@ -35,5 +39,6 @@ export type StackNavigatorParamlist = {
     NotAuthNAVIGATION: undefined;
     NAVIGATIONAdmin: undefined;
     NAVIGATIONUser: undefined;
-    HOMEScreen: undefined
+    HOMEScreen: undefined;
+    ChatScreen: undefined;
   };
