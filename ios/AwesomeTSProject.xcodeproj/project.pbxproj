@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* AwesomeTSProjectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* AwesomeTSProjectTests.m */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
@@ -47,6 +48,12 @@
 		89CEEC527E674C2FABEC497E /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4329209E1B2C4B418A5C88E0 /* Octicons.ttf */; };
 		096D1E48C5084533B710FE4D /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D6DBA7DCEBC44366AB06EAFC /* SimpleLineIcons.ttf */; };
 		12A50416F00D4738BBCF885F /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F579CAD4069646968CCC7494 /* Zocial.ttf */; };
+		B4D4BCD58AC84A448BFAAF99 /* Cookie-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 427F7B01F3054C47BF612734 /* Cookie-Regular.ttf */; };
+		C2CE80B0F2B5488AB8559D3D /* Regular2.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC3D80A426894803A41A66E0 /* Regular2.ttf */; };
+		82B0DAFE7A2349999530A752 /* Typesauce.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B18AA7C5AE124BD0B6609033 /* Typesauce.ttf */; };
+		1D1CF7D428514081A18DACA0 /* EchoRevival.otf in Resources */ = {isa = PBXBuildFile; fileRef = 24B54223E72944F989A865FE /* EchoRevival.otf */; };
+		F333C368E2414FF384FC59F8 /* Zelek Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0D837CDE42EE4E499C334281 /* Zelek Bold.ttf */; };
+		7CF346A727614F66B9335859 /* ZelekBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FED9337D88204733A264B03C /* ZelekBold.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -114,6 +121,12 @@
 		4329209E1B2C4B418A5C88E0 /* Octicons.ttf */ = {isa = PBXFileReference; name = "Octicons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		D6DBA7DCEBC44366AB06EAFC /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; name = "SimpleLineIcons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		F579CAD4069646968CCC7494 /* Zocial.ttf */ = {isa = PBXFileReference; name = "Zocial.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		427F7B01F3054C47BF612734 /* Cookie-Regular.ttf */ = {isa = PBXFileReference; name = "Cookie-Regular.ttf"; path = "../fonts/Cookie-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		AC3D80A426894803A41A66E0 /* Regular2.ttf */ = {isa = PBXFileReference; name = "Regular2.ttf"; path = "../fonts/Regular2.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		B18AA7C5AE124BD0B6609033 /* Typesauce.ttf */ = {isa = PBXFileReference; name = "Typesauce.ttf"; path = "../fonts/Typesauce.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		24B54223E72944F989A865FE /* EchoRevival.otf */ = {isa = PBXFileReference; name = "EchoRevival.otf"; path = "../fonts/EchoRevival.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		0D837CDE42EE4E499C334281 /* Zelek Bold.ttf */ = {isa = PBXFileReference; name = "Zelek Bold.ttf"; path = "../fonts/Zelek Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		FED9337D88204733A264B03C /* ZelekBold.ttf */ = {isa = PBXFileReference; name = "ZelekBold.ttf"; path = "../fonts/ZelekBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -256,6 +269,12 @@
 				4329209E1B2C4B418A5C88E0 /* Octicons.ttf */,
 				D6DBA7DCEBC44366AB06EAFC /* SimpleLineIcons.ttf */,
 				F579CAD4069646968CCC7494 /* Zocial.ttf */,
+				427F7B01F3054C47BF612734 /* Cookie-Regular.ttf */,
+				AC3D80A426894803A41A66E0 /* Regular2.ttf */,
+				B18AA7C5AE124BD0B6609033 /* Typesauce.ttf */,
+				24B54223E72944F989A865FE /* EchoRevival.otf */,
+				0D837CDE42EE4E499C334281 /* Zelek Bold.ttf */,
+				FED9337D88204733A264B03C /* ZelekBold.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -429,6 +448,12 @@
 				89CEEC527E674C2FABEC497E /* Octicons.ttf in Resources */,
 				096D1E48C5084533B710FE4D /* SimpleLineIcons.ttf in Resources */,
 				12A50416F00D4738BBCF885F /* Zocial.ttf in Resources */,
+				B4D4BCD58AC84A448BFAAF99 /* Cookie-Regular.ttf in Resources */,
+				C2CE80B0F2B5488AB8559D3D /* Regular2.ttf in Resources */,
+				82B0DAFE7A2349999530A752 /* Typesauce.ttf in Resources */,
+				1D1CF7D428514081A18DACA0 /* EchoRevival.otf in Resources */,
+				F333C368E2414FF384FC59F8 /* Zelek Bold.ttf in Resources */,
+				7CF346A727614F66B9335859 /* ZelekBold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
