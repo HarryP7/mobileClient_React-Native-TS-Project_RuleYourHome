@@ -1,13 +1,15 @@
 import React from 'react';
 import { View, Text, Image } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { globalStyles, AuthScreen, RegistrationScreen, HomeProfile, HomeScreen,
-  AddressScreen, ProfileScreen, EditProfileScreen, TentantsScreen, 
-  GroupListScreen, GroupProfile, AddHomeScreen, AddGroupScreen, 
-  AddAdvertScreen, SearchHomeScreen, AdvertProfile, ExitScreen } from '..'
+import {
+  globalStyles, AuthScreen, RegistrationScreen, HomeProfile, HomeScreen,
+  AddressScreen, ProfileScreen, EditProfileScreen, TentantsScreen,
+  GroupListScreen, GroupProfile, AddHomeScreen, AddGroupScreen,
+  AddAdvertScreen, SearchHomeScreen, AdvertProfile, ExitScreen, ChannelListScreen, ChannelScreen, ChatScreen, FindAccountScreen, EditPassScreen
+} from '..'
 import { Button } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
-import {MainNavigation, NavigationAdmin, NavigationUser, NotAuthNavigation} from '../../Navigations';
+import { MainNavigation, NavigationAdmin, NavigationUser, NotAuthNavigation } from '../../Navigations';
 import { StackNavigatorParamlist } from '../../Navigations/types';
 
 interface Props { }
@@ -28,7 +30,7 @@ class SplashScreen extends React.Component<any, Props> {
               </Text>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
           <View style={paddingBottom}>
-            <Image source={{uri:'https://i.ibb.co/CnM58Qb/bigHome.png'}} style={image} />
+            <Image source={{ uri: 'https://i.ibb.co/CnM58Qb/bigHome.png' }} style={image} />
             <Button
               mode="contained"
               uppercase={false}
@@ -56,6 +58,8 @@ function RootStackScreen() {
         <Stack.Screen name="NOTAuthNavigation" component={NotAuthNavigation} />
         <Stack.Screen name="AUTH" component={AuthScreen} />
         <Stack.Screen name="REGISTRATION" component={RegistrationScreen} />
+        <Stack.Screen name="FindAccountScreen" component={FindAccountScreen} />
+        <Stack.Screen name="EditPassScreen" component={EditPassScreen} />
         <Stack.Screen name='HOMEScreen' component={HomeScreen} />
         <Stack.Screen name='HOMEProfile' component={HomeProfile} />
         <Stack.Screen name='ADDRESSScreen' component={AddressScreen} />
@@ -64,6 +68,9 @@ function RootStackScreen() {
         <Stack.Screen name='TENTENScreen' component={TentantsScreen} />
         <Stack.Screen name='GroupLIST' component={GroupListScreen} />
         <Stack.Screen name='GroupPRO' component={GroupProfile} />
+        <Stack.Screen name='CHannelScreen' component={ChannelScreen} />
+        <Stack.Screen name='CHannelListScreen' component={ChannelListScreen} />
+        <Stack.Screen name='ChatScreen' component={ChatScreen} />
         <Stack.Screen name='AddHOME' component={AddHomeScreen} />
         <Stack.Screen name='AddGROUP' component={AddGroupScreen} />
         <Stack.Screen name='AddADVERT' component={AddAdvertScreen} />

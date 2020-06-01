@@ -84,7 +84,7 @@ class AddAdvertScreen extends Component<any, State, Props> {
         {Background}
       <ScrollView>
         <SafeAreaView>
-          <Card containerStyle={cardUsersStyle} >          
+          <Card containerStyle={[cardUsersStyle,{margin: 5, marginHorizontal: 5}]} >          
             <View style={fixToText}>
               <View style={textInput}>
                 <View style={{ flexDirection: 'row' }}>
@@ -142,7 +142,7 @@ class AddAdvertScreen extends Component<any, State, Props> {
               </View>
             </View>
           </Card>
-          <Card containerStyle={[cardUsersStyle, { marginTop: 5 }]} >
+          <Card containerStyle={[cardUsersStyle, { marginHorizontal: 5, marginTop: 0 }]} >
             <TouchableOpacity onPress={() => this.setState({ addVoting: !addVoting })}
               style={addPosition}>
               <Switch
@@ -242,7 +242,7 @@ class AddAdvertScreen extends Component<any, State, Props> {
               style={iconButton1} fill='green' />
             <Text >   Добавить еще один вариант ответа</Text>
           </TouchableOpacity>
-          <CheckBox title='Многовариантное голосование'
+          {/* <CheckBox title='Многовариантное голосование'
             checked={item.isMulti}
             onPress={() => {
               voting[idV].isMulti = !item.isMulti
@@ -250,7 +250,7 @@ class AddAdvertScreen extends Component<any, State, Props> {
             }}
             checkedColor='green'
             containerStyle={containerStyle}
-          />
+          /> */}
         </View>
       })
       }
@@ -552,11 +552,11 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   votingContainer: {
-    borderColor: 'gray',
-    backgroundColor: '#FFD0AE',
+    borderColor: '#ddd',
+    backgroundColor: '#eff',
     borderWidth: 1,
     borderRadius: 10,
-    marginHorizontal: 10,
+    marginHorizontal: 5,
     marginTop: 5,
     paddingVertical: 5,
 
@@ -571,8 +571,8 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   containerStyle: {
-    backgroundColor: '#FFD0AE',
-    borderColor: '#FFD0AE'
+    backgroundColor: '#eff',
+    borderColor: '#eff'
   },
   styleSwitch: {
     marginLeft: w * 0.1,

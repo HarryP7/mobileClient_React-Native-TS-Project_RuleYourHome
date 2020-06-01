@@ -4,7 +4,7 @@ import { StyleSheet, ScrollView, View, Text, Alert, ActivityIndicator
 import { SvgXml } from 'react-native-svg';
 import { user, homeLoc, lock, lockRep, shield } from '../../allSvg'
 import { Header, globalStyles } from '..';
-import { h, w, appColor, serverUrl, Background, disColor } from '../../constants'
+import { h, w, appColor, serverUrl, Background, disColor, BackgroundWhite } from '../../constants'
 import { User, arrText, arrBool, arrColor } from '../../interfaces'
 import { actions } from '../../store'
 import { ADDRESSScreen } from '../../Navigations/routes';
@@ -39,64 +39,64 @@ var initArrColor: arrColor = {
   email: appColor,
   name: appColor,
   iconPassword: appColor,
-  password: '#666',
+  password: appColor,
   repeatPassword: appColor,
   button: disColor
 };
+var initActive = {login: false, name: false, password: false, repeatPassword: false}
+var initCount = {login: 0, name: 0, password: 0, repeatPassword: 0}
 const red = "red"
 
 class RegistrationScreen extends Component<any, State, Props> {
   state = {
     login: '', email: '', name: '', password: '', repeatPassword: '', width: 1,
-    visibility: false, visibilityRep: false,
+    visibility: false, visibilityRep: false, passwordActive: false, countPass: 0,
     passGood: false, submit: false, disBtn: true, refreshing: false,
-    badEnter: initArrBool, errorText: initArrTxt, colorField: initArrColor
+    badEnter: initArrBool, errorText: initArrTxt, colorField: initArrColor,
+    active: initActive, count: initCount
   }
 
   componentDidMount = () => {
-    console.log('Props RegistrationScreen', this.props)
+    console.log('Props RegistrationScreen', this.props.route.params)
   }
   render() {
     const { login, email, name, password, repeatPassword, visibility,
-      badEnter, errorText, colorField, passGood, submit, disBtn, width } = this.state
+      badEnter, errorText, colorField, passGood, count, active, submit, 
+      disBtn, passwordActive, countPass } = this.state
     const { navigation } = this.props
     const { fixToText, icon, textInput, input, button, buttonContainer, buttonTitle, indicator,
       link, error, paddingBottom } = locStyles
-    const { im, cardStyle, inputStyle, inputPaper, buttonContentSp, inputPaperWhite } = globalStyles
+    const { cardStyle,  inputStyle, inputPaper, buttonContentSp, inputPaperWhite, countStyle } = globalStyles
     return (
-      <View style={{ height: h }}>
+      <View >
         <Header title={'Регистрация'}
           leftIcon={'arrow-left'}
           position='center'
           onPressLeft={() => {
-            navigation.goBack();
+            navigation.pop();
           }}
         />
-
-        <View >
-          {Background}</View>
-        <ScrollView
-        // refreshControl={
-        //   <RefreshControl refreshing={refreshing} onRefresh={this.setClearState.bind(this)} /> }
-        >
+          {Background}
+        <ScrollView >
           <Card containerStyle={cardStyle} >
             <View style={fixToText}>
-              <SvgXml xml={user} style={icon} fill={colorField.login} />
+              <SvgXml xml={user} style={[icon,{marginTop:15}]} fill={colorField.login} />
               <View style={textInput}>
                 <TextInput
-                  //inputContainerStyle={input}
-                  // mode='outlined'
-                  style={[inputPaperWhite, inputStyle]}
+                  style={[inputPaperWhite,inputStyle]}
                   onChangeText={this.onChangeLogin.bind(this)}
+                  onTouchStart={this.activeLogin.bind(this)}
                   // placeholder='Введите..'
                   label='Логин'
                   autoCompleteType='username'
+                  dense={true}
                   value={login}
                   onEndEditing={() => this.onCheckLogin(login)}
                   disabled={submit}
                   theme={{ colors: { primary: colorField.login, error: red } }}
                   error={badEnter.login}
                 />
+                {active.login && <Text style={[countStyle, {color: colorField.login}]}>{count.login}/20</Text>}
                 {badEnter.login && <HelperText type="error" visible={badEnter.login} style={{marginBottom: -10, fontSize: 14, color: red}} >
                   {errorText.login} 
                   </HelperText> }
@@ -135,6 +135,7 @@ class RegistrationScreen extends Component<any, State, Props> {
                 <TextInput
                   style={[inputPaperWhite,inputStyle]}
                   onChangeText={this.onChangeName.bind(this)}
+                  onTouchStart={this.activeName.bind(this)}
                   // placeholder='Введите..'
                   label='ФИО'
                   autoCompleteType='name'
@@ -144,6 +145,7 @@ class RegistrationScreen extends Component<any, State, Props> {
                   theme={{ colors: { primary: colorField.name, error: red } }}
                   error={badEnter.name}
                 />                
+                {active.name && <Text style={[countStyle, {color: colorField.name}]}>{count.name}/50</Text>}
                 {badEnter.name && 
                 <HelperText type="error" visible={badEnter.name} style={{marginBottom: -10, fontSize: 14, color: red}} >
                   {errorText.name} 
@@ -152,7 +154,7 @@ class RegistrationScreen extends Component<any, State, Props> {
               </View>
             </View>
             <View style={fixToText}>
-              <SvgXml xml={lock} style={icon} fill={colorField.iconPassword} />
+              <SvgXml xml={lock} style={icon} fill={colorField.password} />
               <View style={textInput}>
                 <TextInput
                   // mode='outlined'
@@ -172,11 +174,12 @@ class RegistrationScreen extends Component<any, State, Props> {
                   // rightIcon={visibility ? <Icon name='visibility' onPress={this.onVisibility.bind(this)} />
                   //   : <Icon name='visibility-off' onPress={this.onVisibility.bind(this)} color='grey' />}
                   error={badEnter.password}
-                />
+                />                
+                {active.password && <Text style={[countStyle, {color: colorField.password}]}>{count.password}/8</Text>}
                 <MaterialCommunityIcons name={visibility ? 'eye' : 'eye-off'} 
                   onPress={this.onVisibility.bind(this)}
                   color={visibility ? 'black': 'grey' } size={25}
-                  style={{position: 'absolute', top: 15, right: 0, padding: 10}}/> 
+                  style={{position: 'absolute', top: 30, right: 0, }}/> 
                 {badEnter.password ? 
                   <HelperText type="error" visible={badEnter.password} style={{marginBottom: -10, fontSize: 14, color: red}} >
                     {errorText.password} 
@@ -193,6 +196,7 @@ class RegistrationScreen extends Component<any, State, Props> {
                   // mode='outlined'
                   style={[inputPaperWhite,inputStyle]}
                   onChangeText={this.onChangeRepeatPassword.bind(this)}
+                  onTouchStart={this.activeRepPass.bind(this)}
                   // placeholder='Введите..'
                   label='Повторите пароль'
                   autoCompleteType={'password'}
@@ -204,6 +208,7 @@ class RegistrationScreen extends Component<any, State, Props> {
                   theme={{ colors: { primary: colorField.repeatPassword, error: red } }}
                   error={badEnter.repeatPassword}
                 />                
+                {active.repeatPassword && <Text style={[countStyle, {color: colorField.repeatPassword}]}>{count.repeatPassword}/8</Text>}
                 {badEnter.repeatPassword && 
                   <HelperText type="error" visible={badEnter.repeatPassword} style={{marginBottom: -10, fontSize: 14, color: red}} >
                     {errorText.repeatPassword} 
@@ -258,22 +263,20 @@ class RegistrationScreen extends Component<any, State, Props> {
   }
 
   private onChangeLogin(login: string) {
-    var { badEnter, errorText, colorField } = this.state
+    var { badEnter, errorText, colorField, count } = this.state
     if (login == ' ') { return }
-    if (!login) {
-      badEnter.login = true;
-      errorText.login = 'Поле не заполнено'
-      colorField.login = red
-      this.setState({ badEnter, errorText, login, disBtn: true, colorField });
-      return;
-    }
     var reg = /^([A-Za-z0-9_\-\.])+$/;
     if (reg.test(login.trim()) == false) {
       badEnter.login = true;
-      errorText.login = 'Логин должен состоять из латинских букв'
+      errorText.login = 'Логин должен состоять только из латинских букв'
       colorField.login = red
       this.setState({ badEnter, errorText, login, disBtn: true });
-      return;
+    }
+    else if (login.trim().length > 20) {
+      badEnter.login = true;
+      errorText.login = 'Логин должен быть меньше 20 символов'
+      colorField.login = red
+      this.setState({ badEnter, errorText, login, colorField, disBtn: true });
     }
     else {
       badEnter.login = false;
@@ -281,6 +284,8 @@ class RegistrationScreen extends Component<any, State, Props> {
       this.setState({ login, badEnter, colorField });
       this.checkFields()
     }
+    count.login = login.trim().length
+    this.setState({count})
   }
   private onCheckLogin(login: string) {
     var { badEnter, errorText, colorField } = this.state
@@ -327,12 +332,11 @@ class RegistrationScreen extends Component<any, State, Props> {
   }
   private onCheckEmail(email: string) {
     var { badEnter, errorText, colorField } = this.state
-    var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
-    if (reg.test(email.trim()) == false) {
+    if (email.trim() == '') {
       badEnter.email = true;
       errorText.email = 'Введите корректный e-mail'
       colorField.email = red
-      this.setState({ badEnter, errorText, email, disBtn: true });
+      this.setState({ badEnter, errorText,  disBtn: true });
       return;
     }
     else {
@@ -343,14 +347,13 @@ class RegistrationScreen extends Component<any, State, Props> {
     }
   }
   private onChangeName(name: string) {
-    var { badEnter, errorText, colorField } = this.state
+    var { badEnter, errorText, colorField, count } = this.state
     if (name == ' ') { return }
-    if (!name) {
+    else if (name.trim().length > 50) {
       badEnter.name = true;
       colorField.name = red
-      errorText.name = 'Поле не заполнено'
+      errorText.name = 'ФИО должно быть больше 1 символа и меньше 50'
       this.setState({ badEnter, errorText, name, disBtn: true, colorField });
-      return;
     }
     else {
       badEnter.name = false;
@@ -358,6 +361,8 @@ class RegistrationScreen extends Component<any, State, Props> {
       this.setState({ name, badEnter, colorField });
       this.checkFields()
     }
+    count.name = name.trim().length
+    this.setState({count})
   }
   private onCheckName(name: string) {
     var { badEnter, errorText, colorField } = this.state
@@ -369,32 +374,48 @@ class RegistrationScreen extends Component<any, State, Props> {
       return;
     }
   }
+  private activeLogin() {
+    var { active } = this.state
+    active.login = true
+    this.setState({  active });
+  }
+  private activeName() {
+    var { active } = this.state
+    active.name = true
+    this.setState({  active });
+  }
   private activePass() {
-    var { colorField, errorText, badEnter } = this.state
-    colorField.password = appColor
+    var { colorField, errorText, badEnter, active } = this.state
+    active.password = true
     badEnter.password = false;
     errorText.infoPassword = 'Придумайте пароль от 8 символов с обязательной комбинацией цифр и латинских букв'
-    this.setState({ colorField, errorText, badEnter, width: 2 });
+    this.setState({ colorField, errorText, badEnter, active });
+  }
+  private activeRepPass() {
+    var { active } = this.state
+    active.repeatPassword = true
+    this.setState({  active });
   }
   private onChangePassword(password: string) {
-    var { badEnter, errorText, colorField } = this.state
+    var { badEnter, errorText, colorField, count } = this.state
     if (password == ' ') { return }
     if (password.trim().length >= 8) {
       badEnter.password = false
-      colorField.iconPassword = appColor
+      colorField.password = appColor
       this.setState({ colorField, badPass: false });
       var repPass = this.state.repeatPassword;
       if (repPass && repPass != password) {
         badEnter.password = true;
         errorText.password = 'Пароли не совпадают'
-        colorField.iconPassword = red
+        colorField.password = red
         this.setState({ badEnter, errorText, colorField, passGood: false, disBtn: true });
       }
     }
     else {
-      colorField.iconPassword = red
+      colorField.password = red
     }
-    this.setState({ password: password.trim(), colorField });
+    count.password = password.trim().length
+    this.setState({ password: password.trim(), colorField, count });
     this.checkFields()
   }
   private onCheckPass(pass: string) {
@@ -402,24 +423,23 @@ class RegistrationScreen extends Component<any, State, Props> {
     if (pass.trim().length < 8) {
       badEnter.password = true;
       errorText.password = 'Пароль должен иметь длину не менее 8 знаков'
-      colorField.iconPassword = red
+      colorField.password = red
       this.setState({ badEnter, errorText, colorField, pass, disBtn: true });
       return;
     }
     var { colorField, errorText } = this.state
-    colorField.password = '#666'
     errorText.infoPassword = ''
     this.setState({ colorField, width: 1 });
   }
   private onChangeRepeatPassword(repeatPassword: string) {
-    var { badEnter, errorText, colorField } = this.state
+    var { badEnter, errorText, colorField, count } = this.state
     var pass = this.state.password;
     if (repeatPassword == ' ') { return }
     if (pass.trim().length == repeatPassword.trim().length && pass == repeatPassword) {
       badEnter.repeatPassword = false;
       badEnter.password = false;
       colorField.repeatPassword = appColor
-      colorField.iconPassword = appColor
+      colorField.password = appColor
       this.setState({ badEnter, colorField, passGood: true });
       this.checkFields()
     }
@@ -435,7 +455,8 @@ class RegistrationScreen extends Component<any, State, Props> {
       this.setState({ badEnter, colorField });
       this.checkFields()
     }
-    this.setState({ repeatPassword: repeatPassword.trim() });
+    count.repeatPassword = repeatPassword.trim().length
+    this.setState({ repeatPassword: repeatPassword.trim(), count });
   }
   private onCheckRep(repeatPassword: string) {
     var { badEnter, errorText, colorField } = this.state
@@ -622,6 +643,12 @@ class RegistrationScreen extends Component<any, State, Props> {
 }
 
 const locStyles = StyleSheet.create({
+  cardStyle: {
+    borderRadius: 0,
+    margin: 0,
+    paddingTop: h * 0.15,
+    paddingBottom: h * 0.3,
+  },
   icon: {
     marginTop: 25,
     marginRight: 5,
@@ -630,6 +657,7 @@ const locStyles = StyleSheet.create({
   },
   textInput: {
     width: w * 0.75,
+    display: "flex"
   },
   input: {
     borderColor: 'gray',

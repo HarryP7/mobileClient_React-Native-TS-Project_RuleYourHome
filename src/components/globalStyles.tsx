@@ -60,11 +60,17 @@ const globalStyles = StyleSheet.create({
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.4
   },
-  sectionTitle: {
-    fontSize: 26,
+  sectionTitleЬMain: {
+    fontSize: 29,
     color: '#fff',
     textAlign: 'center',
-    fontFamily: 'AwenirNext-DemiBold'
+    fontFamily: 'Typesauce',
+  },
+  sectionTitle: {
+    fontSize: 30,
+    color: '#fff',
+    textAlign: 'center',
+    fontFamily: 'Regular2',
   },
   sectionDescription: {
     paddingTop: 50,
@@ -88,10 +94,8 @@ const globalStyles = StyleSheet.create({
   buttonContainer: {
     backgroundColor: appColor,
     height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
     borderRadius: 7,
-    padding: 10
+    marginTop: 10
   },
   buttonTitle: {
     fontSize: 18,
@@ -194,8 +198,6 @@ const globalStyles = StyleSheet.create({
     width: w,
     height: w * 0.7,
     alignSelf: 'center',
-    borderBottomRightRadius: 10,
-    borderBottomLeftRadius: 10,
     marginBottom: 5
   },
   noImages: {
@@ -206,8 +208,7 @@ const globalStyles = StyleSheet.create({
   },
   h1: {
     paddingHorizontal: 15,
-    fontSize: 20,
-    width: w,
+    fontSize: 18,
     fontWeight: 'bold',
   },
   h2: {
@@ -218,7 +219,7 @@ const globalStyles = StyleSheet.create({
   h3: {
     paddingLeft: 15,
     marginVertical: 2,
-    fontSize: 18,
+    fontSize: 16,
   },
   icon2: {
     width: 35,
@@ -321,6 +322,11 @@ const globalStyles = StyleSheet.create({
     padding: 5, 
     borderRadius: 10 
   },
+  countStyle: {
+    color: appColor,
+    fontSize: 12,
+    textAlign: 'right'
+  }
 });
 
 export { globalStyles };

@@ -1,5 +1,3 @@
-import { appColor, disColor } from "../constants";
-
 export interface User {
   uid: string,
   fullName: string,
@@ -59,6 +57,16 @@ export interface Group {
   adverts: Advert[],
   image: ImageUrl,
 }
+export interface AdvertsReview {
+  uid: string,
+  fk_Author: string,
+  reviews: string,
+  fk_Advert: string,
+  createdAt: Date,
+  editedAt: Date,
+  removed: boolean,
+  author: User
+}
 
 export interface Advert {
   uid: string,
@@ -74,10 +82,13 @@ export interface Advert {
   editedAt: Date,
   removed: boolean,
   lg: Group,
+  reviews: AdvertsReview[]
 }
 export interface Voted {
   fk_User: string,
-  fk_Voting: string
+  fk_Voting: string,
+  fk_Answer: string,
+  DateAt: Date
 }
 export interface Voting {
   uid: string,
@@ -85,13 +96,31 @@ export interface Voting {
   options: Answer[],
   isMulti: boolean,
   yourOption: string,
-  voteds: Voted[],  
+  voteds: Voted[],
   totalVotes: number
 }
 export interface Answer {
   uid: string,
   option: string,
   count: number
+}
+
+export interface GroupChat {
+  uid: string,
+  fk_Author: string,
+  text: string,
+  fk_LocalGroup: string,
+  fk_Image: string,
+  createdAt: Date,
+  editedAt: Date,
+  removed: boolean,
+  author: User,
+  image: ImageUrl
+}
+export interface UserData {
+  _id: string,
+  name: string,
+  avatar: string
 }
 
 export interface AuthData {
@@ -155,7 +184,7 @@ export interface authColor {
 };
 export interface addressColor {
   homeN: string,
-  appartment: string,
+  appartament: string,
   button: string
 };
 export interface authBool {
@@ -166,7 +195,7 @@ export interface adrText {
   city: string,
   street: string,
   homeN: string,
-  appartment: string,
+  appartament: string,
   home: string
 };
 export interface AuthData {
@@ -177,7 +206,7 @@ export interface adrBool {
   city: boolean,
   street: boolean,
   homeN: boolean,
-  appartment: boolean,
+  appartament: boolean,
   home: boolean
 };
 export interface adrHomeText {
@@ -221,6 +250,44 @@ export interface VotingBool {
 }
 export interface AnswerBool {
   answer: boolean,
+}
+
+export interface ImageService {
+  data: {
+    id: string,
+    url_viewer: string,
+    url: string,
+    display_url: string,
+    title: string,
+    time: Date,
+    image: {
+      filename: string,
+      name: string,
+      mime: string,
+      extension: string,
+      url: string,
+      size: number
+    },
+    thumb: {
+      filename: string,
+      name: string,
+      mime: string,
+      extension: string,
+      url: string,
+      size: number
+    },
+    medium: {
+      filename: string,
+      name: string,
+      mime: string,
+      extension: string,
+      url: string,
+      size: number
+    },
+    delete_url: string
+  },
+  success: boolean,
+  status: number
 }
 
 
@@ -309,9 +376,11 @@ export const initAdvAnswer: Answer = {
   option: '',
   count: 0
 };
-export const initVoted: Voted = {  
+export const initVoted: Voted = {
   fk_User: '',
-  fk_Voting: ''
+  fk_Voting: '',
+  fk_Answer: '',
+  DateAt: new Date()
 }
 export const initAdvVoting: Voting = {
   uid: '',
@@ -319,7 +388,7 @@ export const initAdvVoting: Voting = {
   options: [initAdvAnswer],
   isMulti: false,
   yourOption: '',
-  voteds: [initVoted],  
+  voteds: [initVoted],
   totalVotes: 0
 };
 export const initGroupText: Group = {
@@ -331,7 +400,8 @@ export const initGroupText: Group = {
   fk_Home: '',
   createdAt: new Date(),
   editedAt: new Date(),
-  removed: false,   
+  removed: false,
+  image: InitialImage
 }
 export const initAdvText: Advert = {
   uid: '',
@@ -339,42 +409,42 @@ export const initAdvText: Advert = {
   title: '',
   category: '',
   voting: [initAdvVoting],
-  fk_Author: '', 
-  fk_Image: '', 
-  fk_Category: 0, 
+  fk_Author: '',
+  fk_Image: '',
+  fk_Category: 0,
   Fk_LocalGroup: '',
   createdAt: new Date(),
-  editedAt: new Date(), 
+  editedAt: new Date(),
   removed: false,
-  lg: initGroupText 
+  lg: initGroupText
 };
 
 export const advAnswer: Answer = {
-  uid: '', 
+  uid: '',
   option: '',
   count: 0
 };
 export const advVoting: Voting = {
-  uid: '', 
+  uid: '',
   title: '',
   options: [initAdvAnswer],
   isMulti: false,
   yourOption: '',
-  voteds: [initVoted],  
+  voteds: [initVoted],
   totalVotes: 0
 };
 export const advert: Advert = {
-  uid: '', 
+  uid: '',
   text: '',
   title: '',
   category: '',
   voting: [initAdvVoting],
-  fk_Author: '', 
-  fk_Image: '', 
-  fk_Category: 0, 
+  fk_Author: '',
+  fk_Image: '',
+  fk_Category: 0,
   Fk_LocalGroup: '',
   createdAt: new Date(),
-  editedAt: new Date(), 
-  removed: false, 
-  lg: initGroupText 
+  editedAt: new Date(),
+  removed: false,
+  lg: initGroupText
 };

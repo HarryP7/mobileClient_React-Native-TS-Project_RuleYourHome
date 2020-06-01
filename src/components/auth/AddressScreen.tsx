@@ -1,13 +1,12 @@
 import React, { PureComponent } from 'react';
-import {
-  StyleSheet, ScrollView, View, Text, TouchableOpacity, Alert,
+import { StyleSheet, ScrollView, View, Text, TouchableOpacity, Alert,
   ActivityIndicator, Image
 } from 'react-native';
 import { SvgXml } from 'react-native-svg';
-import { user, home, homeLoc, write, notFound } from '../../allSvg'
+import { home, homeLoc,  } from '../../allSvg'
 import { Header, globalStyles, HomeCard } from '..';
 import { h, w, appColor, serverUrl, Background, disColor } from '../../constants'
-import { adrText, adrBool, addressColor, AuthData } from '../../interfaces'
+import { adrText, adrBool, addressColor, AuthData, HomeData } from '../../interfaces'
 import { actions, store } from '../../store'
 import { AUTH, HOMEProfile, NAVIGATIONAdmin, NAVIGATIONUser } from '../../Navigations/routes';
 import { CityList, VladimirStreetList } from './Lists'
@@ -18,16 +17,16 @@ import { Role } from '../../enum/Enums';
 import { List, TextInput, Provider, Portal, Modal } from 'react-native-paper';
 import Geolocation from 'react-native-geolocation-service';
 import Geocoder from 'react-native-geocoding';
-// import { Autocomplete, Icon, Layout, AutocompleteOption, ApplicationProvider } from '@ui-kitten/components';
+// import { Autocomplete, Layout, AutocompleteOption, ApplicationProvider } from '@ui-kitten/components';
 import { mapping, light as lightTheme } from '@eva-design/eva';
 
-var arrTxt: adrText = { city: '', street: '', homeN: '', appartment: '', home: '' };
-var arr: adrBool = { city: false, street: false, homeN: false, appartment: false, home: false };
-var arrColor: adrText = { city: appColor, street: appColor, homeN: appColor, appartment: appColor, home: appColor };
+var arrTxt: adrText = { city: '', street: '', homeN: '', appartament: '', home: '' };
+var arr: adrBool = { city: false, street: false, homeN: false, appartament: false, home: false };
+var arrColor: adrText = { city: appColor, street: appColor, homeN: appColor, appartament: appColor, home: appColor };
 
 interface Props { }
 interface State {
-  appartment: string,
+  appartament: string,
   city: string,
   street: string,
   homeN: string,
@@ -48,55 +47,104 @@ interface State {
   latitude: number,
   longitude: number,
   errorMsg: string,
+  address: string
+  load: boolean,
+  loadError: boolean,
+  refreshing: boolean,
 
 }
 const initAddressColor: addressColor = {
   homeN: appColor,
-  appartment: appColor,
+  appartament: appColor,
   button: disColor
 };
 
 class AddressScreen extends PureComponent<any, State, Props> {
   state = {
-    city: '', street: '', homeN: '', appartment: '', disBtn: true,
+    city: '', street: '', homeN: '', appartament: '', disBtn: true, address: '', 
     good: true, submit: false, badEnter: arr, errorText: arrTxt, colorIcon: arrColor,
     search: false, searchText: '', dataHome: [], dataOld: [], loadHome: false, checked: [], fk_home: '',
-    colorField: initAddressColor, latitude: 0, longitude: 0, errorMsg: '',
+    colorField: initAddressColor, latitude: 0, longitude: 0, errorMsg: '', load: false, loadError: false, refreshing: false
   } as State
 
   async componentDidMount() {
     const propsData = this.props.route.params.propsData
-    const { city, street, homeNumber, uid } = propsData
-    this.setState({ city, street, homeN: homeNumber, fk_home: uid })
-    // Geolocation.getCurrentPosition((position) => {
-    //   console.log(position);
-    //   this.setState({
-    //     latitude: position.coords.latitude,
-    //     longitude: position.coords.longitude,
-    //   });
+    if (propsData !== undefined) {
+      const { city, street, homeNumber, uid } = propsData
+      this.setState({ city, street, homeN: homeNumber, fk_home: uid })
+    }
+    var { userLogin, token } = store.state;
+    if (token != '') {
+      console.log('userLogin: ', userLogin)
+      const { appartament, fk_Home } = userLogin
+      this.setState({ appartament, fk_home: fk_Home })
+      var logAction = 'Профиль дома';
+      try {
+        const response = await fetch(serverUrl + 'home?Fk_Home=' + fk_Home,
+          { headers: { 'Authorization': `Bearer ${token}` } })
+        const data: HomeData = await response.json()
+        if (response.status == 200) {
+          this.setState({
+            city: data.homeData.city, street: data.homeData.street, 
+            homeN: data.homeData.homeNumber, load: true    })
+          console.log('Успех fetch ' + logAction, data.homeData)
+        }
+        else if (response.status == 404) {
+          console.log('Внимание', 'Дом не найден uid=' + fk_Home);
+          this.setState({ loadError: true })
+        }
+      } catch (error) {
+        console.log('Внимание', 'Ошибка ' + logAction + ' Post fetch: ' + error);
+        if (error == 'TypeError: Network request failed') {
+          Alert.alert('Внимание', 'Сервер не доступен, попробуйте позже', [{ text: 'OK' }]);
 
-    //   Geocoder.init('AIzaSyCJybXjiXDmOad2vmbeJQQH15yO_YH19gg', { language: "ru" });
-    //   Geocoder.from(position.coords.latitude, position.coords.longitude).then((json: any) => {
-    //     console.log(json);
+          this.setState({ loadError: true })
+        }
+        else if (error.status == 404) {
+          console.log('Внимание', 'Дом не найден: ' + error, [{ text: 'OK' }]);
+        }
+        else {
+          Alert.alert('Внимание', 'Ошибка сервера: ' + error, [{ text: 'OK' }]);
+        }
+        this.setState({ loadError: true })
+        return
+      }
 
-    //     var addressComponent = json.results[0].address_components;
-    //     console.log(addressComponent);
-    //     this.setState({
-    //       address: addressComponent
-    //     });
+    }
+    Geolocation.getCurrentPosition((position: any) => {
+      console.log(position);
+      this.setState({
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      });
 
-    //     console.log(addressComponent);
-    //   }).catch((error: any) => console.warn(error));
+      // fetch('https://maps.googleapis.com/maps/api/geocode/json?address=' + position.coords.latitude + ',' + position.coords.longitude )
+      //   .then((response) => response.json())
+      //       .then((responseJson) => {
+      //         this.setState({address: JSON.stringify(responseJson)});
+      // })
+      //Geocoder.init('AIzaSyCJybXjiXDmOad2vmbeJQQH15yO_YH19gg', { language: "ru" });
+      //   Geocoder.from(position.coords.latitude, position.coords.longitude).then((json: any) => {
+      //     console.log(json);
 
-    // }, (error) => {
-    //   // См. таблицы кодов ошибок выше.
-    //   this.setState({ errorMsg: error.message });
-    //   console.log(error.code, error.message);
-    // }, {
-    //   enableHighAccuracy: false,
-    //   timeout: 10000,
-    //   maximumAge: 100000
-    // });
+      //     var addressComponent = json.results[0].address_components;
+      //     console.log(addressComponent);
+      //     this.setState({
+      //       address: addressComponent
+      //     });
+
+      //     console.log(addressComponent);
+      //   }).catch((error: any) => console.warn(error));
+
+      // }, (error) => {
+      //   // См. таблицы кодов ошибок выше.
+      //   this.setState({ errorMsg: error.message });
+      //   console.log(error.code, error.message);
+      // }, {
+      //   enableHighAccuracy: false,
+      //   timeout: 10000,
+      //   maximumAge: 100000
+    });
 
 
     // // И пример использования
@@ -111,8 +159,8 @@ class AddressScreen extends PureComponent<any, State, Props> {
 
   render() {
     console.log('Props AddresScreen', this.props)
-    const { appartment, city, street, homeN, badEnter, errorText, colorIcon, submit,
-      loadHome, dataHome, search, checked, disBtn, colorField, errorMsg, }: State = this.state
+    const { appartament, city, street, homeN, badEnter, errorText, colorIcon, submit,
+      loadHome, dataHome, search, checked, disBtn, colorField, address, latitude, longitude, } = this.state
     const { navigation } = this.props
     const { fixToText, icon, textInput, input, button, buttonContainer, buttonTitle,
       notFoundStyle, containerList } = locStyles
@@ -136,26 +184,13 @@ class AddressScreen extends PureComponent<any, State, Props> {
         <ScrollView >
           <Card containerStyle={cardStyle} >
             <View>
-              {/* <Text> {errorMsg ? Error : errorMsg} </Text>
+              {/* <Text> {errorMsg ? Error : errorMsg} </Text> */}
+              {/* <Text> {latitude + " " + longitude} </Text>
               <Text> {address} </Text> */}
-              <View style={fixToText}>
+              <View style={[fixToText,{marginTop: 10}]}>
                 <List.Icon icon="home-city" style={[icon, { margin: 0 }]} color={colorIcon.city} />
                 <View style={textInput}>
-                  {/* <ApplicationProvider
-                    mapping={mapping}
-                    theme={lightTheme}>
-                    <Layout style={containerList}>
-                      <Autocomplete
-                        placeholder='Начните вводить'
-                        value={city}
-                        data={CityList}
-                        //icon={CloseIcon}
-                        onIconPress={this.clearInput.bind(this)}
-                        onChangeText={this.onChangeCity.bind(this)}
-                        onSelect={this.onSelectCity.bind(this)}
-                      />
-                    </Layout>
-                  </ApplicationProvider> */}
+
                   <Text style={label2}> Город *</Text>
                   <Dropdown
                     data={CityList}
@@ -203,21 +238,20 @@ class AddressScreen extends PureComponent<any, State, Props> {
               </View>
 
               <View style={fixToText}>
-                <List.Icon icon="door" style={[icon, { margin: 0 }]} color={colorIcon.appartment} />
-                {/* <SvgXml xml={write} style={icon} fill={colorIcon.appartment} /> */}
+                <List.Icon icon="door" style={[icon, { margin: 0 }]} color={appColor} />
                 <View style={textInput}>
                   <Text style={label}> Квартира <Text style={{ color: 'red' }}>*</Text></Text>
                   <TextInput
                     style={[inputPaperWhite, inputStyle, { height: 40 }]}
-                    onChangeText={this.onChangeAppartment.bind(this)}
+                    onChangeText={this.onChangeappartament.bind(this)}
                     // placeholder='Кваритира'
-                    value={appartment}
-                    onEndEditing={() => this.onCheckAppartment(appartment)}
+                    value={appartament}
+                    onEndEditing={() => this.onCheckappartament(appartament)}
                     keyboardType='number-pad'
                     disabled={submit}
-                    theme={{ colors: { primary: colorField.appartment } }}
+                    theme={{ colors: { primary: colorField.appartament } }}
                   />
-                  {badEnter.appartment && <Text style={error}>{errorText.appartment}</Text>}
+                  {badEnter.appartament && <Text style={error}>{errorText.appartament}</Text>}
                 </View>
               </View>
             </View>
@@ -256,7 +290,7 @@ class AddressScreen extends PureComponent<any, State, Props> {
                       <Text style={notFoundStyle}> По заданным параметрам ничего не найдено! </Text>
                       {badEnter.home && <Text style={[error, { marginHorizontal: 20, marginBottom: 5 }]}>{errorText.home}</Text>}
                     </Card>
-                    <Image source={{ uri: 'https://i.ibb.co/D7c3bfK/notFound.png' }} />
+                    <Image source={require('../../../icon/notFound.png')} />
                   </View>
               ) :
                 <ActivityIndicator style={indicator} size={50} color={appColor} />
@@ -336,8 +370,8 @@ class AddressScreen extends PureComponent<any, State, Props> {
   }
 
   private checkFields() {
-    // const { appartment, city, street, homeN, badEnter } = this.state
-    // if ((appartment || city || street || homeN) && !badEnter.appartment && !badEnter.city
+    // const { appartament, city, street, homeN, badEnter } = this.state
+    // if ((appartament || city || street || homeN) && !badEnter.appartament && !badEnter.city
     //   && !badEnter.street && !badEnter.homeN && !badEnter.home) {
     this.setState({ disBtn: false })
     // }
@@ -410,37 +444,37 @@ class AddressScreen extends PureComponent<any, State, Props> {
       this.checkFields();
     }
   }
-  private onChangeAppartment(appartment: string) {
+  private onChangeappartament(appartament: string) {
     var { badEnter, errorText, colorIcon } = this.state
-    if (appartment == ' ') { return }
-    if (!appartment) {
-      badEnter.appartment = true;
-      errorText.appartment = 'Поле не заполнено!'
-      colorIcon.appartment = 'red'
-      this.setState({ badEnter, errorText, appartment, good: false });
+    if (appartament == ' ') { return }
+    if (!appartament) {
+      badEnter.appartament = true;
+      errorText.appartament = 'Поле не заполнено!'
+      colorIcon.appartament = 'red'
+      this.setState({ badEnter, errorText, appartament, good: false });
       return;
     }
     else {
-      badEnter.appartment = false;
-      colorIcon.appartment = 'green'
+      badEnter.appartament = false;
+      colorIcon.appartament = 'green'
       const propsData = this.props.route.params.propsData
-      this.setState({ appartment, colorIcon });
+      this.setState({ appartament, colorIcon });
       this.checkFields();
     }
   }
-  private onCheckAppartment(appartment: string) {
+  private onCheckappartament(appartament: string) {
     var { badEnter, errorText, colorIcon } = this.state
-    if (+appartment > 1000) {
-      badEnter.appartment = true;
-      errorText.appartment = 'Квартира не может быть больше 1000!'
-      colorIcon.appartment = 'red'
-      this.setState({ badEnter, errorText, appartment, good: false });
+    if (+appartament > 1000) {
+      badEnter.appartament = true;
+      errorText.appartament = 'Квартира не может быть больше 1000!'
+      colorIcon.appartament = 'red'
+      this.setState({ badEnter, errorText, appartament, good: false });
       return;
     }
   }
 
   private onSubmit() {
-    const { appartment, city, street, homeN, badEnter, errorText,
+    const { appartament, city, street, homeN, badEnter, errorText,
       colorIcon, fk_home } = this.state
     const { navigation } = this.props
     var $this = this;
@@ -453,10 +487,10 @@ class AddressScreen extends PureComponent<any, State, Props> {
       this.setState({ badEnter, errorText, colorIcon, good: false });
     }
 
-    if (!appartment) {
-      badEnter.appartment = true;
-      errorText.appartment = 'Поле обязательно!'
-      colorIcon.appartment = 'red'
+    if (!appartament) {
+      badEnter.appartament = true;
+      errorText.appartament = 'Поле обязательно!'
+      colorIcon.appartament = 'red'
       this.setState({ badEnter, errorText, colorIcon, good: false });
     }
     if (!fk_home) {
@@ -466,7 +500,7 @@ class AddressScreen extends PureComponent<any, State, Props> {
       this.setState({ badEnter, errorText, colorIcon, good: false });
     }
 
-    if (badEnter.appartment || badEnter.city || badEnter.street || badEnter.homeN || badEnter.home) {
+    if (badEnter.appartament || badEnter.city || badEnter.street || badEnter.homeN || badEnter.home) {
       this.setState({ good: false });
       Alert.alert('Внимание', 'Заполните поля правильно!',
         [{ text: 'OK' }]);
@@ -481,8 +515,8 @@ class AddressScreen extends PureComponent<any, State, Props> {
     obj = {
       Fk_User: userLogin.uid,
       Fk_Home: fk_home,
-      Appartment: appartment,
-      Address: address + ', кв. ' + appartment,
+      appartament: appartament,
+      Address: address + ', кв. ' + appartament,
     }
     var reload = true
     url = serverUrl + 'auth/address';
@@ -563,18 +597,18 @@ class AddressScreen extends PureComponent<any, State, Props> {
       city: appColor,
       street: appColor,
       homeN: appColor,
-      appartment: appColor,
+      appartament: appColor,
       home: ''
     };
     var arr: adrBool = {
       city: false,
       street: false,
       homeN: false,
-      appartment: false,
+      appartament: false,
       home: false
     };
     this.setState({
-      appartment: '', city: '', street: '', homeN: '', good: true, submit: false,
+      appartament: '', city: '', street: '', homeN: '', good: true, submit: false,
       badEnter: arr, errorText: arrTxt, colorIcon: arrColor,
       search: false, searchText: '', dataHome: [], dataOld: [], loadHome: false,
     })

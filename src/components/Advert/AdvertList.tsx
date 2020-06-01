@@ -6,7 +6,7 @@ import { Header, AdvertCard, globalStyles } from '..';
 import { AddADVERT, ADVERTPro } from '../../Navigations/routes';
 import { useGlobal, store } from '../../store'
 import { serverUrl, appColor, NoFoto, w, Background } from '../../constants';
-import { Group, Advert } from '../../interfaces';
+import { Group, Advert, advert } from '../../interfaces';
 
 interface Props { }
 
@@ -38,6 +38,10 @@ class AdvertList extends Component<any, Props, State> {
                     adverts.push(adv)
                 })
             });
+            adverts.sort(function(a, b){
+                var dateA=new Date(a.createdAt), dateB=new Date(b.createdAt)
+                return dateB.getTime()-dateA.getTime()
+            })
             this.setState({ adverts, localGroups, load: true })
         } catch (e) {
             throw e
@@ -50,8 +54,8 @@ class AdvertList extends Component<any, Props, State> {
         const { localGroups, adverts, load, refreshing, fk_Status } = this.state
         return (
             <View >
-                <Header title='Обявления дома' position='center' />
-
+                <Header title='Объявления дома' position='center' />
+                    {!load && Background}    
                 <ScrollView
                     refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={this.onRefresh.bind(this)} />
@@ -60,7 +64,7 @@ class AdvertList extends Component<any, Props, State> {
                     {load ?
                         adverts.map((adv: Advert) => {
                             return <AdvertCard data={adv} key={adv.uid}
-                                onPress={() => navigation.navigate(ADVERTPro, (adv))}
+                                onPress={() => navigation.navigate('ADVERTPro', (adv))}
                                 onMoveGroup={() => navigation.navigate('GroupPRO', (adv.lg))} />
                         })
                         : <ActivityIndicator style={[indicator, { marginTop: w + 20 }]} size={50} color={appColor} />
